@@ -1,0 +1,22 @@
+<!-- djangotemplates/example/templates/about.html -->
+{% extends 'base.html' %} <!-- Add this for inheritance -->
+
+
+{% block title %}About Us {% endblock %}
+
+  {% block pagecontent %}
+  {% load static %}
+
+    <p>
+    We are a group of Django enthusiasts with the following idiosyncrasies:
+
+    <ol>
+        <li>We only eat bananas on Saturdays.</li>
+        <li>We love making playing football on rainy days.</li>
+    </ol>
+    </p>
+    <a href="{% url 'home' %}">Go Home</a>
+    <a href="{% url 'about' %}">About This Site</a>
+    <img src="{% static 'img/AH.png' %}" alt="" width="200" height="200">
+
+  {% endblock %}

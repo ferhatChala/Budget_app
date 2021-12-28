@@ -1,0 +1,23 @@
+<!-- djangotemplates/example/templates/base.html -->
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>
+      {% block title %}{% endblock %}
+    </title>
+
+    <script src="{% static 'js/main.js' %}"></script> <!-- This is how to include a static file -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css" />
+  </head>
+  <body>
+    <h1>hello !</h1>
+    <img src="{% static 'img/AH.png' %}" alt="">
+    <div class="container">
+      {% block pagecontent %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
