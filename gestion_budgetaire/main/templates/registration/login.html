@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Login{% endblock %}</title>
+    <style>
+        body {
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    font-family: sans-serif;
+    }
+    
+    .box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 25rem;
+    padding: 2.5rem;
+    box-sizing: border-box;
+    border: 1px solid #dadce0;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    
+    }
+    .myimg {
+    position: absolute;
+    top: 15%;
+    left: 53%;
+    transform: translate(-50%, -50%);
+    width: 25rem;
+    padding: 2.5rem;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    
+    }
+    
+    .box h2 {
+    margin: 0px 0 -0.125rem;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+    color: #202124;
+    font-family: 'Google Sans','Noto Sans Myanmar UI',arial,sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    }
+    
+    .box p {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: .1px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    text-align: center;
+    }
+    
+    .box .inputBox {
+    position: relative;
+    }
+    
+    .box .inputBox input {
+    width: 93%;
+    padding: 0.625rem 10px;
+    font-size: 1rem;
+    letter-spacing: 0.062rem;
+    margin-bottom: 1.875rem;
+    border: 1px solid #ccc;
+    background: transparent;
+    border-radius: 4px;
+    
+    }
+    
+    .box .inputBox label {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    padding: 0.625rem 0;
+    font-size: 1rem;
+    color: grey;
+    pointer-events: none;
+    transition: 0.5s;
+    }
+    
+    .box .inputBox input:focus ~ label,
+    .box .inputBox input:valid ~ label,
+    .box .inputBox input:not([value=""]) ~ label {
+    top: -1.125rem;
+    left: 10px;
+    color: #1a73e8;
+    font-size: 0.75rem;
+    background-color:white;
+    height: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    }
+    .box .inputBox input:focus {
+    outline: none;
+    border: 2px solid #1a73e8;
+    }
+    .box input[type="submit"] {
+    border: none;
+    outline: none;
+    color: #fff;
+    background-color: #1a73e8;
+    padding: 0.625rem 1.25rem;
+    cursor: pointer;
+    border-radius: 0.312rem;
+    font-size: 1rem;
+    float: right;
+    }
+    
+    .box input[type="submit"]:hover {
+    background-color: #287ae6;
+    box-shadow: 0 1px 1px 0 rgba(66,133,244,0.45), 0 1px 3px 1px rgba(66,133,244,0.3);
+    }
+    </style>
+</head>
+<body>
+    <div class="myimg">
+        <img src="data:image/png;base64,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" alt="">
+    </div>
+    <div class="box">
+        <h2>Sign in</h2>
+        <p>Please sign in to your account first </p>
+        <form method="post" >
+          {% csrf_token %}
+          <div class="inputBox">
+            <input type="email" name="username" required onkeyup="this.setAttribute('value', this.value);"  value="">
+            <label>Email</label>
+          </div>
+          <div class="inputBox">
+                <input type="password" name="password" required onkeyup="this.setAttribute('value', this.value);" value="">
+                <label>Password</label>
+              </div>
+          <input type="submit" name="sign-in" value="Sign In">
+          <a href="" style="text-decoration: none; float: left;">Forgot password ?</a>
+        </form>
+      </div>
+    
+</body>
+</html>
+
+
+

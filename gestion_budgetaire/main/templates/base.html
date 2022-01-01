@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AIR ALGERIE - Analyse Budgétaire</title>
+    <title>{% block title %}AIR ALGERIE - Analyse Budgétaire{% endblock %} </title>
     <meta name="description" content="Application pour l'analyse Budgétaire">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -207,7 +207,7 @@
 
                             <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
 
-                            <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
+                            <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-power -off"></i>Logout</a>
                         </div>
                     </div>
 
