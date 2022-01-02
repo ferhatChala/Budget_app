@@ -68,6 +68,9 @@
 </head>
 
 <body>
+    {% load crispy_forms_tags %} 
+    {% include 'includes/messages.html' %}
+    
     <!-- Left Panel -->
     <aside id="left-panel" class="left-panel">
         <nav class="navbar navbar-expand-sm navbar-default">
@@ -81,7 +84,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-group"></i>Users</a>
                         <ul class="sub-menu children dropdown-menu">                            
                             <li><i class="fa fa-book"></i><a href="ui-buttons.html">Consulté users</a></li>
-                            <li><i class="fa fa-plus-circle"></i><a href="ui-badges.html">Ajouter user</a></li>
+                            <li><i class="fa fa-plus-circle"></i><a href="{% url 'register' %}">Ajouter user</a></li>
                             <li><i class="fa fa-spinner"></i><a href="ui-tabs.html">Historique</a></li>
                         </ul>
                     </li>
@@ -216,6 +219,7 @@
         </header>
         <!-- /#header -->
         <!-- Content -->
+        {% block content %}
         <div class="content">
             <!-- Animated -->
             <div class="animated fadeIn">
@@ -292,6 +296,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <!-- /Widgets -->
                 <!--  Traffic  -->
@@ -324,6 +329,7 @@
             </div>
             <!-- .animated -->
         </div>
+        {% endblock %}
         <!-- /.content -->
         <div class="clearfix"></div>
         <!-- Footer
