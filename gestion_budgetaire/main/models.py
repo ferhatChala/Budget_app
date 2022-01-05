@@ -228,8 +228,8 @@ class Unite_has_Compte(models.Model):
 class Compte_has_Montant(models.Model):
     TYPBDG_CHOICES = [
     ('PROPOS', 'Budget de proposition'),
+    ('REUN', 'Budget de Réunion'),
     ('NOTIF', 'Budget notifié'),
-    ('REALIS', 'budget de Réalisation'),
     ]
     VALID_CHOICES = [
     ('CADRE', 'Cadre Budget'),
@@ -250,6 +250,9 @@ class Compte_has_Montant(models.Model):
     vld_cadre = models.BooleanField()
     vld_chef_dep = models.BooleanField()
     vld_sous_dir = models.BooleanField()
+
+    #ajouter commentaires avec degre d'importance (faible, moyenne, critique)
+    #ajouter la valeur de cloture pour l année courant N
 
 class Cadre_has_Unite(models.Model):
     cadre = models.ForeignKey("Cadre", on_delete=models.CASCADE)
