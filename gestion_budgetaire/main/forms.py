@@ -50,46 +50,65 @@ class ContentAdminForm(forms.ModelForm):
 class AddUniteForm(forms.ModelForm):
 	class Meta:
 		model = Unite
-		fields = ("code_num","code_alpha","lib","departement","monnaie","pays","reseau","region",
-					"comm","tresorie","traffic","recette","commerciale","exploitation","regle_possible")
+		fields = '__all__'
 					
 # Create Departement form
 class AddDepForm(forms.ModelForm):
 	class Meta:
 		model = Departement
-		fields = ("code","lib")
+		fields = '__all__'
 
 # Create Comptes SCF form
 class AddPos1Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_1
-		fields = ("numero","rubrique")
+		fields = '__all__'
 
 class AddPos2Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_2
-		fields = ("numero","rubrique","ref")
+		fields = '__all__'
 
 class AddPos3Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_3
-		fields = ("numero","rubrique","ref")
+		fields = '__all__'
 
 class AddPos6Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_6
-		fields = ("numero","rubrique","ref","chapitre")
+		fields = '__all__'
 
 class AddPos7Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_7
-		fields = ("numero","rubrique","ref","chapitre")
+		fields = '__all__'
 
 
 # Create Monnaie form
+class AddMonnaieForm(forms.ModelForm):
+	class Meta:
+		model = Monnaie
+		fields = '__all__'
+
 # Create Taux de change form
+class AddTauxChngForm(forms.ModelForm):
+	class Meta:
+		model = Taux_de_change
+		fields = '__all__'
+
 # Create Chapitre form
+class AddChapitreForm(forms.ModelForm):
+	class Meta:
+		model = Chapitre
+		fields = '__all__'
+
 # Create Pays form
+class AddPaysForm(forms.ModelForm):
+	class Meta:
+		model = Pays
+		fields = '__all__'
+
 # Affectation des cadres aux unités 
 # Affectation des comptes aux unités
 

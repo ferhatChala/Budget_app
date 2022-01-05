@@ -2,7 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import  render, redirect
 from .forms import (NewUserForm, CadreForm, ChefDepForm, SousDirForm, ContentAdminForm,
-					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form
+					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,
+					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm
 					)
 from .models import (User, Cadre, Chef_Dep, Sous_Dir, Content_Admin,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
@@ -148,6 +149,10 @@ def unite_list(request):
 
 # modifier unité
 # supprimer unité 
+def delete_unite(request, id):
+    form = Unite.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/unite_list")
 
 # -----------------------------------------------------------------------------------
 
@@ -163,6 +168,7 @@ def add_dep(request):
 			return redirect("/dep_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="structure/add_dep.html", context={"dep_form":dep_form})
+
 # afficher tout les Departement
 def dep_list(request):
 	dep = Departement.objects.all()
@@ -171,12 +177,16 @@ def dep_list(request):
 
 # modifier departement
 # supprimer Departement 
+def delete_dep(request, id):
+    form = Departement.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/dep_list")
 
 # -----------------------------------------------------------------------------------
 
 # ------------ gestion des Comptes SCF ---------------------------------------------------
 
-# ajouter Compte pos 1
+# ajouter Comptes
 def add_pos1(request):
 	pos1_form = AddPos1Form(request.POST or None)
 	if request.method == "POST":
@@ -186,7 +196,7 @@ def add_pos1(request):
 			return redirect("/comptes_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos1.html", context={"pos1_form":pos1_form})
-# ajouter Compte pos 2
+
 def add_pos2(request):
 	pos2_form = AddPos2Form(request.POST or None)
 	if request.method == "POST":
@@ -196,7 +206,7 @@ def add_pos2(request):
 			return redirect("/comptes_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos2.html", context={"pos2_form":pos2_form})
-# ajouter Compte pos 3
+
 def add_pos3(request):
 	pos3_form = AddPos3Form(request.POST or None)
 	if request.method == "POST":
@@ -206,7 +216,7 @@ def add_pos3(request):
 			return redirect("/comptes_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos3.html", context={"pos3_form":pos3_form})
-# ajouter Compte pos 6
+
 def add_pos6(request):
 	pos6_form = AddPos6Form(request.POST or None)
 	if request.method == "POST":
@@ -216,7 +226,7 @@ def add_pos6(request):
 			return redirect("/comptes_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos6.html", context={"pos6_form":pos6_form})
-# ajouter Compte pos 7
+
 def add_pos7(request):
 	pos7_form = AddPos7Form(request.POST or None)
 	if request.method == "POST":
@@ -244,43 +254,143 @@ def comptes_list(request):
 # modifier Comptes pos 6 
 # modifier Comptes pos 7
 
-# supprimer compte
+# supprimer comptes
+def delete_pos1(request, id):
+    form = SCF_Pos_1.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/scf/comptes_list")
+
+def delete_pos2(request, id):
+    form = SCF_Pos_2.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/scf/comptes_list")
+
+def delete_pos3(request, id):
+    form = SCF_Pos_3.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/scf/comptes_list")
+
+def delete_pos6(request, id):
+    form = SCF_Pos_6.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/scf/comptes_list")
+
+def delete_pos7(request, id):
+    form = SCF_Pos_7.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/scf/comptes_list")
 
 # -----------------------------------------------------------------------------------
 
 # ------------ gestion des monnaie ---------------------------------------------------
 
 # ajouter monnaie
+def add_monnaie(request):
+	monnaie_form = AddMonnaieForm(request.POST or None)
+	if request.method == "POST":
+		if  monnaie_form.is_valid():
+			monnaie = monnaie_form.save()
+			messages.success(request, "Monnaie added successfuly." )
+			return redirect("/monnaie_list")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="others/add_monnaie.html", context={"monnaie_form":monnaie_form})
+
 # afficher tout les monnaie
+def monnaie_list(request):
+	moannie = Monnaie.objects.all()
+	monnaie_count = Monnaie.objects.all().count()
+	return render(request, "others/monnaie_list.html" , {'monnaie' : monnaie, 'monnaie_count':monnaie_count})
+
 # modifier monnaie
 # supprimer monnaie 
+def delete_monnaie(request, id):
+    form = Monnaie.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/ref/monnaie_list")
 
 # -----------------------------------------------------------------------------------
 
 # ------------ gestion des Taux de change ---------------------------------------------------
 
 # ajouter Taux de change
+def add_taux_chng(request):
+	taux_chng_form = AddTauxChngForm(request.POST or None)
+	if request.method == "POST":
+		if  taux_chng_form.is_valid():
+			taux_chng = taux_chng_form.save()
+			messages.success(request, "Taux de change added successfuly." )
+			return redirect("/taux_chng_list")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="others/add_taux_chng.html", context={"taux_chng_form":taux_chng_form})
+
 # afficher tout les Taux de change
+def taux_chng_list(request):
+	taux_chng = Taux_de_change.objects.all()
+	taux_chng_count = Taux_de_change.objects.all().count()
+	return render(request, "others/taux_chng_list.html" , {'taux_chng' : taux_chng, 'taux_chng_count':taux_chng_count})
+
 # modifier Taux de change
 # supprimer Taux de change 
+def delete_taux_chng(request, id):
+    form = Taux_de_change.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/ref/taux_chng_list")
 
 # -----------------------------------------------------------------------------------
 
 # ------------ gestion des chapitre ---------------------------------------------------
 
 # ajouter chapitre
+def add_chapitre(request):
+	chapitre_form = AddChapitreForm(request.POST or None)
+	if request.method == "POST":
+		if  chapitre_form.is_valid():
+			chapitre = chapitre_form.save()
+			messages.success(request, "Chapitre added successfuly." )
+			return redirect("/chapitre_list")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="others/add_chapitre.html", context={"chapitre_form":chapitre_form})
+
 # afficher tout les chapitres
+def chapitre_list(request):
+	chapitre = Chapitre.objects.all()
+	chapitre_count = Chapitre.objects.all().count()
+	return render(request, "others/chapitre_list.html" , {'chapitre' : chapitre, 'chapitre_count':chapitre_count})
+
 # modifier chapitre
 # supprimer chapitre
+def delete_chapitre(request, id):
+    form = Chapitre.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/ref/chapitre_list")
 
 # -----------------------------------------------------------------------------------
 
 # ------------ gestion des pays ---------------------------------------------------
 
 # ajouter pays 
-# afficher tout les pays 
+def add_pays(request):
+	pays_form = AddPaysForm(request.POST or None)
+	if request.method == "POST":
+		if  pays_form.is_valid():
+			pays = pays_form.save()
+			messages.success(request, "Pays added successfuly." )
+			return redirect("/pays_list")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="others/add_pays.html", context={"pays_form":pays_form})
+
+# afficher tout les Pays 
+def pays_list(request):
+	pays = Pays.objects.all()
+	pays_count = Pays.objects.all().count()
+	return render(request, "others/pays_list.html" , {'pays' : pays, 'pays_count':pays_count})
+
 # modifier pays 
 # supprimer pays 
+def delete_pays(request, id):
+    form = Pays.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/ref/pays_list")
 
 # -----------------------------------------------------------------------------------
 
