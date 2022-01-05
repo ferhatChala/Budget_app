@@ -1,6 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Cadre, Chef_Dep, Sous_Dir, Content_Admin
+from .models import (User, Cadre, Chef_Dep, Sous_Dir, Content_Admin,
+                    Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
+                    SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,
+                    Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
+                    )
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -43,8 +47,45 @@ class ContentAdminForm(forms.ModelForm):
 
 
 # Create Unite form
-# Create Comptes SCF form
+class AddUniteForm(forms.ModelForm):
+	class Meta:
+		model = Unite
+		fields = ("code_num","code_alpha","lib","departement","monnaie","pays","reseau","region",
+					"comm","tresorie","traffic","recette","commerciale","exploitation","regle_possible")
+					
 # Create Departement form
+class AddDepForm(forms.ModelForm):
+	class Meta:
+		model = Departement
+		fields = ("code","lib")
+
+# Create Comptes SCF form
+class AddPos1Form(forms.ModelForm):
+	class Meta:
+		model = SCF_Pos_1
+		fields = ("numero","rubrique")
+
+class AddPos2Form(forms.ModelForm):
+	class Meta:
+		model = SCF_Pos_2
+		fields = ("numero","rubrique","ref")
+
+class AddPos3Form(forms.ModelForm):
+	class Meta:
+		model = SCF_Pos_3
+		fields = ("numero","rubrique","ref")
+
+class AddPos6Form(forms.ModelForm):
+	class Meta:
+		model = SCF_Pos_6
+		fields = ("numero","rubrique","ref","chapitre")
+
+class AddPos7Form(forms.ModelForm):
+	class Meta:
+		model = SCF_Pos_7
+		fields = ("numero","rubrique","ref","chapitre")
+
+
 # Create Monnaie form
 # Create Taux de change form
 # Create Chapitre form
