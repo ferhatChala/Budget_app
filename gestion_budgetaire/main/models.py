@@ -153,7 +153,7 @@ class Monnaie(models.Model):
 
 class Taux_de_change(models.Model):
     monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE)
-    annee = models.IntegerField()
+    annee = models.IntegerField() # primary key
     value = models.FloatField() # la valeur de la monnaie par rapport au Dinnar DZD
 
 class Chapitre(models.Model):

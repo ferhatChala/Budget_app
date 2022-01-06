@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block unite_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Admin</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="#">Unités</a></li>
+							<li><a href="#">List</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>      
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">La list de toutes les unités </strong>
+                            <a href="{% url 'add_unite' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+						</div>
+						<div class="card-body">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>Code Num</th>
+										<th>Code Alpha</th>
+										<th>Département</th>
+										<th>Monnaie</th>
+                                        <th>Pays</th>
+                                        <th>Reseau</th>
+                                        <th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for u in unite %}
+									<tr>
+										<td>{{u.code_num}}</td>
+										<td>{{u.code_alpha}}</td>
+										<td>{{u.departement.code}}</td>
+										<td>{{u.monnaie.code_alpha}}</td>
+                                        <td>{{u.pays.code}}</td>
+                                        <td>{{u.region}}</td>
+										<td>
+											<a href="#" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</button>
+										</td>
+									</tr>
+									<!-- Modal -->
+									<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<div class="modal-dialog">
+								  			<div class="modal-content">
+												<div class="modal-header">
+									  				<h5 class="modal-title" id="exampleModalLabel">Confirme Delete</h5>
+									  				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+									  				</button>
+												</div>
+												<div class="modal-body">
+									  				Are you sure you want to Delete this " {{u.lib}} " ?
+												</div>
+												<div class="modal-footer">
+									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+									  				<a href="delete_unite/{{u.id}}" class="btn btn-danger">Supprimer</a>
+												</div>
+											</div>
+										</div>
+									</div>
+						
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block autre_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}         
+
+<div class="row content">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">				
+						<br>
+						<h3>Add new Chapitre</h3>
+						<hr>
+						<!-- form pour ajouter cadres -->
+						<div class="container py-5">
+							<form method="post">
+								{% csrf_token %}
+
+								{{ chapitre_form.code_num|as_crispy_field }}
+                                {{ chapitre_form.lib|as_crispy_field }}
+
+							
+
+								<button type="submit" class="btn btn-primary">Ajouter</button>
+								<a href="{% url 'chapitre_list' %}" class="btn btn-secondary">Annuler</a>
+							  </form>
+						</div>
+            </div>
+        </div>
+    </div><!-- /# column -->
+</div>
+
+{% endblock %}

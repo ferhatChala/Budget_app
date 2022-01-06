@@ -19,7 +19,7 @@ urlpatterns = [
 
     #unités & departement-------------------------------------
     path('add_unite', views.add_unite, name="add_unite"),
-    path('add_dep', views.ajouter_cadre, name="add_dep"),
+    path('add_dep', views.add_dep, name="add_dep"),
     path('unite_list', views.unite_list, name="unite_list"),
     path('dep_list', views.dep_list, name="dep_list"),
     path('delete_unite/<int:id>', views.delete_unite, name="delete_unite"),
@@ -46,31 +46,25 @@ urlpatterns = [
     #monnaie
     path('ref/add_monnaie', views.add_monnaie, name="add_monnaie"),
     path('ref/monnaie_list', views.monnaie_list, name="monnaie_list"),
-    path('ref/update_monnaie', views.update_monnaie, name="update_monnaie"),
+    #path('ref/update_monnaie', views.update_monnaie, name="update_monnaie"),
     path('ref/delete_monnaie/<int:id>', views.delete_monnaie, name="delete_monnaie"),
     #taux de change
     path('ref/add_taux_chng', views.add_taux_chng, name="add_taux_chng"),
     path('ref/taux_chng_list', views.taux_chng_list, name="taux_chng_list"),
-    path('ref/update_taux_chng', views.update_taux_chng, name="update_taux_chng"),
+    #path('ref/update_taux_chng', views.update_taux_chng, name="update_taux_chng"),
     path('ref/delete_taux_chng/<int:id>', views.delete_taux_chng, name="delete_taux_chng"),
     #chapitre
     path('ref/add_chapitre', views.add_chapitre, name="add_chapitre"),
     path('ref/chapitre_list', views.chapitre_list, name="chapitre_list"),
-    path('ref/update_chapitre', views.update_chapitre, name="update_chapitre"),
-    path('ref/delete_chapitre/<int:id>', views.delete_chapitre, name="delete_chapitre"),
+    #path('ref/update_chapitre', views.update_chapitre, name="update_chapitre"),
+    path('ref/delete_chapitre/<int:code_num>', views.delete_chapitre, name="delete_chapitre"),
     #pays
     path('ref/add_pays', views.add_pays, name="add_pays"),
     path('ref/pays_list', views.pays_list, name="pays_list"),
-    path('ref/update_pays', views.update_pays, name="update_pays"),
+    #path('ref/update_pays', views.update_pays, name="update_pays"),
     path('ref/delete_pays/<int:id>', views.delete_pays, name="delete_pays"),
 
    
-
-
-
-
-
-
 
 
 ]

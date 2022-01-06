@@ -20,14 +20,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+   
     <link rel="stylesheet" href="{% static 'assets/css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
     <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/weathericons@2.1.0/css/weather-icons.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.css" rel="stylesheet" />
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 
    <style>
     #weatherWidget .currentDesc {
@@ -77,7 +82,7 @@
                 <ul class="nav navbar-nav">
                     <li class="menu-title">Administration</li><!-- /.menu-title -->
                     <li>
-                        <a href="index.html"><i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
                     {% block users_active %}
                     <li class="menu-item-has-children dropdown">
@@ -90,12 +95,10 @@
                             <li><i class="fa fa-user"></i><a href="{% url 'cadres_list' %}">Cadre</a></li>
                         </ul>
                     </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-globe"></i>Unités</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-table"></i><a href="tables-basic.html">En Algérie</a></li>
-                            <li><i class="fa fa-table"></i><a href="tables-data.html">En Etranger</a></li>
-                        </ul>
+                    {% block unite_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'unite_list' %}"><i class="menu-icon fa fa-globe"></i>Unités </a>
                     </li>
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
@@ -120,13 +123,16 @@
                             <li><i class="menu-icon fa fa-pencil"></i><a href="forms-advanced.html">Modifier</a></li>
                         </ul>
                     </li>
+                    {% block autre_active %}
                     <li class="menu-item-has-children dropdown">
+                    {% endblock %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Autre</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-basic.html">Monnaie</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-advanced.html">Taux de change</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-advanced.html">Pays</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-advanced.html">Chapitre</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'dep_list' %}">Département</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'chapitre_list' %}">Chapitre</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'monnaie_list' %}">Monnaie</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'taux_chng_list' %}">Taux de change</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'pays_list' %}">Pays</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -376,6 +382,25 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.js"></script>
     <script src="{% static 'assets/js/init/fullcalendar-init.js' %}"></script>
+
+    <!--Data table stuff -->
+    <script src="assets/js/lib/data-table/datatables.min.js"></script>
+    <script src="assets/js/lib/data-table/dataTables.bootstrap.min.js"></script>
+    <script src="assets/js/lib/data-table/dataTables.buttons.min.js"></script>
+    <script src="assets/js/lib/data-table/buttons.bootstrap.min.js"></script>
+    <script src="assets/js/lib/data-table/jszip.min.js"></script>
+    <script src="assets/js/lib/data-table/vfs_fonts.js"></script>
+    <script src="assets/js/lib/data-table/buttons.html5.min.js"></script>
+    <script src="assets/js/lib/data-table/buttons.print.min.js"></script>
+    <script src="assets/js/lib/data-table/buttons.colVis.min.js"></script>
+    <script src="assets/js/init/datatables-init.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $('#bootstrap-data-table-export').DataTable();
+      } );
+    </script>
 
     <!--Local Stuff-->
     <script>

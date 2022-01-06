@@ -173,7 +173,7 @@ def add_dep(request):
 def dep_list(request):
 	dep = Departement.objects.all()
 	dep_count = Departement.objects.all().count()
-	return render(request, "structure/dep_list.html" , {'dep' : unite, 'dep_count':unite_count})
+	return render(request, "structure/dep_list.html" , {'dep' : dep, 'dep_count':dep_count})
 
 # modifier departement
 # supprimer Departement 
@@ -291,13 +291,13 @@ def add_monnaie(request):
 		if  monnaie_form.is_valid():
 			monnaie = monnaie_form.save()
 			messages.success(request, "Monnaie added successfuly." )
-			return redirect("/monnaie_list")
+			return redirect("/ref/monnaie_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="others/add_monnaie.html", context={"monnaie_form":monnaie_form})
 
 # afficher tout les monnaie
 def monnaie_list(request):
-	moannie = Monnaie.objects.all()
+	monnaie = Monnaie.objects.all()
 	monnaie_count = Monnaie.objects.all().count()
 	return render(request, "others/monnaie_list.html" , {'monnaie' : monnaie, 'monnaie_count':monnaie_count})
 
@@ -319,7 +319,7 @@ def add_taux_chng(request):
 		if  taux_chng_form.is_valid():
 			taux_chng = taux_chng_form.save()
 			messages.success(request, "Taux de change added successfuly." )
-			return redirect("/taux_chng_list")
+			return redirect("/ref/taux_chng_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="others/add_taux_chng.html", context={"taux_chng_form":taux_chng_form})
 
@@ -347,7 +347,7 @@ def add_chapitre(request):
 		if  chapitre_form.is_valid():
 			chapitre = chapitre_form.save()
 			messages.success(request, "Chapitre added successfuly." )
-			return redirect("/chapitre_list")
+			return redirect("/ref/chapitre_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="others/add_chapitre.html", context={"chapitre_form":chapitre_form})
 
@@ -359,8 +359,8 @@ def chapitre_list(request):
 
 # modifier chapitre
 # supprimer chapitre
-def delete_chapitre(request, id):
-    form = Chapitre.objects.get(id=id)
+def delete_chapitre(request, code_num):
+    form = Chapitre.objects.get(code_num=code_num)
     form.delete()
     return HttpResponseRedirect("/ref/chapitre_list")
 
@@ -375,7 +375,7 @@ def add_pays(request):
 		if  pays_form.is_valid():
 			pays = pays_form.save()
 			messages.success(request, "Pays added successfuly." )
-			return redirect("/pays_list")
+			return redirect("/ref/pays_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="others/add_pays.html", context={"pays_form":pays_form})
 

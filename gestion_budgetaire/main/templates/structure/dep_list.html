@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block autre_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Admin</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="#">Département</a></li>
+							<li><a href="#">List</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>      
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">Les départements de la S/D Budget</strong>
+                            <a href="{% url 'add_dep' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+						</div>
+						<div class="card-body">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>Code</th>
+										<th>Libelle</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for d in dep %}
+									<tr>
+										<td>{{d.code}}</td>
+										<td>{{d.lib}}</td>
+										<td>
+											<a href="#" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</button>
+										</td>
+									</tr>
+									<!-- Modal -->
+									<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<div class="modal-dialog">
+								  			<div class="modal-content">
+												<div class="modal-header">
+									  				<h5 class="modal-title" id="exampleModalLabel">Confirme Delete</h5>
+									  				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+									  				</button>
+												</div>
+												<div class="modal-body">
+									  				Are you sure you want to Delete this " {{d.lib}} " ?
+												</div>
+												<div class="modal-footer">
+									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+									  				<a href="delete_dep/{{d.id}}" class="btn btn-danger">Supprimer</a>
+												</div>
+											</div>
+										</div>
+									</div>
+						
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}
