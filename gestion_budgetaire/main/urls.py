@@ -22,8 +22,11 @@ urlpatterns = [
     path('add_dep', views.add_dep, name="add_dep"),
     path('unite_list', views.unite_list, name="unite_list"),
     path('dep_list', views.dep_list, name="dep_list"),
+    path('update_unite/<pk>', views.UniteUpdateView.as_view() ),
+    path('update_dep/<pk>', views.DepartementUpdateView.as_view() ),
     path('delete_unite/<int:id>', views.delete_unite, name="delete_unite"),
     path('delete_dep/<int:id>', views.delete_dep, name="delete_dep"),
+
 
     #comptes scf ---------------------------------------------
     # ajouter 
@@ -32,6 +35,7 @@ urlpatterns = [
     path('scf/add_pos3', views.add_pos3, name="add_pos3"),
     path('scf/add_pos6', views.add_pos6, name="add_pos6"),
     path('scf/add_pos7', views.add_pos7, name="add_pos7"),
+    path('scf/add_comptes', views.add_comptes, name="add_comptes"),
     # affichier
     path('scf/comptes_list', views.comptes_list, name="comptes_list"),
     # supprimer
@@ -46,22 +50,22 @@ urlpatterns = [
     #monnaie
     path('ref/add_monnaie', views.add_monnaie, name="add_monnaie"),
     path('ref/monnaie_list', views.monnaie_list, name="monnaie_list"),
-    #path('ref/update_monnaie', views.update_monnaie, name="update_monnaie"),
+    path('ref/update_monnaie/<pk>', views.MonnaieUpdateView.as_view()),
     path('ref/delete_monnaie/<int:id>', views.delete_monnaie, name="delete_monnaie"),
     #taux de change
     path('ref/add_taux_chng', views.add_taux_chng, name="add_taux_chng"),
     path('ref/taux_chng_list', views.taux_chng_list, name="taux_chng_list"),
-    #path('ref/update_taux_chng', views.update_taux_chng, name="update_taux_chng"),
+    path('ref/update_taux_chng/<pk>', views.TauxUpdateView.as_view()),
     path('ref/delete_taux_chng/<int:id>', views.delete_taux_chng, name="delete_taux_chng"),
     #chapitre
     path('ref/add_chapitre', views.add_chapitre, name="add_chapitre"),
     path('ref/chapitre_list', views.chapitre_list, name="chapitre_list"),
-    #path('ref/update_chapitre', views.update_chapitre, name="update_chapitre"),
+    path('ref/update_chapitre/<pk>', views.ChapitreUpdateView.as_view()),
     path('ref/delete_chapitre/<int:code_num>', views.delete_chapitre, name="delete_chapitre"),
     #pays
     path('ref/add_pays', views.add_pays, name="add_pays"),
     path('ref/pays_list', views.pays_list, name="pays_list"),
-    #path('ref/update_pays', views.update_pays, name="update_pays"),
+    path('ref/update_pays/<pk>', views.PaysUpdateView.as_view()),
     path('ref/delete_pays/<int:id>', views.delete_pays, name="delete_pays"),
 
    

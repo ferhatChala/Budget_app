@@ -175,7 +175,7 @@ class SCF_Pos_1(models.Model):
 class SCF_Pos_2(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=100)
-    ref = models.ForeignKey("SCF_Pos_1", on_delete=models.CASCADE)
+    ref = models.ForeignKey("SCF_Pos_1", related_name= "next_position", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique

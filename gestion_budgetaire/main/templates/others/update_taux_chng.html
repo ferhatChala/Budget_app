@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block autre_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}         
+
+<div class="row content">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">				
+						<br>
+						<h3>Update taux de change</h3>
+						<hr>
+						<!-- form pour ajouter cadres -->
+						<div class="container py-5">
+							<form method="post">
+								{% csrf_token %}
+								<div class="form-row">
+									<div class="form-group col-md-4 mb-0">
+                                    {{ form.annee|as_crispy_field }}
+									</div>
+                                    <div class="form-group col-md-4 mb-0">
+                                    {{ form.monnaie|as_crispy_field }}
+                                    </div>
+                                    <div class="form-group col-md-4 mb-0">
+                                    {{ form.value|as_crispy_field }}
+                                    </div>
+								</div>
+
+								</div>
+
+								<button type="submit" class="btn btn-primary">Update</button>
+								<a href="{% url 'taux_chng_list' %}" class="btn btn-secondary">Annuler</a>
+							  </form>
+						</div>
+            </div>
+        </div>
+    </div><!-- /# column -->
+</div>
+
+{% endblock %}

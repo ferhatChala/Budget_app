@@ -100,13 +100,13 @@
                     {% endblock %}
                         <a href="{% url 'unite_list' %}"><i class="menu-icon fa fa-globe"></i>Unités </a>
                     </li>
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-basic.html">POS 6</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="forms-advanced.html">POS 7</a></li>
-                        </ul>
+
+                    {% block scf_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
                     </li>
+                    
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Affectation des cadres</a>
                         <ul class="sub-menu children dropdown-menu">
@@ -261,7 +261,7 @@
                                     </div>
                                     <div class="stat-content">
                                         <div class="text-left dib">
-                                            <div class="stat-text"><span class="count">2567</span></div>
+                                            <div class="stat-text"><span class="count">{{comptes}}</span></div>
                                             <div class="stat-heading">Comptes</div>
                                         </div>
                                     </div>
@@ -279,7 +279,7 @@
                                     </div>
                                     <div class="stat-content">
                                         <div class="text-left dib">
-                                            <div class="stat-text"><span class="count">75</span></div>
+                                            <div class="stat-text"><span class="count">{{unite_count}}</span></div>
                                             <div class="stat-heading">Unités</div>
                                         </div>
                                     </div>
@@ -297,7 +297,7 @@
                                     </div>
                                     <div class="stat-content">
                                         <div class="text-left dib">
-                                            <div class="stat-text"><span class="count">15</span></div>
+                                            <div class="stat-text"><span class="count">{{users_count}}</span></div>
                                             <div class="stat-heading">Users</div>
                                         </div>
                                     </div>

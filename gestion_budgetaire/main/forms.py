@@ -109,7 +109,12 @@ class AddPaysForm(forms.ModelForm):
 		model = Pays
 		fields = '__all__'
 
-# Affectation des cadres aux unités 
+# Affectation des cadres aux unités
+class AffectCadreForm(forms.ModelForm):
+	class Meta:
+		model = Cadre_has_Unite
+		fields = ("unite",)
+
 # Affectation des comptes aux unités
 
 

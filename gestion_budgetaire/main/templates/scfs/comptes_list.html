@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block scf_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Admin</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="#">Comptes SCF</a></li>
+							<li><a href="#">List</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>      
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">La list de toutes comptes SCF </strong>
+                            <a href="{% url 'add_comptes' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter Compte</a>
+						</div>
+						<div class="card-body">
+
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+								<li class="nav-item" role="presentation">
+								  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><h5> 1 Position</h5></a>
+								</li>
+								<li class="nav-item" role="presentation">
+								  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><h5>2 Positions</h5></a>
+								</li>
+								<li class="nav-item" role="presentation">
+								  <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false"><h5>3 Positions</h5></a>
+								</li>
+								<li class="nav-item" role="presentation">
+									<a class="nav-link" id="six-tab" data-toggle="tab" href="#six" role="tab" aria-controls="six" aria-selected="false"><h5>6 Positions</h5></a>
+								</li>
+								<li class="nav-item" role="presentation">
+									<a class="nav-link" id="seven-tab" data-toggle="tab" href="#seven" role="tab" aria-controls="seven" aria-selected="false"><h5>7 Positions</h5></a>
+								</li>
+							</ul><br><br>
+							<div class="tab-content" id="myTabContent">
+								<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+									{% for p1 in pos1  %}
+									<div class="container">
+										{{p1.numero}} - {{p1.rubrique}}</h5>
+										<hr>
+									</div> 	
+									{% endfor %}
+								</div>
+								<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+									{% for p2 in pos2  %}
+									<div class="container">
+										<h5>{{p2.numero}} - {{p2.rubrique}}</h5>
+										<hr>
+									</div> 	
+									{% endfor %}
+								</div>
+								<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+									{% for p3 in pos3  %}
+									<div class="container">
+										<h5>{{p3.numero}} - {{p3.rubrique}}</h5>
+										<hr>
+									</div> 	
+									{% endfor %}
+								</div>
+								<div class="tab-pane fade" id="six" role="tabpanel" aria-labelledby="six-tab">
+									{% for p6 in pos6  %}
+									<div class="container">
+										<h5>{{p6.numero}} - {{p6.rubrique}}</h5>
+										<hr>
+									</div> 	
+									{% endfor %}
+								</div>
+								<div class="tab-pane fade" id="seven" role="tabpanel" aria-labelledby="seven-tab">
+									{% for p7 in pos7  %}
+									<div class="container">
+										<h5>{{p7.numero}} - {{p7.rubrique}}</h5>
+										<hr>
+									</div> 	
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}
