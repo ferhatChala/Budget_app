@@ -33,7 +33,9 @@ def ajouter_cadre(request):
 	cadre_form = CadreForm(request.POST or None)
 	if request.method == "POST":
 		if  user_form.is_valid() and cadre_form.is_valid():
-			user = user_form.save()
+			user = user_form.save(commit=False)
+			user.user_type = 5
+			user.save()
 			cadre = cadre_form.save(commit=False)
 			cadre.user = user
 			cadre.save()
@@ -50,7 +52,9 @@ def ajouter_chef_dep(request):
 	chef_dep_form = ChefDepForm(request.POST or None)
 	if request.method == "POST":
 		if  user_form.is_valid() and chef_dep_form.is_valid():
-			user = user_form.save()
+			user = user_form.save(commit=False)
+			user.user_type = 4
+			user.save()
 			chef_dep = chef_dep_form.save(commit=False)
 			chef_dep.user = user
 			chef_dep.save()
@@ -67,7 +71,9 @@ def ajouter_sous_dir(request):
 	sous_dir_form = SousDirForm(request.POST or None)
 	if request.method == "POST":
 		if  user_form.is_valid() and sous_dir_form.is_valid():
-			user = user_form.save()
+			user = user_form.save(commit=False)
+			user.user_type = 3
+			user.save()
 			sous_dir = sous_dir_form.save(commit=False)
 			sous_dir.user = user
 			sous_dir.save()
@@ -84,7 +90,9 @@ def ajouter_content_admin(request):
 	content_admin_form = ContentAdminForm(request.POST or None)
 	if request.method == "POST":
 		if  user_form.is_valid() and content_admin_form.is_valid():
-			user = user_form.save()
+			user = user_form.save(commit=False)
+			user.user_type = 2
+			user.save()
 			content_admin = content_admin_form.save(commit=False)
 			content_admin.user = user
 			content_admin.save()
@@ -343,7 +351,7 @@ class TauxUpdateView(UpdateView):
 	success_url = "/ref/taux_chng_list"
 
 def delete_taux_chng(request, id):
-    form = Taux_de_change.objects.get(id=id)
+    form = Taux_de_change.objects.get(annee=id)
     form.delete()
     return HttpResponseRedirect("/ref/taux_chng_list")
 
@@ -410,10 +418,21 @@ def delete_pays(request, id):
 
 # ------------ Affectation des cadres aux unités ---------------------------------------------------
 
-# ajouter unité aux cadre
-# add_unite_to/cadre_id/
+# show unites d'un cadre donnée
+def show_unites(request, id):
+	c = Cadre.objects.get(id=id)
+	unites = Cadre_has_Unite.objects.filter(cadre = c)
+	return render(request,"affectation/show_unites.html", {'unites':unites, 'c':c})
+
+#delete unite 
+def delete_unite_of_cadre(request, id):
+	form = Cadre_has_Unite.objects.get(id=id)
+	form.delete()
+	return HttpResponseRedirect("/aff/show_cadres")
+
+# add_unite aux cadre donnée
 def add_unite_to_cadre(request, cadre_id):
-	cadre = User.objects.get(id=cadre_id)
+	cadre = Cadre.objects.get(id=cadre_id)
 	form = AffectCadreForm(request.POST or None)
 	if request.method == "POST":
 		if  form.is_valid():
@@ -421,21 +440,15 @@ def add_unite_to_cadre(request, cadre_id):
 			unite_to_cadre.cadre = cadre
 			unite_to_cadre.save()
 			messages.success(request, "unite added successfuly." )
-			return redirect("/cadres_list")
+			return redirect("/aff/show_unites/"+ str(cadre_id)+"")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	return render (request=request, template_name="affectation/add_unite_to_cadre.html", context={"form":form})
 
-
-#def show_unites(request,cadre_id):
-	#unites_of_cadre = Cadre_has_Unite.objects.get(cadre.id = cadre_id)
-	#return render(request, "affectation/show_unites_of_cadre.html" , {'unites_of_cadre' : unites_of_cadre)
-
+#show caders list
 def show_cadres(request):
 	cadre = Cadre.objects.all()
 	# cadres.unites  we can use related name in cadre_has_unite table
-	return render(request, "affectation/show_cadres.html" , {'cadre' : cadre)
-
- 	
+	return render(request, "affectation/show_cadres.html" , {'cadre' : cadre})
 	
 
 

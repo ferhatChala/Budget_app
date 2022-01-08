@@ -19,7 +19,9 @@
 							<form method="post">
 								{% csrf_token %}
 
-								{{ pays_form.code|as_crispy_field }}
+								{{ pays_form.code_num|as_crispy_field }}
+								{{ pays_form.code_alpha_two|as_crispy_field }}
+								{{ pays_form.code_alpha_three|as_crispy_field }}
                                 {{ pays_form.lib|as_crispy_field }}
 
 								

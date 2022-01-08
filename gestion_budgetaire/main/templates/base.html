@@ -107,14 +107,12 @@
                         <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
                     </li>
                     
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Affectation des cadres</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-book"></i><a href="forms-basic.html">Affichier</a></li>
-                            <li><i class="menu-icon fa fa-plus-circle"></i><a href="forms-basic.html">Ajouter </a></li>
-                            <li><i class="menu-icon fa fa-pencil"></i><a href="forms-advanced.html">Modifier</a></li>
-                        </ul>
+                    {% block aff_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'show_cadres' %}"><i class="menu-icon fa fa-tasks"></i>Affectation des cadres</a>
                     </li>
+
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-suitcase"></i>Comptes des unités</a>
                         <ul class="sub-menu children dropdown-menu">

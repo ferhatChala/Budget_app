@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block aff_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}         
+
+<div class="row content">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">				
+						<br>
+						<h3>Add new Chapitre</h3>
+						<hr>
+						<!-- form pour ajouter cadres -->
+						<div class="container py-5">
+							<form method="post">
+								{% csrf_token %}
+
+								{{ form.unite|as_crispy_field }}
+
+							
+
+								<button type="submit" class="btn btn-primary">Ajouter</button>
+								<a href="{% url 'show_cadres' %}" class="btn btn-secondary">Annuler</a>
+							  </form>
+						</div>
+            </div>
+        </div>
+    </div><!-- /# column -->
+</div>
+
+{% endblock %}

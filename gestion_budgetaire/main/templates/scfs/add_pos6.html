@@ -26,14 +26,11 @@
                         <form method="post">
                             {% csrf_token %}
                             <div class="form-row">
-                                <div class="form-group col-md-4 mb-0">
+                                <div class="form-group col-md-6 mb-0">
                                     {{ pos6_form.ref|as_crispy_field }}
                                 </div>
-                                <div class="form-group col-md-4 mb-0">
+                                <div class="form-group col-md-6 mb-0">
                                     {{ pos6_form.numero|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-md-4 mb-0">
-                                    {{ pos6_form.chapitre|as_crispy_field }}
                                 </div>
                             </div>
                             <div class="form-row">

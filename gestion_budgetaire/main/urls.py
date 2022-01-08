@@ -68,6 +68,15 @@ urlpatterns = [
     path('ref/update_pays/<pk>', views.PaysUpdateView.as_view()),
     path('ref/delete_pays/<int:id>', views.delete_pays, name="delete_pays"),
 
+    # affectation des unites aux cadres 
+    path('aff/show_cadres', views.show_cadres, name="show_cadres"),
+    path('aff/show_unites/<int:id>', views.show_unites, name="show_unites"),
+    path('aff/show_unites/add_unite_to_cadre/<int:cadre_id>', views.add_unite_to_cadre, name="add_unite_to_cadre"),
+    path('aff/delete_unite_of_cadre/<int:id>', views.delete_unite_of_cadre, name="delete_unite_of_cadre"),
+
+
+
+
    
 
 

@@ -42,6 +42,7 @@
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
+										<th>id</th>
 										<th>Code</th>
 										<th>Libelle</th>
 										<th>Action</th>
@@ -50,7 +51,8 @@
 								<tbody>
 									{% for p in pays %}
 									<tr>
-										<td>{{p.code}}</td>
+										<td>{{p.id}}</td>
+										<td>{{p.code_alpha_two}}</td>
 										<td>{{p.lib}}</td>
 										<td>
 											<a href="update_pays/{{p.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>

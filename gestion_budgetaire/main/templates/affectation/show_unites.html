@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block aff_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="row content">
+				<div class="col-md-12">
+					<a href="{% url 'show_cadres' %}" class="btn btn-outline-dark"><span><i class="menu-icon fa fa-long-arrow-left"></i></span> Reteur</a> <br><br>
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">La list des unités affectés au {{c.user.Nom}}</strong>
+                            <a href="add_unite_to_cadre/{{c.id}}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+						</div>
+						<div class="card-body">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>Code Num</th>
+										<th>Code Alpha</th>
+										<th>Département</th>
+										<th>Monnaie</th>
+                                        <th>Pays</th>
+                                        <th>Reseau</th>
+                                        <th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for u in unites %}
+									<tr>
+										<td>{{u.unite.code_num}}</td>
+										<td>{{u.unite.code_alpha}}</td>
+										<td>{{u.unite.departement.code}}</td>
+										<td>{{u.unite.monnaie.code_alpha}}</td>
+                                        <td>{{u.unite.pays.code_alpha_two}}</td>
+                                        <td>{{u.unite.region}}</td>
+										<td>
+											<a href="delete_unite_of_cadre/{{u.id}}" class="btn btn-sm btn-danger"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</a>
+										</td>
+									</tr>
+						
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}

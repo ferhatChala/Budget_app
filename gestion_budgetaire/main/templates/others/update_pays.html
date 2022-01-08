@@ -19,7 +19,9 @@
 							<form method="post">
 								{% csrf_token %}
 
-								{{ form.code|as_crispy_field }}
+								{{ form.code_num|as_crispy_field }}
+								{{ form.code_alpha_two|as_crispy_field }}
+								{{ form.code_alpha_three|as_crispy_field }}
                                 {{ form.lib|as_crispy_field }}
 
 								

@@ -47,10 +47,11 @@ class MyUserManager(BaseUserManager):
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = (
-      (1, 'content_admin'),
-      (2, 'sous_dir'),
-      (3, 'chef_dep'),
-      (4, 'cadre'),
+      (1, 'Full Admin'),
+      (2, 'Content Admin'),
+      (3, 'Sous Directeur'),
+      (4, 'Chef Département'),
+      (5, 'Cadre'),
       )
 
     class Meta:
@@ -58,11 +59,11 @@ class User(AbstractUser):
 
     objects = MyUserManager()
     username = None
-    Nom = models.CharField(max_length=50, default="user")
-    prenom = models.CharField(max_length=50, default="prenom")
+    Nom = models.CharField(max_length=50, default="nom")
+    prenom = models.CharField(max_length=50, default="prénom")
     email = models.EmailField('email address', unique=True)
-    telephone = models.CharField(max_length=255, default="tel")
-    adresse = models.CharField(max_length=255, default="adresse")
+    telephone = models.CharField(max_length=255, default="0657----")
+    adresse = models.CharField(max_length=255, default="ALG")
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES)
 
     #is_admin = models.BooleanField('admin status', default=False)
@@ -80,18 +81,18 @@ class User(AbstractUser):
 # profiles (multi roles)
 
 class Cadre(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
     departement = models.ForeignKey("Departement", on_delete=models.CASCADE)    
 
 class Chef_Dep(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
     departement = models.ForeignKey("Departement", on_delete=models.CASCADE)    
 
 class Sous_Dir(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
     
 class Content_Admin(models.Model):
-    user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
 
 
 
@@ -129,7 +130,6 @@ class Unite(models.Model):
     tresorie = models.BooleanField('Tresorie indicateur', default=False)
     traffic = models.BooleanField('Traffic indicateur', default=False)
     recette = models.BooleanField('Recette indicateur', default=False)
-    commerciale = models.BooleanField('Recette indicateur', default=False)
     exploitation = models.BooleanField('Exploiatation indicateur', default=False)
     regle_possible = models.BooleanField('Possibilité de reglé pour autre unité indicateur', default=False)
 
@@ -137,7 +137,9 @@ class Unite(models.Model):
         return self.code_alpha
 
 class Pays(models.Model):
-    code = models.CharField(max_length=50)
+    code_num = models.IntegerField()
+    code_alpha_two = models.CharField(max_length=2)
+    code_alpha_three = models.CharField(max_length=3)
     lib = models.CharField(max_length=50)
 
     def __str__(self):
@@ -192,7 +194,6 @@ class SCF_Pos_6(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=100)
     ref = models.ForeignKey("SCF_Pos_3", on_delete=models.CASCADE)
-    chapitre = models.ForeignKey("Chapitre", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
@@ -201,7 +202,6 @@ class SCF_Pos_7(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=100)
     ref = models.ForeignKey("SCF_Pos_6", on_delete=models.CASCADE)
-    chapitre = models.ForeignKey("Chapitre", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block aff_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+     
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">La list des cadres </strong>
+                            <a href="{% url 'ajouter_cadre' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+						</div>
+						<div class="card-body">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Nom</th>
+										<th>Prénom</th>
+										<th>Email</th>
+										<th>Département</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for c in cadre %}
+									<tr>
+										<td>{{c.id}}</td>
+										<td>{{c.user.Nom}}</td>
+										<td>{{c.user.prenom}}</td>
+										<td>{{c.user.email}}</td>
+										<td>{{c.departement}}</td>
+										<td>
+											<a href="show_unites/{{c.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Show unites</a>										</td>
+									</tr>
+						
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}
