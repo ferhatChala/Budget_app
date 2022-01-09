@@ -44,6 +44,9 @@ urlpatterns = [
     path('delete_pos3/<int:id>', views.delete_pos3, name="delete_pos3"),
     path('delete_pos6/<int:id>', views.delete_pos6, name="delete_pos6"),
     path('delete_pos7/<int:id>', views.delete_pos7, name="delete_pos7"),
+    #version 2
+    path('add_compte', views.add_compte, name="add_compte"),
+    path('scf_comptes', views.scf_comptes, name="scf_comptes"),
 
 
     #others -------------------------------------------------------

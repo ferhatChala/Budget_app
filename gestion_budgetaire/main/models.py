@@ -206,6 +206,19 @@ class SCF_Pos_7(models.Model):
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
 
+
+# vesrion comptes one entity
+
+class Compte_SCF(models.Model):
+    numero = models.PositiveIntegerField(primary_key = True)
+    rubrique = models.CharField(max_length=50)
+    pos = models.PositiveIntegerField()
+    ref = models.ForeignKey("Compte_SCF", null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.numero) +" - " + self.rubrique
+    
+
 # entities a rempli par users
 
 class Unite_has_Compte(models.Model):
@@ -250,6 +263,7 @@ class Compte_has_Montant(models.Model):
     vld_cadre = models.BooleanField()
     vld_chef_dep = models.BooleanField()
     vld_sous_dir = models.BooleanField()
+    #date
 
     #ajouter commentaires avec degre d'importance (faible, moyenne, critique)
     #ajouter la valeur de cloture pour l année courant N

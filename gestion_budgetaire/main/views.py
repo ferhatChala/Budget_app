@@ -2,13 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import  render, redirect
 from .forms import (NewUserForm, CadreForm, ChefDepForm, SousDirForm, ContentAdminForm,
-					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,
+					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
 					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm, 
 					AffectCadreForm
 					)
 from .models import (User, Cadre, Chef_Dep, Sous_Dir, Content_Admin,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
-                    SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,
+                    SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
                     )
 from django.contrib.auth import login
@@ -264,11 +264,6 @@ def comptes_list(request):
 	return render(request, "scfs/comptes_list.html" , {'pos1' : pos1, 'pos2' : pos2,
 													 'pos3' : pos3, 'pos6' : pos6, 'pos7' : pos7})
 
-# modifier Comptes pos 1 
-# modifier Comptes pos 2 
-# modifier Comptes pos 3 
-# modifier Comptes pos 6 
-# modifier Comptes pos 7
 
 # supprimer comptes
 def delete_pos1(request, id):
@@ -296,7 +291,23 @@ def delete_pos7(request, id):
     form.delete()
     return HttpResponseRedirect("/scf/comptes_list")
 
+# comptes scf version 2
 
+def add_compte(request):
+	compte_form = CompteScfForm(request.POST or None)
+	if request.method == "POST":
+		if compte_form.is_valid():
+			compte = compte_form.save(commit=False)
+			compte.pos = len(str(compte.numero))
+			compte.save()
+			messages.success(request, "compte SCF added successfuly." )
+			return redirect("/scf_comptes")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render(request=request, template_name="scfs/add_compte.html", context={"compte_form":compte_form})
+
+def scf_comptes(request):
+	comptes = Compte_SCF.objects.all()
+	return render(request=request, template_name="scfs/scf_comptes.html", context={'comptes':comptes})
 
 # Monnaie ---------------------------------------------------
 

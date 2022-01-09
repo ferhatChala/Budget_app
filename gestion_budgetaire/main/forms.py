@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import (User, Cadre, Chef_Dep, Sous_Dir, Content_Admin,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
-                    SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,
+                    SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
                     )
 from django.contrib.auth import get_user_model
@@ -83,6 +83,12 @@ class AddPos7Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_7
 		fields = '__all__'
+
+class CompteScfForm(forms.ModelForm):
+	class Meta:
+		model = Compte_SCF
+		fields = ("numero" ,"rubrique" ,"ref")
+		# pos doit etre rempli auto pos = numero.lenght
 
 
 # Create Monnaie form

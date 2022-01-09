@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block scf_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}         
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">Les Comptes SCF</strong>
+                            <a href="{% url 'add_compte' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+						</div>
+						<div class="card-body">
+                            {% for c in comptes %}
+
+                            <h4>{{c.numero}} - {{c.rubrique}}</h4>
+
+                            {% endfor %}
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}
