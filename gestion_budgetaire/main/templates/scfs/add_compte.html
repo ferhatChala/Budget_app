@@ -18,10 +18,15 @@
 						<div class="container py-5">
 							<form method="post">
 								{% csrf_token %}
-					
+								<div class="form-row">
+									<div class="form-group col-md-2 mb-0">
+										{{ compte_form.numero|as_crispy_field }}
+									</div>
+									<div class="form-group col-md-10 mb-0">
+										{{ compte_form.rubrique|as_crispy_field }}
+									</div>
+								</div>
 								{{ compte_form.ref|as_crispy_field }}
-                                {{ compte_form.numero|as_crispy_field }}
-                                {{ compte_form.rubrique|as_crispy_field }}
 		
 								<button type="submit" class="btn btn-primary">Ajouter</button>
 								<a href="{% url 'scf_comptes' %}" class="btn btn-secondary">Annuler</a>

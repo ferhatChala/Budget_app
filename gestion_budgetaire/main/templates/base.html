@@ -101,10 +101,16 @@
                         <a href="{% url 'unite_list' %}"><i class="menu-icon fa fa-globe"></i>Unités </a>
                     </li>
 
+                    {% block scf1_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes V1</a>
+                    </li>
+
                     {% block scf_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
+                        <a href="{% url 'scf_comptes' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
                     </li>
                     
                     {% block aff_active %}

@@ -16,17 +16,96 @@
                             <a href="{% url 'add_compte' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
 						</div>
 						<div class="card-body">
-                            {% for c in comptes %}
 
-                            <h4>{{c.numero}} - {{c.rubrique}}</h4>
+							<div id="accordion">
+								
+								{% for c1 in comptes  %}
+								<div class="container">
+									<div class="container" id="h{{c1.numero}}">
+										<h6 class="mb-0">
+											<a href="" class="nav-link" data-toggle="collapse" data-target="#c{{c1.numero}}" aria-expanded="true" aria-controls="c{{c1.numero}}">
+												{{c1.numero}} - {{c1.rubrique}}
+											</a>
+										</h6>
+									</div>
+							  
+									<div id="c{{c1.numero}}" class="container collapse" aria-labelledby="h{{c1.numero}}" data-parent="#accordion">
+										<div class="card-body">
+											<div id="accordion2">
+												{% for c2 in c1.comptes.all  %}
+												<div class="container">
+													<div class="container" id="h{{c2.numero}}">
+														<h6 class="mb-0">
+															<a href="" class="nav-link" data-toggle="collapse" data-target="#c{{c2.numero}}" aria-expanded="true" aria-controls="c{{c2.numero}}">
+																{{c2.numero}} - {{c2.rubrique}}
+															</a>
+														</h6>
+													</div>
+										  
+													<div id="c{{c2.numero}}" class="container collapse" aria-labelledby="h{{c2.numero}}" data-parent="#accordion2">
+														<div class="card-body">
+															<div id="accordion3">
+																{% for c3 in c2.comptes.all  %}
+																<div class="container">
+																	<div class="container" id="h{{c3.numero}}">
+																		<h6 class="mb-0">
+																			<a href="" class="nav-link" data-toggle="collapse" data-target="#c{{c3.numero}}" aria-expanded="true" aria-controls="c{{c3.numero}}">
+																				{{c3.numero}} - {{c3.rubrique}}
+																			</a>
+																		</h6>
+																	</div>
+													  
+																	<div id="c{{c3.numero}}" class="container collapse" aria-labelledby="h{{c3.numero}}" data-parent="#accordion3">
+																		<div class="card-body">
+																			<div id="accordion6">
+																				{% for c6 in c3.comptes.all  %}
+																				<div class="container">
+																					<div class="container" id="h{{c6.numero}}">
+																						<h6 class="mb-0">
+																							<a href="" class="nav-link" data-toggle="collapse" data-target="#c{{c6.numero}}" aria-expanded="true" aria-controls="c{{c6.numero}}">
+																								{{c6.numero}} - {{c6.rubrique}}
+																							</a>
+																						</h6>
+																					</div>
+																  
+																					<div id="c{{c6.numero}}" class="container collapse" aria-labelledby="h{{c6.numero}}" data-parent="#accordion6">
+																						<div class="card-body">
+																							
+																							{% for c7 in c6.comptes.all %}
+																								<a href="" class="nav-link" >
+																									{{c7.numero}} - {{c7.rubrique}}
+																								</a>
+																							{% endfor %}
+																								
+																						</div>
+																					</div>
+																				</div>
+																				{% endfor %}
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																{% endfor %}
+															</div>
+														
+														</div>
+													</div>
+												</div>
+												{% endfor %}
+												</div>
+											</div>
 
-                            {% endfor %}
+										</div>
+									</div>
+									{% endfor %}
+
+								</div>
+
+							</div>
 						</div>
 					</div>
-				</div>
 
 
 
 </div>
-
 {% endblock %}

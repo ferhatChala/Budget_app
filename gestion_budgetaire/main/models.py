@@ -213,7 +213,7 @@ class Compte_SCF(models.Model):
     numero = models.PositiveIntegerField(primary_key = True)
     rubrique = models.CharField(max_length=50)
     pos = models.PositiveIntegerField()
-    ref = models.ForeignKey("Compte_SCF", null=True, blank=True, on_delete=models.CASCADE)
+    ref = models.ForeignKey("Compte_SCF", null=True, blank=True, related_name="comptes" , on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique

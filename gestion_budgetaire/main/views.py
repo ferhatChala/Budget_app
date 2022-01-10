@@ -306,7 +306,7 @@ def add_compte(request):
 	return render(request=request, template_name="scfs/add_compte.html", context={"compte_form":compte_form})
 
 def scf_comptes(request):
-	comptes = Compte_SCF.objects.all()
+	comptes = Compte_SCF.objects.filter(pos = 1)
 	return render(request=request, template_name="scfs/scf_comptes.html", context={'comptes':comptes})
 
 # Monnaie ---------------------------------------------------
