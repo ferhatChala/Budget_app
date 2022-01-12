@@ -35,7 +35,6 @@ urlpatterns = [
     path('scf/add_pos3', views.add_pos3, name="add_pos3"),
     path('scf/add_pos6', views.add_pos6, name="add_pos6"),
     path('scf/add_pos7', views.add_pos7, name="add_pos7"),
-    path('scf/add_comptes', views.add_comptes, name="add_comptes"),
     # affichier
     path('scf/comptes_list', views.comptes_list, name="comptes_list"),
     # supprimer

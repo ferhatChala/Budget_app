@@ -209,9 +209,6 @@ def add_pos1(request):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos1.html", context={"pos1_form":pos1_form})
 
-def add_comptes(request):
-	return render(request=request, template_name="scfs/add_comptes.html")
-
 def add_pos2(request):
 	pos2_form = AddPos2Form(request.POST or None)
 	if request.method == "POST":
@@ -232,12 +229,21 @@ def add_pos3(request):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos3.html", context={"pos3_form":pos3_form})
 
+#Ajouter comptes scf
 def add_pos6(request):
 	pos6_form = AddPos6Form(request.POST or None)
 	if request.method == "POST":
 		if  pos6_form.is_valid():
-			pos6 = pos6_form.save()
-			messages.success(request, "compte SCF 6 position added successfuly." )
+			pos6 = pos6_form.save(commit=False)
+			get_ref = int(str(pos6.numero)[0:3])
+			ref = SCF_Pos_3.objects.filter(numero=get_ref)
+			if len(ref)==1:
+				pos6.ref = ref[0]
+				pos6.save()
+				messages.success(request, "compte SCF 6 position added successfuly." )
+			else:
+				messages.error(request, "Unsuccessful this compte dosen't existe !")
+				return redirect("/scf/add_pos6")
 			return redirect("/scf/comptes_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos6.html", context={"pos6_form":pos6_form})
