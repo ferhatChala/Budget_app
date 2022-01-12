@@ -80,6 +80,8 @@
         <nav class="navbar navbar-expand-sm navbar-default">
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                    <!-- Admin functions  (CRUD) -->
+                    {% if user.is_authenticated and user.is_staff %}      
                     <li class="menu-title">Administration</li><!-- /.menu-title -->
                     <li>
                         <a href="{% url 'home' %}"><i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
@@ -95,6 +97,13 @@
                             <li><i class="fa fa-user"></i><a href="{% url 'cadres_list' %}">Cadre</a></li>
                         </ul>
                     </li>
+
+                    {% block int_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'scf_comptes' %}"><i class="menu-icon fa fa-clock-o"></i>Gestion des intérim</a>
+                    </li>
+
                     {% block unite_active %}
                     <li>
                     {% endblock %}
@@ -104,13 +113,7 @@
                     {% block scf1_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes V1</a>
-                    </li>
-
-                    {% block scf_active %}
-                    <li>
-                    {% endblock %}
-                        <a href="{% url 'scf_comptes' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
+                        <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
                     </li>
                     
                     {% block aff_active %}
@@ -119,14 +122,12 @@
                         <a href="{% url 'show_cadres' %}"><i class="menu-icon fa fa-tasks"></i>Affectation des cadres</a>
                     </li>
 
-                    <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-suitcase"></i>Comptes des unités</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-book"></i><a href="forms-basic.html">Afficher </a></li>
-                            <li><i class="menu-icon fa fa-plus-circle"></i><a href="forms-basic.html">Ajouter </a></li>
-                            <li><i class="menu-icon fa fa-pencil"></i><a href="forms-advanced.html">Modifier</a></li>
-                        </ul>
+                    {% block cpt_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'all_unites' %}"><i class="menu-icon fa fa-suitcase"></i>Comptes des unités</a>
                     </li>
+
                     {% block autre_active %}
                     <li class="menu-item-has-children dropdown">
                     {% endblock %}
@@ -139,6 +140,22 @@
                             <li><i class="menu-icon fa fa-th"></i><a href="{% url 'pays_list' %}">Pays</a></li>
                         </ul>
                     </li>
+                    {% endif %}
+                    <!-- /.Admin functions  -->
+
+                    <!-- Cadre budget  -->
+                    <li class="menu-title">Porposition Budget</li><!-- /.menu-title -->
+                    <li>
+                        <a href="#"><i class="menu-icon fa fa-globe"></i>Unités </a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="menu-icon fa fa-globe"></i>Proposition Budget </a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="menu-icon fa fa-globe"></i>Proposition Budget </a>
+                    </li>
+
+
                 </ul>
             </div><!-- /.navbar-collapse -->
         </nav>

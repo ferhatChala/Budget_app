@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block cpt_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}       
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">La list de toutes les unités </strong>
+                            <a href="{% url 'add_unite' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+						</div>
+						<div class="card-body">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>Code Num</th>
+										<th>Code Alpha</th>
+										<th>Département</th>
+										<th>Monnaie</th>
+                                        <th>Pays</th>
+                                        <th>Reseau</th>
+                                        <th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for u in unites %}
+									<tr>
+										<td>{{u.code_num}}</td>
+										<td>{{u.code_alpha}}</td>
+										<td>{{u.departement.code}}</td>
+										<td>{{u.monnaie.code_alpha}}</td>
+                                        <td>{{u.pays.code_alpha_two}}</td>
+                                        <td>{{u.region}}</td>
+										<td>
+											<a href="show_comptes/{{u.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Show Comptes</a>
+										</td>
+									</tr>
+
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}

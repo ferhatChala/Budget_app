@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import (User, Cadre, Chef_Dep, Sous_Dir, Content_Admin,
+from .models import (User,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
@@ -10,13 +10,12 @@ User = get_user_model()
 
 
 # Create user and profiles forms
-
 class NewUserForm(UserCreationForm):
 	email = forms.EmailField(required=True)
 
 	class Meta:
 		model = User
-		fields = ("email", "password1", "password2", "Nom", "prenom", 'telephone', "adresse")
+		fields = ("email", "password1", "password2", "nom", "prenom", 'telephone', "departement")
 
 	def save(self, commit=True):
 		user = super(NewUserForm, self).save(commit=False)
@@ -24,27 +23,6 @@ class NewUserForm(UserCreationForm):
 		if commit:
 			user.save()
 		return user
-
-class CadreForm(forms.ModelForm):
-	class Meta:
-		model = Cadre
-		fields = ("departement",)
-
-class ChefDepForm(forms.ModelForm):
-	class Meta:
-		model = Chef_Dep
-		fields = ("departement",)
-
-class SousDirForm(forms.ModelForm):
-	class Meta:
-		model = Sous_Dir
-		fields = ()
-
-class ContentAdminForm(forms.ModelForm):
-	class Meta:
-		model = Content_Admin
-		fields = ()
-
 
 # Create Unite form
 class AddUniteForm(forms.ModelForm):
@@ -77,7 +55,7 @@ class AddPos3Form(forms.ModelForm):
 class AddPos6Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_6
-		fields = '__all__'
+		fields = fields = ("numero","rubrique")
 
 class AddPos7Form(forms.ModelForm):
 	class Meta:
@@ -120,6 +98,12 @@ class AffectCadreForm(forms.ModelForm):
 	class Meta:
 		model = Cadre_has_Unite
 		fields = ("unite",)
+
+class AddCompteUniteForm(forms.ModelForm):
+	class Meta:
+		model = Unite_has_Compte
+		fields = ("compte","chapire","regle_par","reseau_compte",)
+
 
 # Affectation des comptes aux unités
 

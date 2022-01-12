@@ -38,7 +38,7 @@
 								<tbody>
 									{% for c in content_admin %}
 									<tr>
-										<td> {{c.user.Nom}}</td>
+										<td> {{c.user.nom}}</td>
 										<td> {{c.user.prenom}} </td>
 										<td> {{c.user.email}} </td>
 										<td>
@@ -61,7 +61,7 @@
 								  </button>
 								</div>
 								<div class="modal-body">
-								  Are you sure you want to Delete this " {{c.user.Nom}} {{c.user.prenom}} " ?
+								  Are you sure you want to Delete this " {{c.user.nom}} {{c.user.prenom}} " ?
 								</div>
 								<div class="modal-footer">
 								  <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>

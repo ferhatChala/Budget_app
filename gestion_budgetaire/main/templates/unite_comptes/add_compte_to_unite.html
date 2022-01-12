@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block cpt_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}         
+
+<div class="row content">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">				
+						<br>
+						<h3>Ajouter nouvelle Compte  </h3>
+						<hr>
+						<!-- form pour ajouter cadres -->
+						<div class="container py-5">
+							<form method="post">
+								{% csrf_token %}
+
+                                <div class="form-row">
+									<div class="form-group col-md-3 mb-0">
+                                        {{ form.compte|as_crispy_field }}
+									</div>
+									<div class="form-group col-md-3 mb-0">
+                                        {{ form.chapire|as_crispy_field }}
+									</div>
+									<div class="form-group col-md-3 mb-0">
+                                        {{ form.resau|as_crispy_field }}
+									</div>
+                                    <div class="form-group col-md-3 mb-0">
+                                        {{ form.regle_par|as_crispy_field }}
+									</div>
+								</div>
+				
+
+								<button type="submit" class="btn btn-primary">Ajouter</button>
+								<a href="{% url 'all_unites' %}" class="btn btn-secondary">Annuler</a>
+							  </form>
+						</div>
+            </div>
+        </div>
+    </div><!-- /# column -->
+</div>
+
+{% endblock %}

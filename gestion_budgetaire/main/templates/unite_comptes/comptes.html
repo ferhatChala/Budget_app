@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block cpt_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="row content">
+				<div class="col-md-12">
+					<a href="{% url 'all_unites' %}" class="btn btn-outline-dark"><span><i class="menu-icon fa fa-long-arrow-left"></i></span> Reteur</a> <br><br>
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">La list des comptes affectés au <b>{{u.code_alpha}}</b></strong>
+                            <a href="add_compte_to_unite/{{u.id}}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+						</div>
+						<div class="card-body">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>Numero</th>
+										<th>Rubrique</th>
+										<th>Resau</th>
+										<th>Chapitre</th>
+                                        <th>regle_par</th>
+                                        <th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for c in comptes %}
+									<tr>
+										<td>{{c.compte.numero}}</td>
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.resau}}</td>
+										<td>{{c.chapire}}</td>
+                                        <td>{{c.regle_par.code_alpha}}</td>
+										<td>
+											<a href="delete_compte_of_unite/{{c.id}}" class="btn btn-sm btn-danger"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</a>
+										</td>
+									</tr>
+						
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}

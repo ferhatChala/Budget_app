@@ -4,10 +4,11 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import (User, Cadre, Chef_Dep, Sous_Dir, Content_Admin,
+from .models import (User,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
-                    Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
+                    Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite,
+                    Historique, Notification, Commentaire, Reception, Interim
                     )
 
 
@@ -21,7 +22,7 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-        'Nom', 'prenom', 'email', 'telephone', 'adresse', 'user_type')
+        'nom', 'prenom', 'email', 'telephone', 'departement', 'user_type')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -49,7 +50,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('Nom', 'prenom', 'email', 'password', 'telephone', 'adresse', 'user_type')
+        fields = ('nom', 'prenom', 'email', 'password', 'telephone', 'departement', 'user_type')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -67,12 +68,12 @@ class UserAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = (
-        'Nom', 'prenom', 'email', 'telephone', 'adresse', 'user_type')
+        'nom', 'prenom', 'email', 'telephone', 'departement', 'user_type')
     list_filter = ('user_type',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info',
-         {'fields': ('Nom', 'prenom', 'telephone', 'adresse',)}),
+         {'fields': ('nom', 'prenom', 'telephone', 'departement')}),
         (
         'Permissions', {'fields': ('user_type',)}),
     )
@@ -82,7 +83,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': (
-                'Nom', 'prenom', 'email', 'telephone', 'adresse', 'user_type',
+                'nom', 'prenom', 'email', 'telephone', 'user_type', 'departement',
                 'password1',
                 'password2')}
          ),
@@ -94,12 +95,11 @@ class UserAdmin(BaseUserAdmin):
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 
+class CompteAdmin(admin.ModelAdmin):
+    list_display = ('numero', 'rubrique','pos','ref')
+    list_filter = ('pos',)
+admin.site.register(Compte_SCF,CompteAdmin)
 #---------------------------------------------------------------------------
-
-admin.site.register(Cadre)
-admin.site.register(Chef_Dep)
-admin.site.register(Sous_Dir)
-admin.site.register(Content_Admin)
 
 admin.site.register(Departement)
 admin.site.register(Unite)
@@ -113,8 +113,14 @@ admin.site.register(SCF_Pos_2)
 admin.site.register(SCF_Pos_3)
 admin.site.register(SCF_Pos_6)
 admin.site.register(SCF_Pos_7)
-admin.site.register(Compte_SCF)
 
 admin.site.register(Unite_has_Compte)
 admin.site.register(Compte_has_Montant)
 admin.site.register(Cadre_has_Unite)
+
+admin.site.register(Historique)
+admin.site.register(Notification)
+admin.site.register(Commentaire)
+admin.site.register(Reception)
+admin.site.register(Interim)
+

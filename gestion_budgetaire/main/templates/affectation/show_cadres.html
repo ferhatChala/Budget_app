@@ -20,7 +20,6 @@
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
-										<th>ID</th>
 										<th>Nom</th>
 										<th>Prénom</th>
 										<th>Email</th>
@@ -31,13 +30,13 @@
 								<tbody>
 									{% for c in cadre %}
 									<tr>
-										<td>{{c.id}}</td>
-										<td>{{c.user.Nom}}</td>
-										<td>{{c.user.prenom}}</td>
-										<td>{{c.user.email}}</td>
+										<td>{{c.nom}}</td>
+										<td>{{c.prenom}}</td>
+										<td>{{c.email}}</td>
 										<td>{{c.departement}}</td>
 										<td>
-											<a href="show_unites/{{c.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Show unites</a>										</td>
+											<a href="show_unites/{{c.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Show unites</a>
+										</td>
 									</tr>
 						
 									{% endfor %}

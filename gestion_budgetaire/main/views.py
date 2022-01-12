@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import  render, redirect
-from .forms import (NewUserForm, CadreForm, ChefDepForm, SousDirForm, ContentAdminForm,
+from .forms import (NewUserForm,
 					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
 					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm, 
-					AffectCadreForm
+					AffectCadreForm, AddCompteUniteForm
 					)
-from .models import (User, Cadre, Chef_Dep, Sous_Dir, Content_Admin,
+from .models import (User,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
@@ -30,101 +30,101 @@ def home(request):
 @login_required(login_url='login')
 def ajouter_cadre(request):
 	user_form = NewUserForm(request.POST or None)
-	cadre_form = CadreForm(request.POST or None)
+	#cadre_form = CadreForm(request.POST or None)
 	if request.method == "POST":
-		if  user_form.is_valid() and cadre_form.is_valid():
+		if  user_form.is_valid():
 			user = user_form.save(commit=False)
 			user.user_type = 5
 			user.save()
-			cadre = cadre_form.save(commit=False)
-			cadre.user = user
-			cadre.save()
+			#cadre = cadre_form.save(commit=False)
+			#cadre.user = user
+			#cadre.save()
 			messages.success(request, "Cadre added successfuly." )
 			return redirect("/cadres_list")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	#form = NewUserForm()
-	return render (request=request, template_name="registration/add_cadre.html", context={"user_form":user_form , "cadre_form":cadre_form})
+	return render (request=request, template_name="registration/add_cadre.html", context={"user_form":user_form})
 
 # ajouter chef departement
 @login_required(login_url='login')
 def ajouter_chef_dep(request):
 	user_form = NewUserForm(request.POST or None)
-	chef_dep_form = ChefDepForm(request.POST or None)
+	#chef_dep_form = ChefDepForm(request.POST or None)
 	if request.method == "POST":
-		if  user_form.is_valid() and chef_dep_form.is_valid():
+		if  user_form.is_valid():
 			user = user_form.save(commit=False)
 			user.user_type = 4
 			user.save()
-			chef_dep = chef_dep_form.save(commit=False)
-			chef_dep.user = user
-			chef_dep.save()
+			#chef_dep = chef_dep_form.save(commit=False)
+			#chef_dep.user = user
+			#chef_dep.save()
 			messages.success(request, "chef departement added successfuly." )
 			return redirect("/chef_dep_list")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	#form = NewUserForm()
-	return render (request=request, template_name="registration/add_chef_dep.html", context={"user_form":user_form , "chef_dep_form":chef_dep_form})
+	return render (request=request, template_name="registration/add_chef_dep.html", context={"user_form":user_form})
 
 # ajouter sous directeur
 @login_required(login_url='login')
 def ajouter_sous_dir(request):
 	user_form = NewUserForm(request.POST or None)
-	sous_dir_form = SousDirForm(request.POST or None)
+	#sous_dir_form = SousDirForm(request.POST or None)
 	if request.method == "POST":
-		if  user_form.is_valid() and sous_dir_form.is_valid():
+		if  user_form.is_valid():
 			user = user_form.save(commit=False)
 			user.user_type = 3
 			user.save()
-			sous_dir = sous_dir_form.save(commit=False)
-			sous_dir.user = user
-			sous_dir.save()
+			#sous_dir = sous_dir_form.save(commit=False)
+			#sous_dir.user = user
+			#sous_dir.save()
 			messages.success(request, "sous directeur added successfuly." )
 			return redirect("/sous_dir_list")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	#form = NewUserForm()
-	return render (request=request, template_name="registration/add_sous_dir.html", context={"user_form":user_form , "sous_dir_form":sous_dir_form})
+	return render (request=request, template_name="registration/add_sous_dir.html", context={"user_form":user_form})
 
 # ajouter content admin
 @login_required(login_url='login')
 def ajouter_content_admin(request):
 	user_form = NewUserForm(request.POST or None)
-	content_admin_form = ContentAdminForm(request.POST or None)
+	#content_admin_form = ContentAdminForm(request.POST or None)
 	if request.method == "POST":
-		if  user_form.is_valid() and content_admin_form.is_valid():
+		if  user_form.is_valid():
 			user = user_form.save(commit=False)
 			user.user_type = 2
 			user.save()
-			content_admin = content_admin_form.save(commit=False)
-			content_admin.user = user
-			content_admin.save()
+			#content_admin = content_admin_form.save(commit=False)
+			#content_admin.user = user
+			#content_admin.save()
 			messages.success(request, "Content admin added successfuly." )
 			return redirect("/content_admin_list")
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	#form = NewUserForm()
-	return render (request=request, template_name="registration/add_content_admin.html", context={"user_form":user_form , "content_admin_form":content_admin_form})
+	return render (request=request, template_name="registration/add_content_admin.html", context={"user_form":user_form})
 
 # afficher toutes les cadres
 @login_required(login_url='login')
 def cadres_list(request):
-	cadre = Cadre.objects.all()
-	cadres_count = Cadre.objects.all().count()
+	cadre = User.objects.filter(user_type=5)
+	cadres_count = User.objects.filter(user_type=5).count()
 	return render(request, "registration/cadres_list.html" , {'cadre' : cadre, 'cadres_count':cadres_count})
 
 # afficher chefs departement
 def chef_dep_list(request):
-	chefs = Chef_Dep.objects.all()
-	chefs_count = Chef_Dep.objects.all().count()
+	chefs = User.objects.filter(user_type=4)
+	chefs_count = User.objects.filter(user_type=4).count()
 	return render(request, "registration/chef_dep_list.html" , {'chefs' : chefs, 'chefs_count':chefs_count})
 
 # afficher sous directeurs 
 def sous_dir_list(request):
-	sous_dir = Sous_Dir.objects.all()
-	sous_dir_count = Sous_Dir.objects.all().count()
+	sous_dir = User.objects.filter(user_type=3)
+	sous_dir_count = User.objects.filter(user_type=3).count()
 	return render(request, "registration/sous_dir_list.html" , {'sous_dir' : sous_dir, 'sous_dir_count':sous_dir_count})
 
 # afficher content admin
 def content_admin_list(request):
-	content_admin = Content_Admin.objects.all()
-	content_admin_count = Content_Admin.objects.all().count()
+	content_admin = User.objects.filter(user_type=2)
+	content_admin_count = User.objects.filter(user_type=2).count()
 	return render(request, "registration/content_admin_list.html" , {'content_admin' : content_admin, 'content_admin_count':content_admin_count})
 
 
@@ -429,21 +429,21 @@ def delete_pays(request, id):
 
 # ------------ Affectation des cadres aux unités ---------------------------------------------------
 
-# show unites d'un cadre donnée
+# afficher l'unités d'un cadre 
 def show_unites(request, id):
-	c = Cadre.objects.get(id=id)
+	c = User.objects.get(id=id)
 	unites = Cadre_has_Unite.objects.filter(cadre = c)
 	return render(request,"affectation/show_unites.html", {'unites':unites, 'c':c})
 
-#delete unite 
+# supprimer l'unité pour une cadre 
 def delete_unite_of_cadre(request, id):
 	form = Cadre_has_Unite.objects.get(id=id)
 	form.delete()
 	return HttpResponseRedirect("/aff/show_cadres")
 
 # add_unite aux cadre donnée
-def add_unite_to_cadre(request, cadre_id):
-	cadre = Cadre.objects.get(id=cadre_id)
+def add_unite_to_cadre(request, id):
+	cadre = User.objects.get(id=id)
 	form = AffectCadreForm(request.POST or None)
 	if request.method == "POST":
 		if  form.is_valid():
@@ -451,30 +451,47 @@ def add_unite_to_cadre(request, cadre_id):
 			unite_to_cadre.cadre = cadre
 			unite_to_cadre.save()
 			messages.success(request, "unite added successfuly." )
-			return redirect("/aff/show_unites/"+ str(cadre_id)+"")
-		messages.error(request, "Unsuccessful registration. Invalid information.")
+			return redirect("/aff/show_unites/"+ str(id)+"")
+		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="affectation/add_unite_to_cadre.html", context={"form":form})
 
-#show caders list
+# affichier les cadres
 def show_cadres(request):
-	cadre = Cadre.objects.all()
+	cadre = User.objects.filter(user_type=5)
 	# cadres.unites  we can use related name in cadre_has_unite table
 	return render(request, "affectation/show_cadres.html" , {'cadre' : cadre})
 	
-
-
-
-# affichier les cadres
-# afficher l'unités d'un cadre   
-# supprimer l'unité pour une cadre 
 
 # -----------------------------------------------------------------------------------
 
 # ------------ Affectation des comptes aux unités ---------------------------------------------------
 
 # ajouter compte aux unité
-# afficher l'unités
-# afficher les comptes d'un unité   
+def add_compte_to_unite(request, id):
+	unite = Unite.objects.get(id=id)
+	form = AddCompteUniteForm(request.POST or None)
+	if request.method == "POST":
+		if  form.is_valid():
+			compte_unite = form.save(commit=False)
+			compte_unite.unite = unite
+			compte_unite.existe = True
+			compte_unite.added_by = request.user
+			compte_unite.save()
+			messages.success(request, "compte added successfuly to unite." )
+			return redirect("/show_comptes/"+ str(id)+"")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="unite_comptes/add_compte_to_unite.html", context={"form":form})
+
+# afficher toutes les unités
+def all_unites(request):
+	unites = Unite.objects.all()
+	return render(request, "unite_comptes/all_unites.html" , {'unites' : unites})
+
+# afficher les comptes d'un unité 
+def show_comptes(request, id):
+	u = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite = u)
+	return render(request,"unite_comptes/comptes.html", {'comptes':comptes, 'u':u})
 # supprimer compte pour une unité 
 
 # -----------------------------------------------------------------------------------

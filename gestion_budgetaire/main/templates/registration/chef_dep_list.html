@@ -38,9 +38,9 @@
 								<tbody>
 									{% for c in chefs %}
 									<tr>
-										<td> {{c.user.Nom}}</td>
-										<td> {{c.user.prenom}} </td>
-										<td> {{c.user.email}} </td>
+										<td> {{c.nom}}</td>
+										<td> {{c.prenom}} </td>
+										<td> {{c.email}} </td>
 										<td> {{c.departement}}</td>
 										<td>
 											<a href="#" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
@@ -62,11 +62,11 @@
 								  </button>
 								</div>
 								<div class="modal-body">
-								  Are you sure you want to Delete this " {{c.user.Nom}} {{c.user.prenom}} " ?
+								  Are you sure you want to Delete this " {{c.nom}} {{c.prenom}} " ?
 								</div>
 								<div class="modal-footer">
 								  <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-								  <a href="delete_user/{{c.user.id}}" class="btn btn-danger">Supprimer</a>
+								  <a href="delete_user/{{c.id}}" class="btn btn-danger">Supprimer</a>
 								</div>
 							  </div>
 							</div>
