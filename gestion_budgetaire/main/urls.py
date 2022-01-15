@@ -88,7 +88,13 @@ urlpatterns = [
     path('proposition/unites', views.unites, name="unites"),
     path('proposition/unite/<int:id>', views.unite_detail, name="unite"),
     path('proposition/unite/offre/<int:id>', views.offre_comptes, name="offre"),
+    path('proposition/unite/traffic/<int:id>', views.traffic_comptes, name="traffic"),
+    path('proposition/unite/ca_emmission/<int:id>', views.ca_emmission_comptes, name="ca_emmission"),
+    path('proposition/unite/ca_transport/<int:id>', views.ca_transport_comptes, name="ca_transport"),
     path('proposition/unite/recettes/<int:id>', views.recettes_comptes, name="recettes"),
+    path('proposition/unite/depense_fonc/<int:id>', views.depense_fonc_comptes, name="depense_fonc"),
+    path('proposition/unite/depense_exp/<int:id>', views.depense_exp_comptes, name="depense_exp"),
+
     path('proposition/unite/offre/add_montant_offre/<int:id>', views.add_montant, name="add_montant_offre"),
     path('proposition/unite/recettes/add_montant_recettes/<int:id>', views.add_montant, name="add_montant_recettes"),
     

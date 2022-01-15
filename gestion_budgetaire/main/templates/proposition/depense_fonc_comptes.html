@@ -24,7 +24,7 @@
 						<ol class="breadcrumb text-right">
 							<li><a href="{% url 'unites' %}">Unités</a></li>
                             <li><a href="#">{{unite.code_alpha}}</a></li>
-							<li><a href="#">Autre Recettes</a></li>
+							<li><a href="#">Depensses de fonctionnement</a></li>
 						</ol>
 					</div>
 				</div>
@@ -37,7 +37,7 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">Autre Recettes <span class="float-right">3/7</span></strong>
+							<strong class="card-title">Depensses de fonctionnement <span class="float-right">3/10</span></strong>
 						</div>
 						<div class="card-body">
 							<table id="bootstrap-data-table" class="table table-striped">
@@ -47,8 +47,9 @@
 										<th>Rubrique</th>
 										<th>Resau</th>
                                         <th>regle_par</th>
-										<th>Montant</th>
-                                        <th>Action</th>
+                                        <th>Montant</th>
+										<th>Action</th>
+
 									</tr>
 								</thead>
 								<tbody>
@@ -68,12 +69,15 @@
 											{% else %}
 												--------
 											{% endif %}
+
+
+											
 										</td>
 										<td>
 											{% if c.montants.all %}
 												<a href="#" class="btn btn-sm btn-info"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>	
 											{% else %}
-												<a href="add_montant_recettes/{{c.id}}" class="btn btn-sm btn-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+												<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 											{% endif %}
 										</td>
 									</tr>

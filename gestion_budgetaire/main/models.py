@@ -237,7 +237,7 @@ class Compte_has_Montant(models.Model):
     ('SOUSD', 'Sous Directeur'),
     ('SOUSDPI', 'Sous Directeur P/I'),
     ]
-
+    # code = unite_compte.id + type_bdg + annee   (unique)
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
     monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # saisier

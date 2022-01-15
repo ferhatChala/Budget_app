@@ -126,6 +126,11 @@
     <div class="box">
         <h2>Sign in</h2>
         <p>Please sign in to your account first </p>
+
+        {% if form.errors %}
+        <p style="color: red;">  your user name and password didn't match ! please try again .</p>
+        {% endif %}
+
         <form method="post" >
           {% csrf_token %}
           <div class="inputBox">

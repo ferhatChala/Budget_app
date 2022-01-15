@@ -548,17 +548,53 @@ def unites(request):
 def unite_detail(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
-	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr})
+	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS" ).count()
+	if comptes_done_nbr==0:
+		pr = 0
+	else:
+		pr = (comptes_done_nbr/comptes_nbr)*100
+	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, "pr":pr})
 
 def offre_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
 	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes})
 
+def traffic_comptes(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=2)
+	return render(request,"proposition/traffic_comptes.html", {'unite':unite, 'comptes':comptes})
+
+def ca_emmission_comptes(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=3)
+	return render(request,"proposition/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes})
+
+def ca_transport_comptes(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=4)
+	return render(request,"proposition/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes})
+
 def recettes_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=5)
 	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes})
+
+def depense_fonc_comptes(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
+	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes})
+
+def depense_exp_comptes(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7)
+	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes})
+
+
+
+
+# depense_fonc_comptes
+# depense_exp_comptes
 
 
 # add montant to compte 
