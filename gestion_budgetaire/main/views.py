@@ -4,7 +4,7 @@ from django.shortcuts import  render, redirect
 from .forms import (NewUserForm,
 					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
 					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm, 
-					AffectCadreForm, AddCompteUniteForm
+					AffectCadreForm, AddCompteUniteForm, MontantCompteForm
 					)
 from .models import (User,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
@@ -34,7 +34,7 @@ def ajouter_cadre(request):
 	if request.method == "POST":
 		if  user_form.is_valid():
 			user = user_form.save(commit=False)
-			user.user_type = 5
+			user.user_type = 6
 			user.save()
 			#cadre = cadre_form.save(commit=False)
 			#cadre.user = user
@@ -53,7 +53,7 @@ def ajouter_chef_dep(request):
 	if request.method == "POST":
 		if  user_form.is_valid():
 			user = user_form.save(commit=False)
-			user.user_type = 4
+			user.user_type = 5
 			user.save()
 			#chef_dep = chef_dep_form.save(commit=False)
 			#chef_dep.user = user
@@ -72,7 +72,7 @@ def ajouter_sous_dir(request):
 	if request.method == "POST":
 		if  user_form.is_valid():
 			user = user_form.save(commit=False)
-			user.user_type = 3
+			user.user_type = 4
 			user.save()
 			#sous_dir = sous_dir_form.save(commit=False)
 			#sous_dir.user = user
@@ -82,6 +82,21 @@ def ajouter_sous_dir(request):
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	#form = NewUserForm()
 	return render (request=request, template_name="registration/add_sous_dir.html", context={"user_form":user_form})
+
+# Ajouter directeur
+@login_required(login_url='login')
+def ajouter_dir(request):
+	user_form = NewUserForm(request.POST or None)
+	if request.method == "POST":
+		if  user_form.is_valid():
+			user = user_form.save(commit=False)
+			user.user_type = 3
+			user.save()
+			messages.success(request, "Directeur added successfuly.")
+			return redirect("/dir_list")
+		messages.error(request, "Unsuccessful registration. Invalid information.")
+	return render (request=request, template_name="registration/add_dir.html", context={"user_form":user_form})
+
 
 # ajouter content admin
 @login_required(login_url='login')
@@ -105,21 +120,28 @@ def ajouter_content_admin(request):
 # afficher toutes les cadres
 @login_required(login_url='login')
 def cadres_list(request):
-	cadre = User.objects.filter(user_type=5)
-	cadres_count = User.objects.filter(user_type=5).count()
+	cadre = User.objects.filter(user_type=6)
+	cadres_count = User.objects.filter(user_type=6).count()
 	return render(request, "registration/cadres_list.html" , {'cadre' : cadre, 'cadres_count':cadres_count})
 
 # afficher chefs departement
 def chef_dep_list(request):
-	chefs = User.objects.filter(user_type=4)
-	chefs_count = User.objects.filter(user_type=4).count()
+	chefs = User.objects.filter(user_type=5)
+	chefs_count = User.objects.filter(user_type=5).count()
 	return render(request, "registration/chef_dep_list.html" , {'chefs' : chefs, 'chefs_count':chefs_count})
 
 # afficher sous directeurs 
 def sous_dir_list(request):
-	sous_dir = User.objects.filter(user_type=3)
-	sous_dir_count = User.objects.filter(user_type=3).count()
+	sous_dir = User.objects.filter(user_type=4)
+	sous_dir_count = User.objects.filter(user_type=4).count()
 	return render(request, "registration/sous_dir_list.html" , {'sous_dir' : sous_dir, 'sous_dir_count':sous_dir_count})
+
+# Afficher Directeur 
+def dir_list(request):
+	dir = User.objects.filter(user_type=3)
+	dir_count = User.objects.filter(user_type=3).count()
+	return render(request, "registration/dir_list.html" , {'dir':dir, 'dir_count':dir_count})
+
 
 # afficher content admin
 def content_admin_list(request):
@@ -229,9 +251,10 @@ def add_pos3(request):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos3.html", context={"pos3_form":pos3_form})
 
-#Ajouter comptes scf
+#Ajouter comptes scf 6 and 7 in same form
 def add_pos6(request):
 	pos6_form = AddPos6Form(request.POST or None)
+	pos7_form = AddPos7Form(request.POST or None)
 	if request.method == "POST":
 		if  pos6_form.is_valid():
 			pos6 = pos6_form.save(commit=False)
@@ -246,14 +269,22 @@ def add_pos6(request):
 				return redirect("/scf/add_pos6")
 			return redirect("/scf/comptes_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="scfs/add_pos6.html", context={"pos6_form":pos6_form})
+	return render (request=request, template_name="scfs/add_pos6.html", context={"pos6_form":pos6_form, "pos7_form":pos7_form})
 
 def add_pos7(request):
 	pos7_form = AddPos7Form(request.POST or None)
 	if request.method == "POST":
 		if  pos7_form.is_valid():
-			pos7 = pos7_form.save()
-			messages.success(request, "compte SCF 7 position added successfuly." )
+			pos7 = pos7_form.save(commit=False)
+			get_ref = int(str(pos7.numero)[0:6])
+			ref = SCF_Pos_6.objects.filter(numero=get_ref)
+			if len(ref)==1:
+				pos7.ref = ref[0]
+				pos7.save()
+				messages.success(request, "compte SCF 7 position added successfuly." )
+			else:
+				messages.error(request, "Unsuccessful this compte dosen't existe !")
+				return redirect("/scf/add_pos7")
 			return redirect("/scf/comptes_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos7.html", context={"pos7_form":pos7_form})
@@ -350,8 +381,16 @@ def add_taux_chng(request):
 	taux_chng_form = AddTauxChngForm(request.POST or None)
 	if request.method == "POST":
 		if  taux_chng_form.is_valid():
-			taux_chng = taux_chng_form.save()
-			messages.success(request, "Taux de change added successfuly." )
+			taux_chng = taux_chng_form.save(commit=False)
+			c = taux_chng.monnaie.code_alpha + str(taux_chng.annee)
+			tch = Taux_de_change.objects.filter(code=c)
+			if len(tch)==0:
+				taux_chng.code = c
+				taux_chng.save()
+				messages.success(request, "Taux de change added successfuly." )
+			else:
+				messages.error(request, "Unsuccessful . Taux de change éxiste déja.")
+				return redirect("/ref/add_taux_chng")			
 			return redirect("/ref/taux_chng_list")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="others/add_taux_chng.html", context={"taux_chng_form":taux_chng_form})
@@ -463,7 +502,7 @@ def add_unite_to_cadre(request, id):
 
 # affichier les cadres
 def show_cadres(request):
-	cadre = User.objects.filter(user_type=5)
+	cadre = User.objects.filter(user_type=6)
 	# cadres.unites  we can use related name in cadre_has_unite table
 	return render(request, "affectation/show_cadres.html" , {'cadre' : cadre})
 	
@@ -500,4 +539,46 @@ def show_comptes(request, id):
 	return render(request,"unite_comptes/comptes.html", {'comptes':comptes, 'u':u})
 # supprimer compte pour une unité 
 
-# -----------------------------------------------------------------------------------
+# Proposition budget --------------------------------------------------------------------
+
+def unites(request):
+	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
+	return render(request,"proposition/unites.html", {'unites':unites})
+
+def unite_detail(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
+	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr})
+
+def offre_comptes(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
+	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes})
+
+def recettes_comptes(request, id):
+	unite = Unite.objects.get(id=id)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=5)
+	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes})
+
+
+# add montant to compte 
+def add_montant(request, id):
+	unite_compte = Unite_has_Compte.objects.get(id=id)
+	montant_form = MontantCompteForm(request.POST or None)
+	if request.method == "POST":
+		if  montant_form.is_valid():
+			montant_compte = montant_form.save(commit=False)
+			montant_compte.unite_compte = unite_compte
+			montant_compte.type_bdg = "PROPOS"
+			montant_compte.annee = 2022
+			if request.user.user_type==6:
+				montant_compte.montant_cadre = montant_compte.montant
+				montant_compte.vld_cadre = True
+				montant_compte.validation = "CADRE"
+			
+			montant_compte.save()
+			messages.success(request, "compte added successfuly to unite." )
+			return redirect("/proposition/unite/offre/"+ str(unite_compte.unite.id)+"")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="proposition/add_montant.html", context={"montant_form":montant_form, "unite_compte":unite_compte})
+

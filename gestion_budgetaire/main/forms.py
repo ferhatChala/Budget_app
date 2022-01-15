@@ -55,12 +55,12 @@ class AddPos3Form(forms.ModelForm):
 class AddPos6Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_6
-		fields = fields = ("numero","rubrique")
+		fields = ("numero","rubrique")
 
 class AddPos7Form(forms.ModelForm):
 	class Meta:
 		model = SCF_Pos_7
-		fields = '__all__'
+		fields = ("numero","rubrique","chapitre")
 
 class CompteScfForm(forms.ModelForm):
 	class Meta:
@@ -79,7 +79,7 @@ class AddMonnaieForm(forms.ModelForm):
 class AddTauxChngForm(forms.ModelForm):
 	class Meta:
 		model = Taux_de_change
-		fields = '__all__'
+		fields = ("annee","monnaie","value")
 
 # Create Chapitre form
 class AddChapitreForm(forms.ModelForm):
@@ -99,13 +99,21 @@ class AffectCadreForm(forms.ModelForm):
 		model = Cadre_has_Unite
 		fields = ("unite",)
 
+
+# Affectation des comptes aux unités
 class AddCompteUniteForm(forms.ModelForm):
 	class Meta:
 		model = Unite_has_Compte
-		fields = ("compte","chapire","regle_par","reseau_compte",)
+		fields = ("compte","regle_par","reseau_compte",)
+
+# add montant to compte 
+class MontantCompteForm(forms.ModelForm):
+	class Meta:
+		model = Compte_has_Montant
+		fields = ("monnaie","montant","commentaire")
 
 
-# Affectation des comptes aux unités
+
 
 
 

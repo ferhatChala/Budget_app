@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block cpt_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Proposition Budget 2022</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites' %}">Unités</a></li>
+                            <li><a href="#">{{unite.code_alpha}}</a></li>
+							<li><a href="#">Offre</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">Offre <span class="float-right">3/10</span></strong>
+						</div>
+						<div class="card-body">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>N° SCF</th>
+										<th>Rubrique</th>
+										<th>Resau</th>
+                                        <th>regle_par</th>
+                                        <th>Montant</th>
+										<th>Action</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									{% for c in comptes %}
+									<tr>
+										<td>{{c.compte.numero}}</td>
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.reseau_compte}}</td>
+                                        <td>{{c.regle_par.code_alpha}}</td>
+										<td>
+											{% if c.montants.all %}
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" %}
+														{{m.montant}}	
+													{% endif %}	
+												{% endfor %}
+											{% else %}
+												--------
+											{% endif %}
+
+
+											
+										</td>
+										<td>
+											{% if c.montants.all %}
+												<a href="#" class="btn btn-sm btn-info"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>	
+											{% else %}
+												<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+											{% endif %}
+										</td>
+									</tr>
+						
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}

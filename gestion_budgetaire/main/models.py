@@ -172,8 +172,6 @@ class SCF_Pos_6(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=100)
     ref = models.ForeignKey("SCF_Pos_3", related_name= "comptes", on_delete=models.CASCADE) # auto / 
-    #chapire = models.ForeignKey("Chapitre", on_delete=models.CASCADE)
-
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
@@ -181,6 +179,7 @@ class SCF_Pos_6(models.Model):
 class SCF_Pos_7(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=100)
+    chapitre = models.ForeignKey("Chapitre", null=True, related_name="ch_comptes" , on_delete=models.CASCADE)
     ref = models.ForeignKey("SCF_Pos_6", related_name= "comptes", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -212,18 +211,16 @@ class Unite_has_Compte(models.Model):
     ('ALL', 'Les deux'),
     ]
 
-
+    # code = unite-compte-regle-resau
     unite   = models.ForeignKey("Unite", related_name="unites", on_delete=models.CASCADE)
-    compte  = models.ForeignKey("SCF_Pos_6", related_name="unite_comptes", on_delete=models.CASCADE)
-    # delete chapitre
-    chapire = models.ForeignKey("Chapitre", related_name="ch_comptes" , on_delete=models.CASCADE)
+    compte  = models.ForeignKey("SCF_Pos_7", related_name="unite_comptes", on_delete=models.CASCADE)
     regle_par = models.ForeignKey("Unite", related_name="unite_regle", on_delete=models.CASCADE)
     reseau_compte   = models.CharField(max_length=50, choices=RES_CHOICES) # resau_compte
     added_by = models.CharField(max_length=50)
     existe  = models.BooleanField()
 
     def __str__(self):
-        return self.unite.code_alpha 
+        return self.unite.code_alpha + " - " + str(self.compte.numero) 
     
 class Compte_has_Montant(models.Model):
     TYPBDG_CHOICES = [
@@ -241,7 +238,7 @@ class Compte_has_Montant(models.Model):
     ('SOUSDPI', 'Sous Directeur P/I'),
     ]
 
-    unite_compte = models.ForeignKey("Unite_has_Compte", on_delete=models.CASCADE) # auto
+    unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
     monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # saisier
     annee = models.IntegerField() # auto (année courant + 1)
@@ -250,13 +247,13 @@ class Compte_has_Montant(models.Model):
 
     #les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
-    commentaire = models.ForeignKey("Commentaire",  on_delete=models.CASCADE)
+    commentaire = models.ForeignKey("Commentaire", null=True, blank=True,  on_delete=models.CASCADE)
     montant_chef_dep = models.FloatField(default=0) # saiser chef dep
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
     #la validation de chaque acteur
-    vld_cadre = models.BooleanField()   # auto    
-    vld_chef_dep = models.BooleanField() # auto
-    vld_sous_dir = models.BooleanField()  # auto
+    vld_cadre = models.BooleanField(default=False)   # auto    
+    vld_chef_dep = models.BooleanField(default=False) # auto
+    vld_sous_dir = models.BooleanField(default=False)  # auto
     #ajouter commentaires avec degre d'importance (faible, moyenne, critique)
     #ajouter la valeur de cloture pour l année courant N
 
@@ -285,6 +282,10 @@ class Commentaire(models.Model):
     ]
     text = models.CharField(max_length=200)
     importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES) 
+
+    def __str__(self):
+        return self.text
+    
     
 class Reception(models.Model):
     TYPBDG_CHOICES = [

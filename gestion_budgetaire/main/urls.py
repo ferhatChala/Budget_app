@@ -9,10 +9,13 @@ urlpatterns = [
     path('ajouter_chef_dep', views.ajouter_chef_dep, name="ajouter_chef_dep"),
     path('ajouter_sous_dir', views.ajouter_sous_dir, name="ajouter_sous_dir"),
     path('ajouter_content_admin', views.ajouter_content_admin, name="ajouter_content_admin"),
+    path('ajouter_dir', views.ajouter_dir, name="ajouter_dir"),
+
     #afficher 
     path('cadres_list', views.cadres_list, name="cadres_list"),
     path('chef_dep_list', views.chef_dep_list, name="chef_dep_list"),
     path('sous_dir_list', views.sous_dir_list, name="sous_dir_list"),
+    path('dir_list', views.dir_list, name="dir_list"),
     path('content_admin_list', views.content_admin_list, name="content_admin_list"),
     #delete 
     path('delete_user/<int:id>', views.delete_user, name="delete_user"),
@@ -80,6 +83,15 @@ urlpatterns = [
     path('all_unites', views.all_unites, name="all_unites"),
     path('show_comptes/<int:id>', views.show_comptes, name="show_comptes"),
     path('show_comptes/add_compte_to_unite/<int:id>', views.add_compte_to_unite, name="add_compte_to_unite"),
+
+    # proposition budget
+    path('proposition/unites', views.unites, name="unites"),
+    path('proposition/unite/<int:id>', views.unite_detail, name="unite"),
+    path('proposition/unite/offre/<int:id>', views.offre_comptes, name="offre"),
+    path('proposition/unite/recettes/<int:id>', views.recettes_comptes, name="recettes"),
+    path('proposition/unite/offre/add_montant_offre/<int:id>', views.add_montant, name="add_montant_offre"),
+    path('proposition/unite/recettes/add_montant_recettes/<int:id>', views.add_montant, name="add_montant_recettes"),
+    
 
 
 

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block prop_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}      
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Proposition Budget 2022</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites' %}">Unités</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>  
+
+
+
+<div class="row content">
+
+    
+    {% for u in unites %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  {{u.unite.lib}} <span class="float-right">{{u.unite.code_alpha}}</span></strong>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><span><i class="menu-icon fa fa-money"></i></span> Monnaie: {{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}}</span></p>
+                <p class="card-text"><span><span><i class="menu-icon fa fa-globe"></i></span> Pays: {{u.unite.pays.lib}}</span></p>
+                <p class="card-text"></p>
+                <a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+</div>
+
+{% endblock %}

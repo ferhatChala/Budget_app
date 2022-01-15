@@ -20,16 +20,13 @@
 								{% csrf_token %}
 
                                 <div class="form-row">
-									<div class="form-group col-md-3 mb-0">
+									<div class="form-group col-md-4 mb-0">
                                         {{ form.compte|as_crispy_field }}
 									</div>
-									<div class="form-group col-md-3 mb-0">
-                                        {{ form.chapire|as_crispy_field }}
+									<div class="form-group col-md-4 mb-0">
+                                        {{ form.reseau_compte|as_crispy_field }}
 									</div>
-									<div class="form-group col-md-3 mb-0">
-                                        {{ form.resau|as_crispy_field }}
-									</div>
-                                    <div class="form-group col-md-3 mb-0">
+                                    <div class="form-group col-md-4 mb-0">
                                         {{ form.regle_par|as_crispy_field }}
 									</div>
 								</div>
