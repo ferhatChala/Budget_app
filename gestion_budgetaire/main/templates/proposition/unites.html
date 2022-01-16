@@ -36,7 +36,8 @@
 <div class="row content">
 
     
-    {% for u in unites %}
+	{% if user.user_type == 6 %}
+	{% for u in unites %}
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
@@ -51,6 +52,27 @@
         </div>
     </div>
     {% endfor %}
+	{% endif %}
+
+	
+	{% if user.user_type == 5 %}
+	{% for u in dep_unites %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  {{u.lib}} <span class="float-right">{{u.code_alpha}}</span></strong>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><span><i class="menu-icon fa fa-money"></i></span> Monnaie: {{u.monnaie.code_alpha}} / {{u.monnaie.code_num}}</span></p>
+                <p class="card-text"><span><span><i class="menu-icon fa fa-globe"></i></span> Pays: {{u.pays.lib}}</span></p>
+                <p class="card-text"></p>
+                <a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+	{% endif %}
+		
 
 
 </div>

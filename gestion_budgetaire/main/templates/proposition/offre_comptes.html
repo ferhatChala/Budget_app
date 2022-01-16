@@ -37,7 +37,11 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">Offre <span class="float-right">3/10</span></strong>
+							{% if offre %}	
+							<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-circle-o"></i> Terminé</span></strong>
+							{% else %}
+							<strong class="card-title">Offre <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil"></i>  En cours</span></strong>
+							{% endif %}
 						</div>
 						<div class="card-body">
 							<table id="bootstrap-data-table" class="table table-striped">

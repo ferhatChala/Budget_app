@@ -146,7 +146,7 @@
 
                     <!-- Cadre budget  -->
                     
-                    {% if user.is_authenticated and user.user_type == 6 %}    
+                    {% if user.user_type == 6 or user.user_type == 5 %}    
                     <li class="menu-title">Budget</li><!-- /.menu-title -->
                     {% block prop_active %}
                     <li>

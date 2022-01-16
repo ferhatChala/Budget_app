@@ -87,6 +87,7 @@ urlpatterns = [
     # proposition budget
     path('proposition/unites', views.unites, name="unites"),
     path('proposition/unite/<int:id>', views.unite_detail, name="unite"),
+
     path('proposition/unite/offre/<int:id>', views.offre_comptes, name="offre"),
     path('proposition/unite/traffic/<int:id>', views.traffic_comptes, name="traffic"),
     path('proposition/unite/ca_emmission/<int:id>', views.ca_emmission_comptes, name="ca_emmission"),
@@ -96,7 +97,12 @@ urlpatterns = [
     path('proposition/unite/depense_exp/<int:id>', views.depense_exp_comptes, name="depense_exp"),
 
     path('proposition/unite/offre/add_montant_offre/<int:id>', views.add_montant, name="add_montant_offre"),
+    path('proposition/unite/traffic/add_montant_traffic/<int:id>', views.add_montant, name="add_montant_traffic"),
+    path('proposition/unite/ca_emmission/add_montant_ca_emmission/<int:id>', views.add_montant, name="add_montant_ca_emmission"),
+    path('proposition/unite/ca_transport/add_montant_ca_transport/<int:id>', views.add_montant, name="add_montant_ca_transport"),
     path('proposition/unite/recettes/add_montant_recettes/<int:id>', views.add_montant, name="add_montant_recettes"),
+    path('proposition/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant, name="add_montant_depense_fonc"),
+    path('proposition/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant, name="add_montant_depense_exp"),
     
 
 

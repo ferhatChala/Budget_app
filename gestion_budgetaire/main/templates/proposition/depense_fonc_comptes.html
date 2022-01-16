@@ -37,7 +37,11 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">Depensses de fonctionnement <span class="float-right">3/10</span></strong>
+							{% if depense_fonc %}	
+							<strong class="card-title">Depensses de fonctionnement <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-circle-o"></i> Terminé</span></strong>
+							{% else %}
+							<strong class="card-title">Depensses de fonctionnement <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil"></i>  En cours</span></strong>
+							{% endif %}
 						</div>
 						<div class="card-body">
 							<table id="bootstrap-data-table" class="table table-striped">
@@ -77,7 +81,7 @@
 											{% if c.montants.all %}
 												<a href="#" class="btn btn-sm btn-info"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>	
 											{% else %}
-												<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+												<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 											{% endif %}
 										</td>
 									</tr>

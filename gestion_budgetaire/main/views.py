@@ -543,52 +543,106 @@ def show_comptes(request, id):
 
 def unites(request):
 	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
-	return render(request,"proposition/unites.html", {'unites':unites})
+	dep_unites = Unite.objects.filter(departement=request.user.departement)
+	return render(request,"proposition/unites.html", {'unites':unites, 'dep_unites':dep_unites})
 
 def unite_detail(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
-	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS" ).count()
-	if comptes_done_nbr==0:
-		pr = 0
-	else:
-		pr = (comptes_done_nbr/comptes_nbr)*100
-	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, "pr":pr})
+	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS").count()
+	#nombre de comptes pour chaque chapitre
+	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
+	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
+	ca_emmission_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=3).count()
+	ca_transport_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=4).count()
+	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
+	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=6).count()
+	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=7).count()
+	# nombre de comptes done
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=4).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=7).count()
+	#Check if chapitre is done 
+	offre = offre_nbr==offre_done_nbr
+	traffic = traffic_nbr==traffic_done_nbr
+	ca_emmission = ca_emmission_nbr==ca_emmission_done_nbr
+	ca_transport = ca_transport_nbr==ca_transport_done_nbr
+	recettes = recettes_nbr==recettes_done_nbr
+	depense_fonc = depense_fonc_nbr==depense_fonc_done_nbr
+	depense_exp = depense_exp_nbr==depense_exp_done_nbr
+
+
+	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, 'comptes_done_nbr':comptes_done_nbr,
+															'offre_nbr':offre_nbr, 'offre_done_nbr':offre_done_nbr,
+															'traffic_nbr':traffic_nbr, 'traffic_done_nbr':traffic_done_nbr,
+															'ca_emmission_nbr':ca_emmission_nbr, 'ca_emmission_done_nbr':ca_emmission_done_nbr,
+															'ca_transport_nbr':ca_transport_nbr, 'ca_transport_done_nbr':ca_transport_done_nbr,
+															'recettes_nbr':recettes_nbr, 'recettes_done_nbr':recettes_done_nbr,
+															'depense_fonc_nbr':depense_fonc_nbr, 'depense_fonc_done_nbr':depense_fonc_done_nbr,
+															'depense_exp_nbr':depense_exp_nbr, 'depense_exp_done_nbr':depense_exp_done_nbr,
+															'offre':offre, 'traffic':traffic, 'ca_emmission':ca_emmission, 'ca_transport':ca_transport,
+															'recettes':recettes, 'depense_fonc':depense_fonc, 'depense_exp':depense_exp
+															})
 
 def offre_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
-	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes})
+	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
+	offre = offre_nbr==offre_done_nbr
+	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'offre':offre})
 
 def traffic_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=2)
-	return render(request,"proposition/traffic_comptes.html", {'unite':unite, 'comptes':comptes})
+	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=2).count()
+	traffic = traffic_nbr==traffic_done_nbr
+	return render(request,"proposition/traffic_comptes.html", {'unite':unite, 'comptes':comptes, 'traffic':traffic})
 
 def ca_emmission_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=3)
-	return render(request,"proposition/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes})
+	ca_emmission_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=3).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=3).count()
+	ca_emmission = ca_emmission_nbr==ca_emmission_done_nbr
+	return render(request,"proposition/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, 'ca_emmission':ca_emmission})
 
 def ca_transport_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=4)
-	return render(request,"proposition/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes})
+	ca_transport_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=4).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=4).count()
+	ca_transport = ca_transport_nbr==ca_transport_done_nbr
+	return render(request,"proposition/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, 'ca_transport':ca_transport})
 
 def recettes_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=5)
-	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes})
+	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=5).count()
+	recettes = recettes_nbr==recettes_done_nbr
+	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes, 'recettes':recettes})
 
 def depense_fonc_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
-	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes})
+	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=6).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=6).count()
+	depense_fonc = depense_fonc_nbr==depense_fonc_done_nbr
+	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'depense_fonc':depense_fonc})
 
 def depense_exp_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7)
-	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes})
+	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
+	depense_exp = depense_exp_nbr==depense_exp_done_nbr
+	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes, 'depense_exp':depense_exp})
 
 
 
@@ -611,10 +665,36 @@ def add_montant(request, id):
 				montant_compte.montant_cadre = montant_compte.montant
 				montant_compte.vld_cadre = True
 				montant_compte.validation = "CADRE"
+
+			if request.user.user_type==5:
+				montant_compte.montant_chef_dep = montant_compte.montant
+				montant_compte.vld_chef_dep = True
+				montant_compte.validation = "CHEFD"
+			
+			if request.user.user_type==4:
+				montant_compte.montant_sous_dir = montant_compte.montant
+				montant_compte.vld_sous_dir = True
+				montant_compte.validation = "SOUSD"				
 			
 			montant_compte.save()
 			messages.success(request, "compte added successfuly to unite." )
-			return redirect("/proposition/unite/offre/"+ str(unite_compte.unite.id)+"")
+			# Redirecter vers chaque chapitre
+			if unite_compte.compte.chapitre.code_num== 1:
+				return redirect("/proposition/unite/offre/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 2:
+				return redirect("/proposition/unite/traffic/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 3:
+				return redirect("/proposition/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 4:
+				return redirect("/proposition/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 5:
+				return redirect("/proposition/unite/recettes/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 6:
+				return redirect("/proposition/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 7:
+				return redirect("/proposition/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+			else:
+				return redirect("/proposition/unites")
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="proposition/add_montant.html", context={"montant_form":montant_form, "unite_compte":unite_compte})
 
