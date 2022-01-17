@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import (User,
+from .models import (User, Interim, Commentaire,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
@@ -112,8 +112,21 @@ class MontantCompteForm(forms.ModelForm):
 		model = Compte_has_Montant
 		fields = ("monnaie","montant","commentaire")
 
+class CommentaireForm(forms.ModelForm):
+	class Meta:
+		model = Commentaire
+		fields = '__all__'
+
+class UpdateMontantCompteForm(forms.ModelForm):
+	class Meta:
+		model = Compte_has_Montant
+		fields = ("montant",)
 
 
+class InterimForm(forms.ModelForm):
+	class Meta:
+		model = Interim
+		fields = '__all__'
 
 
 

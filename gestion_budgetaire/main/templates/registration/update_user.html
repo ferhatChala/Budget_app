@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block users_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
@@ -11,44 +10,37 @@
 <div class="row content">
     <div class="col-lg-12">
         <div class="card">
-            <div class="card-body">
-				<br>
-				<h3>Add new chef département</h3>
-				<hr>				
+            <div class="card-body">				
+						<br>
+						<h3>Update User</h3>
+						<hr>
 						<!-- form pour ajouter cadres -->
 						<div class="container py-5">
 							<form method="post">
 								{% csrf_token %}
 								<div class="form-row">
 									<div class="form-group col-md-6 mb-0">
-									{{ user_form.nom|as_crispy_field }}
+									{{ form.nom|as_crispy_field }}
 									</div>
 									<div class="form-group col-md-6 mb-0">
-									{{ user_form.prenom|as_crispy_field }}
+									{{ form.prenom|as_crispy_field }}
 									</div>
 								</div>
 								<div class="form-row">
 									<div class="form-group col-md-4 mb-0">
-									{{ user_form.email|as_crispy_field }}
+									{{ form.email|as_crispy_field }}
 									</div>
 									<div class="form-group col-md-4 mb-0">
-									{{ user_form.telephone|as_crispy_field }}
+									{{ form.telephone|as_crispy_field }}
 									</div>
 									<div class="form-group col-md-4 mb-0">
-									{{ user_form.departement|as_crispy_field }}
+									{{ form.departement|as_crispy_field }}
 									</div>
 								</div>
-								<div class="form-row">
-									<div class="form-group col-md-6 mb-0">
-									{{ user_form.password1|as_crispy_field }}
-									</div>
-									<div class="form-group col-md-6 mb-0">
-									{{ user_form.password2|as_crispy_field }}
-									</div>
-								</div>
-								<hr>
-								<button type="submit" class="btn btn-primary">Ajouter</button>
-								<a href="{% url 'chef_dep_list' %}" class="btn btn-secondary">Annuler</a>
+
+		
+								<button type="submit" class="btn btn-primary">Update</button>
+								<a href="{% url 'cadres_list' %}" class="btn btn-secondary">Annuler</a>
 							  </form>
 						</div>
             </div>

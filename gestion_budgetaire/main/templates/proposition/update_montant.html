@@ -40,37 +40,34 @@
 							<strong class="card-title">{{unite_compte.compte}} <span class="float-right">Reglé par :{{unite_compte.regle_par}}</span></strong>
 						</div>
 						<div class="card-body">
+							
+							{% if montant.commentaire.importance == "F" %}
+								<div class="alert alert-secondary" role="alert">
+									{{montant.commentaire.text}}
+								</div>	
+							{% endif %}
+							{% if montant.commentaire.importance == "M" %}
+								<div class="alert alert-warning" role="alert">
+									{{montant.commentaire.text}}
+								</div>	
+							{% endif %}
+							{% if montant.commentaire.importance == "C" %}
+								<div class="alert alert-danger" role="alert">
+									{{montant.commentaire.text}}
+								</div>	
+							{% endif %}
+								
+
                             <form method="post">
                                 {% csrf_token %}
-                                <div class="form-row">
-									<div class="form-group col-md-9 mb-0">
-                                        {{ montant_form.montant|as_crispy_field }}
-                                    </div>
-                                    <div class="form-group col-md-3 mb-0">
-                                        {{ montant_form.monnaie|as_crispy_field }}
-                                    </div>
-								</div>
-                                <br>
+								{{ form.montant|as_crispy_field }}
 
-								<h5>Commentaire</h5>
-								<hr>
-                                <div class="form-row">
-                                    <div class="form-group col-md-9 mb-0">
-                                        {{ comment_form.text|as_crispy_field }}
-                                    </div>
-									<div class="form-group col-md-3 mb-0">
-										{{ comment_form.importance|as_crispy_field }}
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                                <button type="submit" class="btn btn-primary">Modifier</button>
                                 <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
                             </form>
 						</div>
 					</div>
 				</div>
-
-
-
 </div>
 
 {% endblock %}

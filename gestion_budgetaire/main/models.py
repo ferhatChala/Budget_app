@@ -281,7 +281,7 @@ class Commentaire(models.Model):
     ('C', 'Critique'),
     ]
     text = models.CharField(max_length=200)
-    importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES) 
+    importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='F') 
 
     def __str__(self):
         return self.text
@@ -309,8 +309,8 @@ class Interim(models.Model):
     ]
     user = models.ForeignKey("User", related_name="interims", on_delete=models.CASCADE)
     type_interim = models.CharField(max_length=50, choices=INTERIM_CHOICES,default='PIDZ',)
-    date_debut = models.DateField(auto_now=False, auto_now_add=False)
-    date_fin = models.DateField(auto_now=False, auto_now_add=False)
+    date_debut = models.DateField(auto_now=False)
+    date_fin = models.DateField(auto_now=False)
 
     def __str__(self):
         return self.user.nom +"" + self.type_interim

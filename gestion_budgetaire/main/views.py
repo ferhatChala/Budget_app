@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import  render, redirect
-from .forms import (NewUserForm,
+from django.shortcuts import  render, redirect, get_object_or_404
+from .forms import (NewUserForm, InterimForm,
 					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
 					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm, 
-					AffectCadreForm, AddCompteUniteForm, MontantCompteForm
+					AffectCadreForm, AddCompteUniteForm, MontantCompteForm,UpdateMontantCompteForm,CommentaireForm
 					)
-from .models import (User,
+from .models import (User, Interim,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
@@ -157,6 +157,29 @@ def delete_user(request, id):
     form.delete()
     return HttpResponseRedirect("/")
 
+#update
+class UserUpdateView(UpdateView):
+	model = User
+	fields = '__all__'
+	template_name = "registration/update_user.html"
+	success_url = "/"
+
+
+
+# gestion des interimes ---------------------------------------------------
+def interims(request):
+	interims = Interim.objects.all()
+	return render(request, "registration/interims.html" , {'interims':interims})
+
+def add_interim(request):
+	form = InterimForm(request.POST or None)
+	if request.method == "POST":
+		if  form.is_valid():
+			interim = form.save()
+			messages.success(request, "Intérim added successfuly." )
+			return redirect("/interims")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="registration/add_interim.html", context={"form":form})
 
 
 # unités & Departements ---------------------------------------------------
@@ -654,13 +677,16 @@ def depense_exp_comptes(request, id):
 # add montant to compte 
 def add_montant(request, id):
 	unite_compte = Unite_has_Compte.objects.get(id=id)
+	comment_form = CommentaireForm(request.POST or None)
 	montant_form = MontantCompteForm(request.POST or None)
 	if request.method == "POST":
-		if  montant_form.is_valid():
+		if  montant_form.is_valid() and comment_form.is_valid():
+			comment = comment_form.save()
 			montant_compte = montant_form.save(commit=False)
 			montant_compte.unite_compte = unite_compte
 			montant_compte.type_bdg = "PROPOS"
 			montant_compte.annee = 2022
+			montant_compte.commentaire = comment
 			if request.user.user_type==6:
 				montant_compte.montant_cadre = montant_compte.montant
 				montant_compte.vld_cadre = True
@@ -696,5 +722,54 @@ def add_montant(request, id):
 			else:
 				return redirect("/proposition/unites")
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="proposition/add_montant.html", context={"montant_form":montant_form, "unite_compte":unite_compte})
+	return render (request=request, template_name="proposition/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte})
 
+
+#class MontantUpdateView(UpdateView):
+#	model = Compte_has_Montant
+#	fields = ("montant",)
+#	template_name = "proposition/update_montant.html"
+#	success_url = "/"
+
+
+def update_montant(request, id): 
+	montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = montant.unite_compte
+
+	form = UpdateMontantCompteForm(request.POST or None, instance = montant)
+	if form.is_valid():
+		form.save()
+		messages.success(request, "Montant updated successfuly." )
+		new_montant = get_object_or_404(Compte_has_Montant, id = id)
+		if request.user.user_type==6:
+			new_montant.montant_cadre = new_montant.montant
+			new_montant.vld_cadre = True
+			new_montant.save()
+		if request.user.user_type==5:
+			new_montant.montant_chef_dep = new_montant.montant
+			new_montant.vld_chef_dep = True
+			new_montant.validation = "CHEFD"
+			new_montant.save()
+		if request.user.user_type==4:
+			new_montant.montant_sous_dir = new_montant.montant
+			new_montant.vld_sous_dir = True
+			new_montant.validation = "SOUSD"
+			new_montant.save()
+		return redirect("/proposition/unite/offre/"+ str(montant.unite_compte.unite.id)+"")
+	return render (request=request, template_name="proposition/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant})
+
+
+def valid_montant(request, id):
+	new_montant = get_object_or_404(Compte_has_Montant, id = id)
+	if request.user.user_type==6:
+		new_montant.vld_cadre = True
+		new_montant.save()
+	if request.user.user_type==5:
+		new_montant.vld_chef_dep = True
+		new_montant.validation = "CHEFD"
+		new_montant.save()
+	if request.user.user_type==4:
+		new_montant.vld_sous_dir = True
+		new_montant.validation = "SOUSD"
+		new_montant.save()
+	return HttpResponseRedirect("/proposition/unite/offre/"+ str(new_montant.unite_compte.unite.id)+"")

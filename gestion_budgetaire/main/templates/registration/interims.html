@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block users_active %}
-<li class="menu-item-has-children dropdown active">
+{% block int_active %}
+<li class="active">
 {% endblock %}
 
 {% block content %} 
@@ -13,7 +13,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Users</h1>
+						<h1>Intérimes</h1>
 					</div>
 				</div>
 			</div>
@@ -21,8 +21,7 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="#">Users</a></li>
-							<li><a href="#">Content Admin</a></li>
+							<li><a href="#">Gestion des intérims</a></li>
 						</ol>
 					</div>
 				</div>
@@ -35,8 +34,8 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">Content Admins </strong>
-                            <a href="{% url 'ajouter_content_admin' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+							<strong class="card-title">Toutes les intérimes </strong>
+                            <a href="{% url 'add_interim' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
 						</div>
 						<div class="card-body">
 							<table id="bootstrap-data-table" class="table table-striped">
@@ -45,18 +44,23 @@
 										<th>Nom</th>
 										<th>Prénom</th>
 										<th>Email</th>
+										<th>Type (Role)</th>
+                                        <th>Debut</th>
+                                        <th>Fin</th>
 										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									{% for c in content_admin %}
+									{% for i in interims %}
 									<tr>
-										<td>{{c.nom}}</td>
-										<td>{{c.prenom}}</td>
-										<td>{{c.email}}</td>
+										<td>{{i.user.nom}}</td>
+										<td>{{i.user.prenom}}</td>
+										<td>{{i.user.email}}</td>
+										<td>{{i.type_interim}}</td>
+                                        <td>{{i.date_debut}}</td>
+                                        <td>{{i.date_fin}}</td>
 										<td>
 											<a href="#" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</button>
 										</td>
 									</tr>
 									<!-- Modal -->
@@ -70,11 +74,11 @@
 									  				</button>
 												</div>
 												<div class="modal-body">
-									  				Are you sure you want to Delete this " {{c.nom}} {{c.prenom}} " ?
+									  				Are you sure you want to Delete this ?
 												</div>
 												<div class="modal-footer">
 									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-									  				<a href="delete_user/{{c.id}}" class="btn btn-danger">Supprimer</a>
+									  				<a href="#" class="btn btn-danger">Supprimer</a>
 												</div>
 											</div>
 										</div>

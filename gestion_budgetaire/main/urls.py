@@ -17,8 +17,11 @@ urlpatterns = [
     path('sous_dir_list', views.sous_dir_list, name="sous_dir_list"),
     path('dir_list', views.dir_list, name="dir_list"),
     path('content_admin_list', views.content_admin_list, name="content_admin_list"),
+    path('interims', views.interims, name="interims"),
+    path('interim/add', views.add_interim, name="add_interim"),
     #delete 
     path('delete_user/<int:id>', views.delete_user, name="delete_user"),
+    path('update_user/<pk>', views.UserUpdateView.as_view() ),
 
     #unités & departement-------------------------------------
     path('add_unite', views.add_unite, name="add_unite"),
@@ -103,6 +106,9 @@ urlpatterns = [
     path('proposition/unite/recettes/add_montant_recettes/<int:id>', views.add_montant, name="add_montant_recettes"),
     path('proposition/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant, name="add_montant_depense_fonc"),
     path('proposition/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant, name="add_montant_depense_exp"),
+    
+    path('proposition/unite/offre/update_montant/<int:id>', views.update_montant, name="update_montant" ),
+    path('proposition/unite/offre/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     
 
 

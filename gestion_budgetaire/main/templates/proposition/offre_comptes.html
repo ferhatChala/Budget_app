@@ -79,7 +79,36 @@
 										</td>
 										<td>
 											{% if c.montants.all %}
-												<a href="#" class="btn btn-sm btn-info"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>	
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" %}
+													
+														{% if user.user_type == 6 %}
+															{% if m.vld_chef_dep %}
+																<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>	
+															{% else %}
+																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-info"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>	
+															{% endif %}	
+														{% endif %}
+
+														{% if user.user_type == 5 %}
+															{% if m.vld_sous_dir %}
+																<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>	
+															{% else %}
+																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-info"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>	
+															{% endif %}	
+															
+															{% if m.vld_chef_dep  %}
+																<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>	
+															{% else %}
+																<a href="valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"><span><i class="menu-icon fa fa-check-circle-o"></i></span> Valider</a>	
+															{% endif %}
+																
+														{% endif %}					
+														
+
+														
+													{% endif %}	
+												{% endfor %}
 											{% else %}
 												<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 											{% endif %}
