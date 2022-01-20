@@ -182,7 +182,7 @@
 														{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
 															<span style="color: green;">{{m.montant}}</span>
 														{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
-															<span style="color: orange;">{{m.montant}}</span>
+															<span style="color: orange;"> {{m.montant}}</i></span>
 														{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
 															<span style="color: red;">{{m.montant}}</span>
 														{% else %}

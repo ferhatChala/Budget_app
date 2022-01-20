@@ -14,6 +14,7 @@ from .models import (User, Interim,
 from django.contrib.auth import login
 from django.views.generic import UpdateView, DeleteView
 from django.contrib import messages
+import math
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -545,6 +546,12 @@ def unite_detail(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
 	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS").count()
+	# porcentage de saiser pour l unite
+	if comptes_nbr == 0:
+		pr = 0
+	else :
+		pr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])
+
 	#nombre de comptes pour chaque chapitre
 	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
 	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
@@ -597,15 +604,22 @@ def unite_detail(request, id):
 
 	#Check if chapitre is not validé par chef dep ( = compte validé)
 	offre_non_v = offre_valid_nbr == 0
+	traffic_non_v = traffic_valid_nbr == 0
+	ca_emmission_non_v = ca_emmission_valid_nbr == 0
+	ca_transport_non_v = ca_transport_valid_nbr == 0
+	recettes_non_v = recettes_valid_nbr == 0
+	depense_fonc_non_v = depense_fonc_valid_nbr == 0
+	depense_exp_non_v = depense_exp_valid_nbr == 0
 
-	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, 'comptes_done_nbr':comptes_done_nbr,
+	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, 'comptes_done_nbr':comptes_done_nbr, 'pr':pr,
 															'offre_s':offre_s, 'traffic_s':traffic_s, 'ca_emmission_s':ca_emmission_s, 'ca_transport_s':ca_transport_s,
 															'recettes_s':recettes_s, 'depense_fonc_s':depense_fonc_s, 'depense_exp_s':depense_exp_s,
 															'offre_v':offre_v, 'traffic_v':traffic_v, 'ca_emmission_v':ca_emmission_v, 'ca_transport_v':ca_transport_v,
 															'recettes_v':recettes_v, 'depense_fonc_v':depense_fonc_v, 'depense_exp_v':depense_exp_v,
 															'offre_non_s':offre_non_s, 'traffic_non_s':traffic_non_s, 'ca_emmission_non_s':ca_emmission_non_s, 'ca_transport_non_s':ca_transport_non_s,
 															'recettes_non_s':recettes_non_s, 'depense_fonc_non_s':depense_fonc_non_s, 'depense_exp_non_s':depense_exp_non_s,
-															'offre_non_v':offre_non_v
+															'offre_non_v':offre_non_v, 'traffic_non_v':traffic_non_v, 'ca_emmission_non_v':ca_emmission_non_v, 'ca_transport_non_v':ca_transport_non_v,
+															'recettes_non_v':recettes_non_v, 'depense_fonc_non_v':depense_fonc_non_v, 'depense_exp_non_v':depense_exp_non_v
 															})
 
 def offre_comptes(request, id):

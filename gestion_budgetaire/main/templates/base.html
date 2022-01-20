@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
    
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'assets/css/cs-skin-elastic.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/lib/datatable/dataTables.bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
@@ -120,7 +122,7 @@
                     {% block aff_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'show_cadres' %}"><i class="menu-icon fa fa-tasks"></i>Affectation des cadres</a>
+                        <a href="{% url 'show_cadres' %}"><i class="menu-icon fa fa-sitemap"></i>Affectation des cadres</a>
                     </li>
 
                     {% block cpt_active %}
@@ -164,6 +166,9 @@
                     </li>
                     <li>
                         <a href="#"><i class="menu-icon fa fa-archive"></i> Archive </a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="menu-icon fa fa-history"></i> Historique </a>
                     </li>
                     {% endif %}
 
@@ -428,12 +433,15 @@
     <script src="assets/js/lib/data-table/buttons.colVis.min.js"></script>
     <script src="assets/js/init/datatables-init.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
 
     <script type="text/javascript">
         $(document).ready(function() {
           $('#bootstrap-data-table-export').DataTable();
       } );
     </script>
+    
 
     <!--Local Stuff-->
     <script>

@@ -241,8 +241,9 @@ class Compte_has_Montant(models.Model):
     # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par  (unique)
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
-    monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # saisier
+    monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # X
     annee = models.IntegerField() # auto (année courant + 1)
+    #annee_budgetaire = models.ForeignKey("Annee_Budgetaire", related_name="montants", on_delete=models.CASCADE)
     montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
     #montant_cloture : 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
@@ -250,7 +251,7 @@ class Compte_has_Montant(models.Model):
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
     commentaire = models.ForeignKey("Commentaire", null=True, blank=True,  on_delete=models.CASCADE)
-    # commentaire cloture
+    # commentaire cloture many to many
     montant_chef_dep = models.FloatField(default=0) # saiser chef dep
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
     #la validation de chaque acteur
@@ -265,6 +266,20 @@ class Cadre_has_Unite(models.Model):
     cadre = models.ForeignKey("User", on_delete=models.CASCADE)
     unite = models.ForeignKey("Unite", on_delete=models.CASCADE)
 
+class Annee_Budgetaire(models.Model):
+    TYPBDG_CHOICES = [
+    ('PROPOS', 'Budget de proposition'),
+    ('REUN', 'Budget de Réunion'),
+    ('NOTIF', 'Budget notifié'),
+    ]
+    annee = models.IntegerField()
+    type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES)
+    lancement = models.BooleanField()
+    cloture = models.BooleanField()
+
+    def __str__(self):
+        return self.type_bdg + str(annee)
+ 
 
 # Historique & Notification & Commentaire & Reception
 class Historique(models.Model):
@@ -287,7 +302,7 @@ class Commentaire(models.Model):
     text = models.CharField(max_length=200)
     importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='F') 
     #type: proposition, cloture
-    # user_type : yser.type
+    #user : 
 
     def __str__(self):
         return self.text
