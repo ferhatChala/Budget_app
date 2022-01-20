@@ -211,13 +211,14 @@ class Unite_has_Compte(models.Model):
     ('ALL', 'Les deux'),
     ]
 
-    # code = unite-compte-regle-resau
+    # code = unite.id-compte.numero-regle-resau
     unite   = models.ForeignKey("Unite", related_name="unites", on_delete=models.CASCADE)
     compte  = models.ForeignKey("SCF_Pos_7", related_name="unite_comptes", on_delete=models.CASCADE)
     regle_par = models.ForeignKey("Unite", related_name="unite_regle", on_delete=models.CASCADE)
     reseau_compte   = models.CharField(max_length=50, choices=RES_CHOICES) # resau_compte
     added_by = models.CharField(max_length=50)
-    existe  = models.BooleanField()
+    #monnaie null=true
+    existe  = models.BooleanField() # X
 
     def __str__(self):
         return self.unite.code_alpha + " - " + str(self.compte.numero) 
@@ -237,17 +238,19 @@ class Compte_has_Montant(models.Model):
     ('SOUSD', 'Sous Directeur'),
     ('SOUSDPI', 'Sous Directeur P/I'),
     ]
-    # code = unite_compte.id + type_bdg + annee   (unique)
+    # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par  (unique)
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
     monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # saisier
     annee = models.IntegerField() # auto (année courant + 1)
     montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
+    #montant_cloture : 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
 
-    #les montant pour chaque acteur
+    # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
     commentaire = models.ForeignKey("Commentaire", null=True, blank=True,  on_delete=models.CASCADE)
+    # commentaire cloture
     montant_chef_dep = models.FloatField(default=0) # saiser chef dep
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
     #la validation de chaque acteur
@@ -258,6 +261,7 @@ class Compte_has_Montant(models.Model):
     #ajouter la valeur de cloture pour l année courant N
 
 class Cadre_has_Unite(models.Model):
+    # code = cadre.id + unite.code
     cadre = models.ForeignKey("User", on_delete=models.CASCADE)
     unite = models.ForeignKey("Unite", on_delete=models.CASCADE)
 
@@ -282,6 +286,8 @@ class Commentaire(models.Model):
     ]
     text = models.CharField(max_length=200)
     importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='F') 
+    #type: proposition, cloture
+    # user_type : yser.type
 
     def __str__(self):
         return self.text

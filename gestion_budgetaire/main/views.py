@@ -17,16 +17,13 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-# Create your views here.
-
+# home
 @login_required(login_url='login')
 def home(request):
     return render(request, "base.html" , {'users_count':User.objects.all().count(), 'unite_count':Unite.objects.all().count(), 'comptes':SCF_Pos_6.objects.all().count() })
 
-
 # ------------ users management -----------------------------------------------
 
-# ajouter cadre
 @login_required(login_url='login')
 def ajouter_cadre(request):
 	user_form = NewUserForm(request.POST or None)
@@ -45,7 +42,6 @@ def ajouter_cadre(request):
 	#form = NewUserForm()
 	return render (request=request, template_name="registration/add_cadre.html", context={"user_form":user_form})
 
-# ajouter chef departement
 @login_required(login_url='login')
 def ajouter_chef_dep(request):
 	user_form = NewUserForm(request.POST or None)
@@ -64,7 +60,6 @@ def ajouter_chef_dep(request):
 	#form = NewUserForm()
 	return render (request=request, template_name="registration/add_chef_dep.html", context={"user_form":user_form})
 
-# ajouter sous directeur
 @login_required(login_url='login')
 def ajouter_sous_dir(request):
 	user_form = NewUserForm(request.POST or None)
@@ -83,7 +78,6 @@ def ajouter_sous_dir(request):
 	#form = NewUserForm()
 	return render (request=request, template_name="registration/add_sous_dir.html", context={"user_form":user_form})
 
-# Ajouter directeur
 @login_required(login_url='login')
 def ajouter_dir(request):
 	user_form = NewUserForm(request.POST or None)
@@ -97,8 +91,6 @@ def ajouter_dir(request):
 		messages.error(request, "Unsuccessful registration. Invalid information.")
 	return render (request=request, template_name="registration/add_dir.html", context={"user_form":user_form})
 
-
-# ajouter content admin
 @login_required(login_url='login')
 def ajouter_content_admin(request):
 	user_form = NewUserForm(request.POST or None)
@@ -117,40 +109,34 @@ def ajouter_content_admin(request):
 	#form = NewUserForm()
 	return render (request=request, template_name="registration/add_content_admin.html", context={"user_form":user_form})
 
-# afficher toutes les cadres
+# afichage 
 @login_required(login_url='login')
 def cadres_list(request):
 	cadre = User.objects.filter(user_type=6)
 	cadres_count = User.objects.filter(user_type=6).count()
 	return render(request, "registration/cadres_list.html" , {'cadre' : cadre, 'cadres_count':cadres_count})
 
-# afficher chefs departement
 def chef_dep_list(request):
 	chefs = User.objects.filter(user_type=5)
 	chefs_count = User.objects.filter(user_type=5).count()
 	return render(request, "registration/chef_dep_list.html" , {'chefs' : chefs, 'chefs_count':chefs_count})
 
-# afficher sous directeurs 
 def sous_dir_list(request):
 	sous_dir = User.objects.filter(user_type=4)
 	sous_dir_count = User.objects.filter(user_type=4).count()
 	return render(request, "registration/sous_dir_list.html" , {'sous_dir' : sous_dir, 'sous_dir_count':sous_dir_count})
 
-# Afficher Directeur 
 def dir_list(request):
 	dir = User.objects.filter(user_type=3)
 	dir_count = User.objects.filter(user_type=3).count()
 	return render(request, "registration/dir_list.html" , {'dir':dir, 'dir_count':dir_count})
 
-
-# afficher content admin
 def content_admin_list(request):
 	content_admin = User.objects.filter(user_type=2)
 	content_admin_count = User.objects.filter(user_type=2).count()
 	return render(request, "registration/content_admin_list.html" , {'content_admin' : content_admin, 'content_admin_count':content_admin_count})
 
-
-# supprimer user (concerne tout les users)
+# supprimer
 @login_required(login_url='login')
 def delete_user(request, id):
     form = User.objects.get(id=id)
@@ -274,7 +260,6 @@ def add_pos3(request):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos3.html", context={"pos3_form":pos3_form})
 
-#Ajouter comptes scf 6 and 7 in same form
 def add_pos6(request):
 	pos6_form = AddPos6Form(request.POST or None)
 	pos7_form = AddPos7Form(request.POST or None)
@@ -312,7 +297,6 @@ def add_pos7(request):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="scfs/add_pos7.html", context={"pos7_form":pos7_form})
 
-
 # afficher Comptes 
 def comptes_list(request):
 	pos1 = SCF_Pos_1.objects.all()
@@ -323,7 +307,6 @@ def comptes_list(request):
 	#pos1 = SCF_Pos_1.objects.all().count()
 	return render(request, "scfs/comptes_list.html" , {'pos1' : pos1, 'pos2' : pos2,
 													 'pos3' : pos3, 'pos6' : pos6, 'pos7' : pos7})
-
 
 # supprimer comptes
 def delete_pos1(request, id):
@@ -352,7 +335,6 @@ def delete_pos7(request, id):
     return HttpResponseRedirect("/scf/comptes_list")
 
 # comptes scf version 2
-
 def add_compte(request):
 	compte_form = CompteScfForm(request.POST or None)
 	if request.method == "POST":
@@ -397,7 +379,6 @@ def delete_monnaie(request, id):
     form.delete()
     return HttpResponseRedirect("/ref/monnaie_list")
 
-
 # Taux de change ---------------------------------------------
 
 def add_taux_chng(request):
@@ -434,8 +415,6 @@ def delete_taux_chng(request, id):
     form.delete()
     return HttpResponseRedirect("/ref/taux_chng_list")
 
-
-
 # Chapitre ---------------------------------------------------
 
 def add_chapitre(request):
@@ -463,7 +442,6 @@ def delete_chapitre(request, code_num):
     form = Chapitre.objects.get(code_num=code_num)
     form.delete()
     return HttpResponseRedirect("/ref/chapitre_list")
-
 
 # Pays ---------------------------------------------------
 
@@ -494,22 +472,18 @@ def delete_pays(request, id):
     return HttpResponseRedirect("/ref/pays_list")
 
 
+# Affectation des cadres aux unités ---------------------------------------------------
 
-# ------------ Affectation des cadres aux unités ---------------------------------------------------
-
-# afficher l'unités d'un cadre 
+def show_cadres(request):
+	cadre = User.objects.filter(user_type=6)
+	# cadres.unites  we can use related name in cadre_has_unite table
+	return render(request, "affectation/show_cadres.html" , {'cadre' : cadre})
+	
 def show_unites(request, id):
 	c = User.objects.get(id=id)
 	unites = Cadre_has_Unite.objects.filter(cadre = c)
 	return render(request,"affectation/show_unites.html", {'unites':unites, 'c':c})
 
-# supprimer l'unité pour une cadre 
-def delete_unite_of_cadre(request, id):
-	form = Cadre_has_Unite.objects.get(id=id)
-	form.delete()
-	return HttpResponseRedirect("/aff/show_cadres")
-
-# add_unite aux cadre donnée
 def add_unite_to_cadre(request, id):
 	cadre = User.objects.get(id=id)
 	form = AffectCadreForm(request.POST or None)
@@ -523,18 +497,18 @@ def add_unite_to_cadre(request, id):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="affectation/add_unite_to_cadre.html", context={"form":form})
 
-# affichier les cadres
-def show_cadres(request):
-	cadre = User.objects.filter(user_type=6)
-	# cadres.unites  we can use related name in cadre_has_unite table
-	return render(request, "affectation/show_cadres.html" , {'cadre' : cadre})
-	
+def delete_unite_of_cadre(request, id):
+	form = Cadre_has_Unite.objects.get(id=id)
+	cu_id = form.cadre.id
+	form.delete()
+	return HttpResponseRedirect("/aff/show_unites/"+ str(cu_id)+"")
 
-# -----------------------------------------------------------------------------------
 
-# ------------ Affectation des comptes aux unités ---------------------------------------------------
+# Affectation des comptes aux unités ---------------------------------------------------
+def all_unites(request):
+	unites = Unite.objects.all()
+	return render(request, "unite_comptes/all_unites.html" , {'unites' : unites})
 
-# ajouter compte aux unité
 def add_compte_to_unite(request, id):
 	unite = Unite.objects.get(id=id)
 	form = AddCompteUniteForm(request.POST or None)
@@ -550,19 +524,17 @@ def add_compte_to_unite(request, id):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="unite_comptes/add_compte_to_unite.html", context={"form":form})
 
-# afficher toutes les unités
-def all_unites(request):
-	unites = Unite.objects.all()
-	return render(request, "unite_comptes/all_unites.html" , {'unites' : unites})
-
-# afficher les comptes d'un unité 
 def show_comptes(request, id):
 	u = Unite.objects.get(id=id)
 	comptes = Unite_has_Compte.objects.filter(unite = u)
 	return render(request,"unite_comptes/comptes.html", {'comptes':comptes, 'u':u})
-# supprimer compte pour une unité 
+
+# def delete_compte_of_unite(request, id):
+
 
 # Proposition budget --------------------------------------------------------------------
+
+# affichage des unites et leur comptes par chapitre
 
 def unites(request):
 	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
@@ -581,7 +553,7 @@ def unite_detail(request, id):
 	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
 	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=6).count()
 	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=7).count()
-	# nombre de comptes done
+	# nombre de comptes saisie
 	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
 	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=2).count()
 	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=3).count()
@@ -589,26 +561,51 @@ def unite_detail(request, id):
 	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=5).count()
 	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=6).count()
 	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=7).count()
-	#Check if chapitre is done 
-	offre = offre_nbr==offre_done_nbr
-	traffic = traffic_nbr==traffic_done_nbr
-	ca_emmission = ca_emmission_nbr==ca_emmission_done_nbr
-	ca_transport = ca_transport_nbr==ca_transport_done_nbr
-	recettes = recettes_nbr==recettes_done_nbr
-	depense_fonc = depense_fonc_nbr==depense_fonc_done_nbr
-	depense_exp = depense_exp_nbr==depense_exp_done_nbr
+	# nombre de comptes Validé par chef dep
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+	#Check if chapitre is saisié 
+	offre_s = offre_nbr==offre_done_nbr
+	traffic_s = traffic_nbr==traffic_done_nbr
+	ca_emmission_s = ca_emmission_nbr==ca_emmission_done_nbr
+	ca_transport_s = ca_transport_nbr==ca_transport_done_nbr
+	recettes_s = recettes_nbr==recettes_done_nbr
+	depense_fonc_s = depense_fonc_nbr==depense_fonc_done_nbr
+	depense_exp_s = depense_exp_nbr==depense_exp_done_nbr
+	#Check if chapitre is  non saisié
+	offre_non_s = offre_done_nbr == 0
+	traffic_non_s = traffic_done_nbr == 0
+	ca_emmission_non_s = ca_emmission_done_nbr == 0
+	ca_transport_non_s = ca_transport_done_nbr == 0
+	recettes_non_s = recettes_done_nbr == 0
+	depense_fonc_non_s = depense_fonc_done_nbr == 0
+	depense_exp_non_s = depense_exp_done_nbr == 0
 
+	#Check if chapitre is validé par chef dep
+	offre_v = offre_nbr==offre_valid_nbr
+	traffic_v = traffic_nbr==traffic_valid_nbr
+	ca_emmission_v = ca_emmission_nbr==ca_emmission_valid_nbr
+	ca_transport_v = ca_transport_nbr==ca_transport_valid_nbr
+	recettes_v = recettes_nbr==recettes_valid_nbr
+	depense_fonc_v = depense_fonc_nbr==depense_fonc_valid_nbr
+	depense_exp_v = depense_exp_nbr==depense_exp_valid_nbr
+
+	#Check if chapitre is not validé par chef dep ( = compte validé)
+	offre_non_v = offre_valid_nbr == 0
 
 	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, 'comptes_done_nbr':comptes_done_nbr,
-															'offre_nbr':offre_nbr, 'offre_done_nbr':offre_done_nbr,
-															'traffic_nbr':traffic_nbr, 'traffic_done_nbr':traffic_done_nbr,
-															'ca_emmission_nbr':ca_emmission_nbr, 'ca_emmission_done_nbr':ca_emmission_done_nbr,
-															'ca_transport_nbr':ca_transport_nbr, 'ca_transport_done_nbr':ca_transport_done_nbr,
-															'recettes_nbr':recettes_nbr, 'recettes_done_nbr':recettes_done_nbr,
-															'depense_fonc_nbr':depense_fonc_nbr, 'depense_fonc_done_nbr':depense_fonc_done_nbr,
-															'depense_exp_nbr':depense_exp_nbr, 'depense_exp_done_nbr':depense_exp_done_nbr,
-															'offre':offre, 'traffic':traffic, 'ca_emmission':ca_emmission, 'ca_transport':ca_transport,
-															'recettes':recettes, 'depense_fonc':depense_fonc, 'depense_exp':depense_exp
+															'offre_s':offre_s, 'traffic_s':traffic_s, 'ca_emmission_s':ca_emmission_s, 'ca_transport_s':ca_transport_s,
+															'recettes_s':recettes_s, 'depense_fonc_s':depense_fonc_s, 'depense_exp_s':depense_exp_s,
+															'offre_v':offre_v, 'traffic_v':traffic_v, 'ca_emmission_v':ca_emmission_v, 'ca_transport_v':ca_transport_v,
+															'recettes_v':recettes_v, 'depense_fonc_v':depense_fonc_v, 'depense_exp_v':depense_exp_v,
+															'offre_non_s':offre_non_s, 'traffic_non_s':traffic_non_s, 'ca_emmission_non_s':ca_emmission_non_s, 'ca_transport_non_s':ca_transport_non_s,
+															'recettes_non_s':recettes_non_s, 'depense_fonc_non_s':depense_fonc_non_s, 'depense_exp_non_s':depense_exp_non_s,
+															'offre_non_v':offre_non_v
 															})
 
 def offre_comptes(request, id):
@@ -616,8 +613,13 @@ def offre_comptes(request, id):
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
 	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
 	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
-	offre = offre_nbr==offre_done_nbr
-	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'offre':offre})
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	
+	offre_s = offre_nbr==offre_done_nbr
+	offre_non_s = offre_done_nbr == 0
+	offre_v = offre_nbr==offre_valid_nbr
+
+	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes, "offre_s":offre_s, "offre_non_s":offre_non_s, "offre_v":offre_v})
 
 def traffic_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -666,13 +668,6 @@ def depense_exp_comptes(request, id):
 	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
 	depense_exp = depense_exp_nbr==depense_exp_done_nbr
 	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes, 'depense_exp':depense_exp})
-
-
-
-
-# depense_fonc_comptes
-# depense_exp_comptes
-
 
 # add montant to compte 
 def add_montant(request, id):
@@ -724,14 +719,6 @@ def add_montant(request, id):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="proposition/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte})
 
-
-#class MontantUpdateView(UpdateView):
-#	model = Compte_has_Montant
-#	fields = ("montant",)
-#	template_name = "proposition/update_montant.html"
-#	success_url = "/"
-
-
 def update_montant(request, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
@@ -758,7 +745,6 @@ def update_montant(request, id):
 		return redirect("/proposition/unite/offre/"+ str(montant.unite_compte.unite.id)+"")
 	return render (request=request, template_name="proposition/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant})
 
-
 def valid_montant(request, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
 	if request.user.user_type==6:
@@ -773,3 +759,34 @@ def valid_montant(request, id):
 		new_montant.validation = "SOUSD"
 		new_montant.save()
 	return HttpResponseRedirect("/proposition/unite/offre/"+ str(new_montant.unite_compte.unite.id)+"")
+
+def cancel_valid_montant(request, id):
+	new_montant = get_object_or_404(Compte_has_Montant, id = id)
+	if request.user.user_type==6:
+		new_montant.vld_cadre = False
+		new_montant.save()
+	if request.user.user_type==5:
+		new_montant.vld_chef_dep = False
+		new_montant.validation = "CHEFD"
+		new_montant.save()
+	if request.user.user_type==4:
+		new_montant.vld_sous_dir = False
+		new_montant.validation = "SOUSD"
+		new_montant.save()
+	return HttpResponseRedirect("/proposition/unite/offre/"+ str(new_montant.unite_compte.unite.id)+"")
+
+def add_new_compte(request, id):
+	unite = Unite.objects.get(id=id)
+	form = AddCompteUniteForm(request.POST or None)
+	if request.method == "POST":
+		if  form.is_valid():
+			compte_unite = form.save(commit=False)
+			compte_unite.unite = unite
+			compte_unite.existe = True
+			compte_unite.added_by = request.user
+			compte_unite.save()
+			messages.success(request, "compte added successfuly." )
+			return HttpResponseRedirect("/proposition/unite/offre/"+ str(unite.id)+"")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="proposition/add_new_compte.html", context={"form":form})
+

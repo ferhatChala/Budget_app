@@ -80,9 +80,9 @@ urlpatterns = [
     path('aff/show_cadres', views.show_cadres, name="show_cadres"),
     path('aff/show_unites/<int:id>', views.show_unites, name="show_unites"),
     path('aff/show_unites/add_unite_to_cadre/<int:id>', views.add_unite_to_cadre, name="add_unite_to_cadre"),
-    path('aff/delete_unite_of_cadre/<int:id>', views.delete_unite_of_cadre, name="delete_unite_of_cadre"),
+    path('aff/show_unites/delete_unite_of_cadre/<int:id>', views.delete_unite_of_cadre, name="delete_unite_of_cadre"),
     
-    # affectation des unites aux cadres 
+    # affectation des comptes aux unites 
     path('all_unites', views.all_unites, name="all_unites"),
     path('show_comptes/<int:id>', views.show_comptes, name="show_comptes"),
     path('show_comptes/add_compte_to_unite/<int:id>', views.add_compte_to_unite, name="add_compte_to_unite"),
@@ -109,7 +109,9 @@ urlpatterns = [
     
     path('proposition/unite/offre/update_montant/<int:id>', views.update_montant, name="update_montant" ),
     path('proposition/unite/offre/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
-    
+    path('proposition/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
+    path('proposition/unite/offre/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+
 
 
 
