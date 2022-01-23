@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block prop_active %}
-<li class="active">
+<li class="menu-item-has-children dropdown active">
 {% endblock %}
 
 {% block content %} 
@@ -43,14 +43,17 @@
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="form-row">
-									<div class="form-group col-md-6 mb-0">
+									<div class="form-group col-md-5 mb-0">
                                         {{form.compte|as_crispy_field }}
                                     </div>
-                                    <div class="form-group col-md-3 mb-0">
+                                    <div class="form-group col-md-2 mb-0">
                                         {{ form.regle_par|as_crispy_field }}
                                     </div>
                                     <div class="form-group col-md-3 mb-0">
                                         {{ form.reseau_compte|as_crispy_field }}
+                                    </div>
+									<div class="form-group col-md-2 mb-0">
+                                        {{ form.monnaie|as_crispy_field }}
                                     </div>
 								</div>
                                 <br>

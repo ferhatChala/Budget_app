@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block prop_active %}
-<li class="active">
+<li class="menu-item-has-children dropdown active">
 {% endblock %}
 
 {% block content %} 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget 2022</h1>
+						<h1>Proposition Budget <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -38,22 +38,47 @@
 					<div class="card">
 						<div class="card-header">
 							
-							{% if recettes %}	
-							<strong class="card-title">Autre Recettes <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-circle-o"></i> Terminé</span></strong>
+							{% if user.user_type == 5 %}
+								{% if recettes_v and recettes_s %}	
+									<strong class="card-title">Autre Recettes <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
+								{% elif recettes_s and recettes_v == False  %}
+									<strong class="card-title">Autre Recettes <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></strong>
+								{% elif recettes_non_s %}
+									<strong class="card-title">Autre Recettes <span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+								{% elif recettes_non_s == False and recettes_s == False%}
+									<strong class="card-title">Autre Recettes <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
+								{% endif %}
+
+							{% elif user.user_type == 6 %}
+
+								{% if recettes_s and recettes_v == False %}	
+									<strong class="card-title">Autre Recettes <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
+								{% elif recettes_non_s  %}
+									<strong class="card-title">Autre Recettes <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Non saisie</span></strong>
+								{% elif recettes_non_s == False and recettes_s == False %}
+									<strong class="card-title">Autre Recettes <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
+								{% elif recettes_s and recettes_v %}
+									<strong class="card-title">Autre Recettes <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></strong>
+								{% endif %}
+							
 							{% else %}
-							<strong class="card-title">Autre Recettes <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil"></i>  En cours</span></strong>
+								<strong class="card-title">Autre Recettes </strong>
 							{% endif %}
+							
 						</div>
 						<div class="card-body">
+							
+							{% if user.user_type == 5 %}
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
 										<th>N° SCF</th>
 										<th>Rubrique</th>
-										<th>Resau</th>
-                                        <th>regle_par</th>
-										<th>Montant</th>
-                                        <th>Action</th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+                                        <th>Montant</th>
+										<th>M-Cloture</th>
+										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -61,31 +86,246 @@
 									<tr>
 										<td>{{c.compte.numero}}</td>
 										<td>{{c.compte.rubrique}}</td>
-										<td>{{c.reseau_compte}}</td>
-                                        <td>{{c.regle_par.code_alpha}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par.code_alpha}}</td>
+
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
-													{% if m.type_bdg == "PROPOS" %}
-														{{m.montant}}	
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+														{% if m.commentaire_montant != None %}
+
+															{% if m.vld_chef_dep %}
+																<span style="color: green;">{{m.montant}}</span>
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% else %}
+																<span style="color: orange;">{{m.montant}}</span>
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% endif %}
+														{% else %}
+															{% if m.vld_chef_dep %}
+																<span style="color: green;">{{m.montant}}</span>	
+															{% else %}
+																<span style="color: orange;">{{m.montant}}</span>
+															{% endif %}
+														{% endif %}																		
 													{% endif %}	
 												{% endfor %}
 											{% else %}
 												--------
-											{% endif %}
+											{% endif %}	
 										</td>
+
 										<td>
 											{% if c.montants.all %}
-												<a href="#" class="btn btn-sm btn-info"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>	
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+														<span>{{m.montant_cloture}}</span>																	
+													{% endif %}	
+												{% endfor %}
 											{% else %}
-												<a href="add_montant_recettes/{{c.id}}" class="btn btn-sm btn-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+											--------
 											{% endif %}
 										</td>
+
+										<td>
+											{% if c.montants.all %}
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" %}
+													
+															{% if m.vld_chef_dep %}
+																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																<!-- Button trigger modal -->
+																<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#e{{m.id}}">
+																	<span><i class="menu-icon fa fa-times-circle"></i></span>
+																</button>
+																<!-- Modal -->
+																<div class="modal fade" id="e{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																	<div class="modal-dialog">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																		<strong><h4 class="modal-title" id="exampleModalLabel">Annuler la validation</h4></strong>
+																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																			<span aria-hidden="true">&times;</span>
+																		</button>
+																		</div>
+																		<div class="modal-body">
+																			Please make sure that you want to cancel the validation for this compte : <br>
+																			Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																			Montant : <span style="color: red;"> {{m.montant}}</span>
+																		</div>
+																		<div class="modal-footer">
+																		<a href="cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																		<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Close</button>
+																		</div>
+																	</div>
+																	</div>
+																</div>
+
+															{% else %}
+																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																<a href="valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>		
+															{% endif %}
+
+													{% endif %}	
+												{% endfor %}
+											{% else %}
+												<a href="add_montant_recettes/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+											{% endif %}
+										</td>
+										
 									</tr>
 						
 									{% endfor %}
 								</tbody>
 							</table>
+							{% endif %}
+
+							{% if user.user_type == 6 %}
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>N° SCF</th>
+										<th>Rubrique</th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+                                        <th>Montant</th>
+										<th>M-Cloture</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for c in comptes %}
+									<tr>
+										<td>{{c.compte.numero}}</td>
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par.code_alpha}}</td>
+										<td>
+											{% if c.montants.all %}
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+														
+																												
+													{% if m.commentaire_montant != None %}													
+															{% if m.vld_chef_dep == False %}
+																<span>{{m.montant}}</span>	
+																
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+
+															{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
+																<span style="color: green;">{{m.montant}}</span>
+														
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
+																<span style="color: orange;"> {{m.montant}}</i></span>
+
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
+																<span style="color: red;">{{m.montant}}</span>
+
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% else %}
+																<span>{{m.montant}}</span>
+															{% endif %}
+
+														{% else %}
+															{% if m.vld_chef_dep == False %}
+																<span>{{m.montant}}</span>	
+															{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
+																<span style="color: green;">{{m.montant}}														
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
+																<span style="color: orange;"> {{m.montant}}</i></span>
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
+																<span style="color: red;">{{m.montant}}</span>
+															{% else %}
+																<span>{{m.montant}}</span>
+															{% endif %}
+														{% endif %}
+																															
+													{% endif %}	
+												{% endfor %}
+											{% else %}
+												--------
+											{% endif %}	
+										</td>
+										<td>
+											{% if c.montants.all %}
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+															<span>{{m.montant_cloture}}</span>																	
+													{% endif %}	
+												{% endfor %}
+											{% else %}
+											--------
+											{% endif %}
+										</td>
+										<td>
+											{% if c.montants.all %}
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" %}
+													
+															{% if m.vld_chef_dep %}
+																<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+															{% else %}
+																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+															{% endif %}
+
+													{% endif %}	
+												{% endfor %}
+											{% else %}
+												<a href="add_montant_recettes/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+											{% endif %}
+										</td>
+										
+									</tr>
+						
+									{% endfor %}
+								</tbody>
+							</table>
+							{% endif %}
+								
+
+						</div>
+						<div class="card-footer">
+							<a href="add_new_compte/{{unite.id}}" class="btn btn-info btn-sm btn-block"><span><i class="menu-icon fa fa-plus"></i></span> Ajouter autre compte<span></a>
 						</div>
 					</div>
 				</div>
@@ -93,5 +333,11 @@
 
 
 </div>
+
+<script>
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+</script>
 
 {% endblock %}

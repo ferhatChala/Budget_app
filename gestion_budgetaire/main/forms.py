@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import (User, Interim, Commentaire,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
-                    Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite
+                    Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite, Annee_Budgetaire
                     )
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -104,29 +104,34 @@ class AffectCadreForm(forms.ModelForm):
 class AddCompteUniteForm(forms.ModelForm):
 	class Meta:
 		model = Unite_has_Compte
-		fields = ("compte","regle_par","reseau_compte",)
+		fields = ("compte","regle_par","reseau_compte","monnaie")
 
 # add montant to compte 
 class MontantCompteForm(forms.ModelForm):
 	class Meta:
 		model = Compte_has_Montant
-		fields = ("monnaie","montant","commentaire")
+		fields = ("montant","montant_cloture")
 
 class CommentaireForm(forms.ModelForm):
 	class Meta:
 		model = Commentaire
-		fields = '__all__'
+		fields = ("text","importance")
 
 class UpdateMontantCompteForm(forms.ModelForm):
 	class Meta:
 		model = Compte_has_Montant
-		fields = ("montant",)
+		fields = ("montant","montant_cloture")
 
 
 class InterimForm(forms.ModelForm):
 	class Meta:
 		model = Interim
 		fields = '__all__'
+
+class AnneeBudgetForm(forms.ModelForm):
+	class Meta:
+		model = Annee_Budgetaire
+		fields =  ("annee","type_bdg","lancement","cloture")
 
 
 

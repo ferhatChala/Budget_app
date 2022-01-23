@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block prop_active %}
-<li class="active">
+<li class="menu-item-has-children dropdown active">
 {% endblock %}
 
 {% block content %} 
@@ -41,19 +41,19 @@
 						</div>
 						<div class="card-body">
 							
-							{% if montant.commentaire.importance == "F" %}
+							{% if montant.commentaire_montant.importance == "F" %}
 								<div class="alert alert-secondary" role="alert">
-									{{montant.commentaire.text}}
+									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
-							{% if montant.commentaire.importance == "M" %}
+							{% if montant.commentaire_montant.importance == "M" %}
 								<div class="alert alert-warning" role="alert">
-									{{montant.commentaire.text}}
+									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
-							{% if montant.commentaire.importance == "C" %}
+							{% if montant.commentaire_montant.importance == "C" %}
 								<div class="alert alert-danger" role="alert">
-									{{montant.commentaire.text}}
+									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
 								
@@ -61,6 +61,8 @@
                             <form method="post">
                                 {% csrf_token %}
 								{{ form.montant|as_crispy_field }}
+								{{ form.montant_cloture|as_crispy_field }}
+
 
                                 <button type="submit" class="btn btn-primary">Modifier</button>
                                 <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>

@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 
 {% block prop_active %}
-<li class="active">
+<li class="menu-item-has-children dropdown active">
 {% endblock %}
 
 {% block content %} 
 
-{% load crispy_forms_tags %}      
+{% load crispy_forms_tags %}  
+
+
+{% if budget.lancement and budget.cloture == False %}
 
 <div class="breadcrumbs">
 	<div class="breadcrumbs-inner">
@@ -14,7 +17,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget 2022</h1>
+						<h1>Proposition Budget <strong>{{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -30,8 +33,6 @@
 		</div>
 	</div>
 </div>  
-
-
 
 <div class="row content">
 
@@ -76,5 +77,45 @@
 
 
 </div>
+
+{% else %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <strong>Note: </strong> Please contact the admin for any additional informations, <strong>admin@air-algerie.dz </strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+                        
+                        {% if budget.cloture  %}
+                            <h1>Proposition budget de l'année {{budget.annee}} c'est <strong>Cloturé !</strong>.</h1>
+                        {% else %}
+                            <h1>Proposition budget de l'année {{budget.annee}} pas encore lancé.</h1>
+                        {% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les proposition budgets</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+    
+{% endif %}
+    
+
+
 
 {% endblock %}

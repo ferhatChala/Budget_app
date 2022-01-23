@@ -87,30 +87,60 @@ urlpatterns = [
     path('show_comptes/<int:id>', views.show_comptes, name="show_comptes"),
     path('show_comptes/add_compte_to_unite/<int:id>', views.add_compte_to_unite, name="add_compte_to_unite"),
 
-    # proposition budget
+    # proposition budget ----------------------------------------------------------------------------------------------------------
     path('proposition/unites', views.unites, name="unites"),
     path('proposition/unite/<int:id>', views.unite_detail, name="unite"),
 
-    path('proposition/unite/offre/<int:id>', views.offre_comptes, name="offre"),
-    path('proposition/unite/traffic/<int:id>', views.traffic_comptes, name="traffic"),
-    path('proposition/unite/ca_emmission/<int:id>', views.ca_emmission_comptes, name="ca_emmission"),
-    path('proposition/unite/ca_transport/<int:id>', views.ca_transport_comptes, name="ca_transport"),
-    path('proposition/unite/recettes/<int:id>', views.recettes_comptes, name="recettes"),
-    path('proposition/unite/depense_fonc/<int:id>', views.depense_fonc_comptes, name="depense_fonc"),
-    path('proposition/unite/depense_exp/<int:id>', views.depense_exp_comptes, name="depense_exp"),
 
+    #Offre
+    path('proposition/unite/offre/<int:id>', views.offre_comptes, name="offre"),
     path('proposition/unite/offre/add_montant_offre/<int:id>', views.add_montant, name="add_montant_offre"),
-    path('proposition/unite/traffic/add_montant_traffic/<int:id>', views.add_montant, name="add_montant_traffic"),
-    path('proposition/unite/ca_emmission/add_montant_ca_emmission/<int:id>', views.add_montant, name="add_montant_ca_emmission"),
-    path('proposition/unite/ca_transport/add_montant_ca_transport/<int:id>', views.add_montant, name="add_montant_ca_transport"),
-    path('proposition/unite/recettes/add_montant_recettes/<int:id>', views.add_montant, name="add_montant_recettes"),
-    path('proposition/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant, name="add_montant_depense_fonc"),
-    path('proposition/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant, name="add_montant_depense_exp"),
-    
     path('proposition/unite/offre/update_montant/<int:id>', views.update_montant, name="update_montant" ),
     path('proposition/unite/offre/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/offre/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    #Traffic
+    path('proposition/unite/traffic/<int:id>', views.traffic_comptes, name="traffic"),
+    path('proposition/unite/traffic/add_montant_traffic/<int:id>', views.add_montant, name="add_montant_traffic"),
+    path('proposition/unite/traffic/update_montant/<int:id>', views.update_montant, name="update_montant" ),
+    path('proposition/unite/traffic/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
+    path('proposition/unite/traffic/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
+    path('proposition/unite/traffic/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    #ca emmission
+    path('proposition/unite/ca_emmission/<int:id>', views.ca_emmission_comptes, name="ca_emmission"),
+    path('proposition/unite/ca_emmission/add_montant_ca_emmission/<int:id>', views.add_montant, name="add_montant_ca_emmission"),
+    path('proposition/unite/ca_emmission/update_montant/<int:id>', views.update_montant, name="update_montant" ),
+    path('proposition/unite/ca_emmission/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
+    path('proposition/unite/ca_emmission/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
+    path('proposition/unite/ca_emmission/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    #ca transport
+    path('proposition/unite/ca_transport/<int:id>', views.ca_transport_comptes, name="ca_transport"),
+    path('proposition/unite/ca_transport/add_montant_ca_transport/<int:id>', views.add_montant, name="add_montant_ca_transport"),
+    path('proposition/unite/ca_transport/update_montant/<int:id>', views.update_montant, name="update_montant" ),
+    path('proposition/unite/ca_transport/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
+    path('proposition/unite/ca_transport/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
+    path('proposition/unite/ca_transport/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    #autre reccettes
+    path('proposition/unite/recettes/<int:id>', views.recettes_comptes, name="recettes"),
+    path('proposition/unite/recettes/add_montant_recettes/<int:id>', views.add_montant, name="add_montant_recettes"),
+    path('proposition/unite/recettes/update_montant/<int:id>', views.update_montant, name="update_montant" ),
+    path('proposition/unite/recettes/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
+    path('proposition/unite/recettes/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
+    path('proposition/unite/recettes/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    #depense foncionement
+    path('proposition/unite/depense_fonc/<int:id>', views.depense_fonc_comptes, name="depense_fonc"),
+    path('proposition/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant, name="add_montant_depense_fonc"),
+    path('proposition/unite/depense_fonc/update_montant/<int:id>', views.update_montant, name="update_montant" ),
+    path('proposition/unite/depense_fonc/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
+    path('proposition/unite/depense_fonc/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
+    path('proposition/unite/depense_fonc/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    #depense exploitation
+    path('proposition/unite/depense_exp/<int:id>', views.depense_exp_comptes, name="depense_exp"),
+    path('proposition/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant, name="add_montant_depense_exp"),
+    path('proposition/unite/depense_exp/update_montant/<int:id>', views.update_montant, name="update_montant" ),
+    path('proposition/unite/depense_exp/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
+    path('proposition/unite/depense_exp/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
+    path('proposition/unite/depense_exp/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
 
 
 

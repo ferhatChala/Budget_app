@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block prop_active %}
-<li class="active">
+<li class="menu-item-has-children dropdown active">
 {% endblock %}
 
 {% block content %} 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget 2022  </h1>
+						<h1>Proposition Budget <strong> {{budget.annee}}</strong>   </h1>
 					</div>
 				</div>
 			</div>
@@ -428,7 +428,7 @@
 							{% endif %}
 
 							{% if depense_exp_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
 							{% elif depense_exp_non_v %}
 							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
 							{% elif depense_exp_non_v == False and depense_exp_v == False%}

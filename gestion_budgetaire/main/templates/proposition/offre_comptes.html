@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block prop_active %}
-<li class="active">
+<li class="menu-item-has-children dropdown active">
 {% endblock %}
 
 {% block content %} 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget 2022</h1>
+						<h1>Proposition Budget <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -73,7 +73,7 @@
 								<thead>
 									<tr>
 										<th>Rubrique</th>
-										<th>Resau</th>
+										<th>Reseau</th>
                                         <th>Montant</th>
 										<th>M-Cloture</th>
 										<th>Action</th>
@@ -87,22 +87,52 @@
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
-													{% if m.type_bdg == "PROPOS" %}
-														
-														{% if m.vld_chef_dep %}
-															<span style="color: green;">{{m.montant}}</span>	
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+														{% if m.commentaire_montant != None %}
+
+															{% if m.vld_chef_dep %}
+																<span style="color: green;">{{m.montant}}</span>
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% else %}
+																<span style="color: orange;">{{m.montant}}</span>
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% endif %}
 														{% else %}
-															<span style="color: orange;">{{m.montant}}</span>
-														{% endif %}
-															
-																															
+															{% if m.vld_chef_dep %}
+																<span style="color: green;">{{m.montant}}</span>	
+															{% else %}
+																<span style="color: orange;">{{m.montant}}</span>
+															{% endif %}
+														{% endif %}																		
 													{% endif %}	
 												{% endfor %}
 											{% else %}
 												--------
 											{% endif %}	
 										</td>
-										<td>-------</td>
+										<td>
+											{% if c.montants.all %}
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+														<span>{{m.montant_cloture}}</span>																	
+													{% endif %}	
+												{% endfor %}
+											{% else %}
+											--------
+											{% endif %}
+										</td>
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
@@ -161,7 +191,7 @@
 								<thead>
 									<tr>
 										<th>Rubrique</th>
-										<th>Resau</th>
+										<th>Reseau</th>
                                         <th>Montant</th>
 										<th>M-Cloture</th>
 										<th>Action</th>
@@ -175,20 +205,69 @@
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
-													{% if m.type_bdg == "PROPOS" %}
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
 														
-														{% if m.vld_chef_dep == False %}
-															<span>{{m.montant}}</span>	
-														{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
-															<span style="color: green;">{{m.montant}}</span>
-														{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
-															<span style="color: orange;"> {{m.montant}}</i></span>
-														{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
-															<span style="color: red;">{{m.montant}}</span>
+																												
+													{% if m.commentaire_montant != None %}													
+															{% if m.vld_chef_dep == False %}
+																<span>{{m.montant}}</span>	
+																
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+
+															{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
+																<span style="color: green;">{{m.montant}}</span>
+														
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
+																<span style="color: orange;"> {{m.montant}}</i></span>
+
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
+																<span style="color: red;">{{m.montant}}</span>
+
+																{% if m.commentaire_montant.importance == "F" %}
+																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "M" %} 
+																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% elif m.commentaire_montant.importance == "C" %}
+																	<a href="#"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																{% endif %}
+															{% else %}
+																<span>{{m.montant}}</span>
+															{% endif %}
+
 														{% else %}
-															<span>{{m.montant}}</span>
+															{% if m.vld_chef_dep == False %}
+																<span>{{m.montant}}</span>	
+															{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
+																<span style="color: green;">{{m.montant}}														
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
+																<span style="color: orange;"> {{m.montant}}</i></span>
+															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
+																<span style="color: red;">{{m.montant}}</span>
+															{% else %}
+																<span>{{m.montant}}</span>
+															{% endif %}
 														{% endif %}
-															
 																															
 													{% endif %}	
 												{% endfor %}
@@ -196,7 +275,17 @@
 												--------
 											{% endif %}	
 										</td>
-										<td>-------</td>
+										<td>
+											{% if c.montants.all %}
+												{% for m in c.montants.all  %}
+													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+															<span>{{m.montant_cloture}}</span>																	
+													{% endif %}	
+												{% endfor %}
+											{% else %}
+											--------
+											{% endif %}
+										</td>
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
@@ -233,9 +322,11 @@
 
 
 </div>
+
 <script>
-	$(function () {
-		$('[data-toggle="tooltip"]').tooltip()
-	})
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
 </script>
+
 {% endblock %}

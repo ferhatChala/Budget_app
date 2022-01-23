@@ -208,17 +208,17 @@ class Unite_has_Compte(models.Model):
     RES_CHOICES = [
     ('INT', 'Internationle'),
     ('DOM', 'Domestique'),
-    ('ALL', 'Les deux'),
+    ('ALL', 'All'),
     ]
 
     # code = unite.id-compte.numero-regle-resau
+    code = models.CharField(max_length=200, unique=True)
     unite   = models.ForeignKey("Unite", related_name="unites", on_delete=models.CASCADE)
     compte  = models.ForeignKey("SCF_Pos_7", related_name="unite_comptes", on_delete=models.CASCADE)
-    regle_par = models.ForeignKey("Unite", related_name="unite_regle", on_delete=models.CASCADE)
-    reseau_compte   = models.CharField(max_length=50, choices=RES_CHOICES) # resau_compte
-    added_by = models.CharField(max_length=50)
-    #monnaie null=true
-    existe  = models.BooleanField() # X
+    regle_par = models.ForeignKey("Unite", related_name="unite_regle" , on_delete=models.CASCADE)
+    reseau_compte  = models.CharField(max_length=50, choices=RES_CHOICES, default="ALL") # resau_compte
+    added_by = models.ForeignKey("User", null=True, blank=True, related_name="other_comptes_added", on_delete=models.CASCADE)
+    monnaie = models.ForeignKey("Monnaie",  null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.unite.code_alpha + " - " + str(self.compte.numero) 
@@ -239,32 +239,31 @@ class Compte_has_Montant(models.Model):
     ('SOUSDPI', 'Sous Directeur P/I'),
     ]
     # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par  (unique)
+    code = models.CharField(max_length=100, unique=True)
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
-    monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # X
-    annee = models.IntegerField() # auto (année courant + 1)
-    #annee_budgetaire = models.ForeignKey("Annee_Budgetaire", related_name="montants", on_delete=models.CASCADE)
+    annee_budgetaire = models.ForeignKey("Annee_Budgetaire", related_name="montants", on_delete=models.CASCADE) # annee n+1
     montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
-    #montant_cloture : 
+    montant_cloture = models.FloatField(default=0) # anne N 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
 
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
-    commentaire = models.ForeignKey("Commentaire", null=True, blank=True,  on_delete=models.CASCADE)
-    # commentaire cloture many to many
+    commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.CASCADE)
+    commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.CASCADE)
     montant_chef_dep = models.FloatField(default=0) # saiser chef dep
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
     #la validation de chaque acteur
     vld_cadre = models.BooleanField(default=False)   # auto    
     vld_chef_dep = models.BooleanField(default=False) # auto
     vld_sous_dir = models.BooleanField(default=False)  # auto
-    #ajouter commentaires avec degre d'importance (faible, moyenne, critique)
-    #ajouter la valeur de cloture pour l année courant N
 
 class Cadre_has_Unite(models.Model):
     # code = cadre.id + unite.code
+    code = models.CharField(max_length=50, unique=True)
     cadre = models.ForeignKey("User", on_delete=models.CASCADE)
     unite = models.ForeignKey("Unite", on_delete=models.CASCADE)
+    
 
 class Annee_Budgetaire(models.Model):
     TYPBDG_CHOICES = [
@@ -272,13 +271,15 @@ class Annee_Budgetaire(models.Model):
     ('REUN', 'Budget de Réunion'),
     ('NOTIF', 'Budget notifié'),
     ]
+    # code =  type + annee
+    code = models.CharField(max_length=50, unique=True) 
     annee = models.IntegerField()
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES)
-    lancement = models.BooleanField()
-    cloture = models.BooleanField()
+    lancement = models.BooleanField(default=False)
+    cloture = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.type_bdg + str(annee)
+        return self.type_bdg + " " + str(self.annee)
  
 
 # Historique & Notification & Commentaire & Reception
@@ -299,10 +300,14 @@ class Commentaire(models.Model):
     ('M', 'Moyenne'),
     ('C', 'Critique'),
     ]
+    TYPE_CHOICES = [
+    ('M', 'Montant'),
+    ('C', 'Cloture'),
+    ]
     text = models.CharField(max_length=200)
     importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='F') 
-    #type: proposition, cloture
-    #user : 
+    comment_type = models.CharField(max_length=50, choices=TYPE_CHOICES ) 
+    user = models.ForeignKey("User", related_name="comments", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.text

@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import (User,
+from .models import (User, Annee_Budgetaire,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite,
@@ -123,4 +123,6 @@ admin.site.register(Notification)
 admin.site.register(Commentaire)
 admin.site.register(Reception)
 admin.site.register(Interim)
+admin.site.register(Annee_Budgetaire)
+
 
