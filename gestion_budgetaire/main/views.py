@@ -710,21 +710,97 @@ def recettes_comptes(request, id):
 
 def depense_fonc_comptes(request, id):
 	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]
+
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
-	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
-	comptes_regle_par_autre = Unite_has_Compte.objects.filter(unite=unite == False, compte__chapitre__code_num=6)	
-	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=6).count()
+	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=6)
+	comptes_regle_par_autre = []
+	for c in comptes:
+		if c.regle_par != unite:
+			comptes_regle_par_autre.append(c)	
+	# pos 2 comptes 
+	all_c2 = SCF_Pos_2.objects.all()
+	c2_par_unite = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_unite:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_unite.append(c2)
+
+	c2_par_autre = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_autre:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_autre.append(c2)
+	
+	c2_par_unite = list(dict.fromkeys(c2_par_unite))
+	c2_par_autre = list(dict.fromkeys(c2_par_autre))
+
+	#pos 3 comptes
+	all_c3 = SCF_Pos_3.objects.all()
+	c3_par_unite = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_unite:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_unite.append(c3)
+	
+	c3_par_unite = list(dict.fromkeys(c3_par_unite))
+
+
+	#comptes_regle_par_autre = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite compte__chapitre__code_num=6)	
+	
+	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6).count()
 	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=6).count()
-	depense_fonc = depense_fonc_nbr==depense_fonc_done_nbr
-	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'depense_fonc':depense_fonc})
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+
+	depense_fonc_s = depense_fonc_nbr==depense_fonc_done_nbr
+	depense_fonc_non_s = depense_fonc_done_nbr == 0
+	depense_fonc_v = depense_fonc_nbr==depense_fonc_valid_nbr
+
+	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
+																  "depense_fonc_s":depense_fonc_s, "depense_fonc_non_s":depense_fonc_non_s, "depense_fonc_v":depense_fonc_v, 'budget':budget,
+																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite})
 
 def depense_exp_comptes(request, id):
 	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]
+
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7)
-	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
-	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
-	depense_exp = depense_exp_nbr==depense_exp_done_nbr
-	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes, 'depense_exp':depense_exp})
+	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=7)
+	comptes_regle_par_autre = []
+	for c in comptes:
+		if c.regle_par != unite:
+			comptes_regle_par_autre.append(c)	
+
+	all_c2 = SCF_Pos_2.objects.all()
+	c2_par_unite = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_unite:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_unite.append(c2)
+
+	c2_par_autre = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_autre:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_autre.append(c2)
+	
+	c2_par_unite = list(dict.fromkeys(c2_par_unite))
+	c2_par_autre = list(dict.fromkeys(c2_par_autre))	
+
+
+	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=7).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+
+	depense_exp_s = depense_exp_nbr==depense_exp_done_nbr
+	depense_exp_non_s = depense_exp_done_nbr == 0
+	depense_exp_v = depense_exp_nbr==depense_exp_valid_nbr
+
+	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
+																	"depense_exp_s":depense_exp_s, "depense_exp_non_s":depense_exp_non_s, "depense_exp_v":depense_exp_v, 'budget':budget,
+																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre})
 
 # add montant to compte 
 def add_montant(request, id):

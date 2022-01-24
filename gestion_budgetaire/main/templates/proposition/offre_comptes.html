@@ -67,8 +67,8 @@
 							
 						</div>
 						<div class="card-body">
-							
 							{% if user.user_type == 5 %}
+							<input class="form-control" id="myInput" type="text" placeholder="Search..">
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
@@ -79,7 +79,7 @@
 										<th>Action</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="myTable" >
 									{% for c in comptes %}
 									<tr>
 										<td>{{c.compte.rubrique}}</td>
@@ -187,7 +187,8 @@
 							{% endif %}
 
 							{% if user.user_type == 6 %}
-							<table id="bootstrap-data-table" class="table table-striped">
+							<input class="form-control" id="myInput" type="text" placeholder="Search..">
+							<table class="table table-striped">
 								<thead>
 									<tr>
 										<th>Rubrique</th>
@@ -197,7 +198,7 @@
 										<th>Action</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="myTable">
 									{% for c in comptes %}
 									<tr>
 										<td>{{c.compte.rubrique}}</td>
@@ -224,7 +225,7 @@
 																<span style="color: green;">{{m.montant}}</span>
 														
 																{% if m.commentaire_montant.importance == "F" %}
-																	<a href="#"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+																	<a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover" ><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
 																{% elif m.commentaire_montant.importance == "M" %} 
 																	<a href="#"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
 																{% elif m.commentaire_montant.importance == "C" %}
@@ -323,10 +324,22 @@
 
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
-$(function () {
-  $('[data-toggle="popover"]').popover()
-})
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+		var value = $(this).val().toLowerCase();
+		$("#myTable tr").filter(function() {
+		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		});
+	  });
+	});
 </script>
 
+<script>
+	$(document).ready(function(){
+		$('[data-toggle="popover"]').popover();   
+	});
+</script>
 {% endblock %}
