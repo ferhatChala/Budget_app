@@ -296,6 +296,7 @@ class Notification(models.Model):
 
 class Commentaire(models.Model):
     IMPORTANCE_CHOICES = [
+    ('A', 'Aucun'),
     ('F', 'Faible'),
     ('M', 'Moyenne'),
     ('C', 'Critique'),
@@ -304,8 +305,8 @@ class Commentaire(models.Model):
     ('M', 'Montant'),
     ('C', 'Cloture'),
     ]
-    text = models.CharField(max_length=200)
-    importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='F') 
+    text = models.CharField(max_length=300, default='-')
+    importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='A') 
     comment_type = models.CharField(max_length=50, choices=TYPE_CHOICES ) 
     user = models.ForeignKey("User", related_name="comments", on_delete=models.CASCADE)
 

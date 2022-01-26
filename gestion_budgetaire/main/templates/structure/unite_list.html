@@ -61,22 +61,22 @@
                                         <td>{{u.pays.code_alpha_two}}</td>
                                         <td>{{u.region}}</td>
 										<td>
-											<a href="update_unite/{{u.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</button>
+											<a href="update_unite/{{u.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{u.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>
 										</td>
 									</tr>
 									<!-- Modal -->
-									<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal fade" id="e{{u.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 								  			<div class="modal-content">
 												<div class="modal-header">
-									  				<h5 class="modal-title" id="exampleModalLabel">Confirme Delete</h5>
+									  				<h3 class="modal-title" id="exampleModalLabel">Confirme Delete</h3>
 									  				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 														<span aria-hidden="true">&times;</span>
 									  				</button>
 												</div>
 												<div class="modal-body">
-									  				Are you sure you want to Delete this " {{u.lib}} " ?
+									  				Are you sure you want to Delete  <strong> " {{u.lib}} "</strong> ?
 												</div>
 												<div class="modal-footer">
 									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>

@@ -8,6 +8,31 @@
 
 {% load crispy_forms_tags %}   
 
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Admin</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="#">Afféctation</a></li>
+							<li><a href="#">{{u.code_alpha}}</a></li>
+							<li><a href="#">Comptes</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>   
+
 <div class="row content">
 				<div class="col-md-12">
 					<a href="{% url 'all_unites' %}" class="btn btn-outline-dark"><span><i class="menu-icon fa fa-long-arrow-left"></i></span> Reteur</a> <br><br>
@@ -37,10 +62,31 @@
 										<td>{{c.compte.chapitre}}</td>
                                         <td>{{c.regle_par.code_alpha}}</td>
 										<td>
-											<a href="delete_compte_of_unite/{{c.id}}" class="btn btn-sm btn-danger"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</a>
+											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{c.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>
 										</td>
 									</tr>
-						
+									
+									<!-- Modal -->
+									<div class="modal fade" id="e{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h3 class="modal-title" id="exampleModalLabel">Confirme Delete</h3>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+												<div class="modal-body">
+													Are you sure you want to Delete this <strong>" {{c.compte.numero}} - {{c.compte.rubrique}} "</strong>  ?
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+													<a href="delete_compte_of_unite/{{c.id}}" class="btn btn-danger">Supprimer</a>
+												</div>
+											</div>
+										</div>
+									</div>
+
 									{% endfor %}
 								</tbody>
 							</table>

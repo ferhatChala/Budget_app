@@ -57,8 +57,8 @@
 										<td>{{c.email}}</td>
 										<td>{{c.departement}}</td>
 										<td>
-											<a href="update_user/{{c.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{c.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</button>
+											<a href="update_user/{{c.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{c.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>
 										</td>
 									</tr>
 									<!-- Modal -->
@@ -66,13 +66,13 @@
 										<div class="modal-dialog">
 								  			<div class="modal-content">
 												<div class="modal-header">
-									  				<h5 class="modal-title" id="exampleModalLabel">Confirme Delete</h5>
+									  				<h3 class="modal-title" id="exampleModalLabel">Confirme Delete</h3>
 									  				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 														<span aria-hidden="true">&times;</span>
 									  				</button>
 												</div>
 												<div class="modal-body">
-									  				Are you sure you want to Delete this " {{c.nom}} {{c.prenom}} " ?
+									  				Are you sure you want to Delete this <strong>" {{c.nom}} {{c.prenom}} "</strong>  ?
 												</div>
 												<div class="modal-footer">
 									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>

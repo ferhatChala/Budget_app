@@ -143,7 +143,7 @@ def content_admin_list(request):
 def delete_user(request, id):
     form = User.objects.get(id=id)
     form.delete()
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/cadres_list")
 
 #update
 class UserUpdateView(UpdateView):
@@ -743,9 +743,15 @@ def depense_fonc_comptes(request, id):
 		for cu in comptes_regle_par_unite:
 			if c3.numero == cu.compte.ref.ref.numero:
 				c3_par_unite.append(c3)
+
+	c3_par_autre = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_autre:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_autre.append(c3)
 	
 	c3_par_unite = list(dict.fromkeys(c3_par_unite))
-
+	c3_par_autre = list(dict.fromkeys(c3_par_autre))
 
 	#comptes_regle_par_autre = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite compte__chapitre__code_num=6)	
 	
@@ -759,7 +765,7 @@ def depense_fonc_comptes(request, id):
 
 	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																  "depense_fonc_s":depense_fonc_s, "depense_fonc_non_s":depense_fonc_non_s, "depense_fonc_v":depense_fonc_v, 'budget':budget,
-																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite})
+																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre})
 
 def depense_exp_comptes(request, id):
 	unite = Unite.objects.get(id=id)

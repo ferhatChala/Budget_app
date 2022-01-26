@@ -139,9 +139,22 @@
                             <li><i class="menu-icon fa fa-th"></i><a href="{% url 'dep_list' %}">Département</a></li>
                             <li><i class="menu-icon fa fa-th"></i><a href="{% url 'chapitre_list' %}">Chapitre</a></li>
                             <li><i class="menu-icon fa fa-th"></i><a href="{% url 'monnaie_list' %}">Monnaie</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'taux_chng_list' %}">Taux de change</a></li>
                             <li><i class="menu-icon fa fa-th"></i><a href="{% url 'pays_list' %}">Pays</a></li>
                         </ul>
+                    </li>
+                    <li class="menu-title">Budget</li><!-- /.menu-title -->
+
+                    {% block annee_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'all_unites' %}"><i class="menu-icon fa fa-calendar"></i>Année Budgétaire</a>
+                    </li>
+                   
+
+                    {% block tchg_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'taux_chng_list' %}"><i class="menu-icon fa fa-exchange"></i>Taux de change</a>
                     </li>
                     {% endif %}
                     <!-- /.Admin functions  -->

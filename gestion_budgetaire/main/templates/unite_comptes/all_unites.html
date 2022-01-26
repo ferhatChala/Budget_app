@@ -8,6 +8,30 @@
 
 {% load crispy_forms_tags %}       
 
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Admin</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="#">Afféctation</a></li>
+							<li><a href="#">Unités</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>   
+
 <div class="row content">
 				<div class="col-md-12">
 					<div class="card">
@@ -38,7 +62,7 @@
                                         <td>{{u.pays.code_alpha_two}}</td>
                                         <td>{{u.region}}</td>
 										<td>
-											<a href="show_comptes/{{u.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Show Comptes</a>
+											<a href="show_comptes/{{u.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier Comptes</a>
 										</td>
 									</tr>
 
