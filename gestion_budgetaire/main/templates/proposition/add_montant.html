@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget 2022</h1>
+						<h1>Proposition Budget <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -44,19 +44,30 @@
                             <form method="post">
                                 {% csrf_token %}
 								
-								<div class="alert alert-secondary" role="alert">
-									<strong>Cloture année courant</strong> 
-									{{ montant_form.montant_cloture|as_crispy_field }}
-								</div>
-								<div class="alert alert-info" role="alert">
-									<strong>Propisition pour l'année prochaine</strong>
-									<div class="form-row">
-										<div class="form-group col-md-12 mb-0">
-											{{ montant_form.montant|as_crispy_field }}
+								<div class="form-row">
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-secondary" role="alert">
+											<strong>Cloture année courant (N)</strong> 
+											{{ montant_form.montant_cloture|as_crispy_field }}
 										</div>
-										<br>
-										<span>Ajouter commentaire pour ce montant:</span>
-										<br>
+									</div>
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-info" role="alert">
+											<strong>Propisition pour l'année prochaine (N+1)</strong>
+											<div class="form-row">
+												<div class="form-group col-md-12 mb-0">
+													{{ montant_form.montant|as_crispy_field }}
+												</div>
+												<br>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="alert alert-light border" role="alert">
+									<strong>Ajouter commentaire</strong>
+									<div class="form-row">
 										<div class="form-group col-md-9 mb-0">
 											{{ comment_form.text|as_crispy_field }}
 										</div>

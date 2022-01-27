@@ -75,6 +75,13 @@ urlpatterns = [
     path('ref/pays_list', views.pays_list, name="pays_list"),
     path('ref/update_pays/<pk>', views.PaysUpdateView.as_view()),
     path('ref/delete_pays/<int:id>', views.delete_pays, name="delete_pays"),
+    # annee budgétaire
+    path('annee_bdg/add', views.add_annee_bdg, name="add_annee_bdg"),
+    path('annee_bdg', views.annee_bdg, name="annee_bdg"),
+    path('update_annee_bdg/<int:id>', views.update_annee_bdg, name="update_annee_bdg"),
+    path('delete_annee_bdg/<int:id>', views.delete_annee_bdg, name="delete_annee_bdg"),
+
+
 
     # affectation des unites aux cadres 
     path('aff/show_cadres', views.show_cadres, name="show_cadres"),
@@ -86,6 +93,7 @@ urlpatterns = [
     path('all_unites', views.all_unites, name="all_unites"),
     path('show_comptes/<int:id>', views.show_comptes, name="show_comptes"),
     path('show_comptes/add_compte_to_unite/<int:id>', views.add_compte_to_unite, name="add_compte_to_unite"),
+    path('show_comptes/delete_compte_of_unite/<int:id>', views.delete_compte_of_unite, name="delete_compte_of_unite"),
 
     # proposition budget ----------------------------------------------------------------------------------------------------------
     path('proposition/unites', views.unites, name="unites"),
@@ -99,6 +107,9 @@ urlpatterns = [
     path('proposition/unite/offre/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/offre/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    path('proposition/unite/offre/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
+    path('proposition/unite/offre/update_comment/<int:id>', views.update_comment, name="update_comment"),
+    path('proposition/unite/offre/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
     #Traffic
     path('proposition/unite/traffic/<int:id>', views.traffic_comptes, name="traffic"),
     path('proposition/unite/traffic/add_montant_traffic/<int:id>', views.add_montant, name="add_montant_traffic"),
@@ -106,6 +117,9 @@ urlpatterns = [
     path('proposition/unite/traffic/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/traffic/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/traffic/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    path('proposition/unite/traffic/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
+    path('proposition/unite/traffic/update_comment/<int:id>', views.update_comment, name="update_comment"),
+    path('proposition/unite/traffic/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
     #ca emmission
     path('proposition/unite/ca_emmission/<int:id>', views.ca_emmission_comptes, name="ca_emmission"),
     path('proposition/unite/ca_emmission/add_montant_ca_emmission/<int:id>', views.add_montant, name="add_montant_ca_emmission"),
@@ -113,6 +127,9 @@ urlpatterns = [
     path('proposition/unite/ca_emmission/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/ca_emmission/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/ca_emmission/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    path('proposition/unite/ca_emmission/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
+    path('proposition/unite/ca_emmission/update_comment/<int:id>', views.update_comment, name="update_comment"),
+    path('proposition/unite/ca_emmission/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
     #ca transport
     path('proposition/unite/ca_transport/<int:id>', views.ca_transport_comptes, name="ca_transport"),
     path('proposition/unite/ca_transport/add_montant_ca_transport/<int:id>', views.add_montant, name="add_montant_ca_transport"),
@@ -120,6 +137,9 @@ urlpatterns = [
     path('proposition/unite/ca_transport/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/ca_transport/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/ca_transport/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    path('proposition/unite/ca_transport/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
+    path('proposition/unite/ca_transport/update_comment/<int:id>', views.update_comment, name="update_comment"),
+    path('proposition/unite/ca_transport/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
     #autre reccettes
     path('proposition/unite/recettes/<int:id>', views.recettes_comptes, name="recettes"),
     path('proposition/unite/recettes/add_montant_recettes/<int:id>', views.add_montant, name="add_montant_recettes"),
@@ -127,6 +147,9 @@ urlpatterns = [
     path('proposition/unite/recettes/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/recettes/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/recettes/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    path('proposition/unite/recettes/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
+    path('proposition/unite/recettes/update_comment/<int:id>', views.update_comment, name="update_comment"),
+    path('proposition/unite/recettes/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
     #depense foncionement
     path('proposition/unite/depense_fonc/<int:id>', views.depense_fonc_comptes, name="depense_fonc"),
     path('proposition/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant, name="add_montant_depense_fonc"),
@@ -134,6 +157,9 @@ urlpatterns = [
     path('proposition/unite/depense_fonc/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/depense_fonc/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/depense_fonc/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
+    path('proposition/unite/depense_fonc/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
+    path('proposition/unite/depense_fonc/update_comment/<int:id>', views.update_comment, name="update_comment"),
+    path('proposition/unite/depense_fonc/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
     #depense exploitation
     path('proposition/unite/depense_exp/<int:id>', views.depense_exp_comptes, name="depense_exp"),
     path('proposition/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant, name="add_montant_depense_exp"),
@@ -141,7 +167,10 @@ urlpatterns = [
     path('proposition/unite/depense_exp/valid_montant/<int:id>', views.valid_montant, name="valid_montant" ),
     path('proposition/unite/depense_exp/cancel_valid_montant/<int:id>', views.cancel_valid_montant, name="cancel_valid_montant" ),
     path('proposition/unite/depense_exp/add_new_compte/<int:id>', views.add_new_compte, name="add_new_compte" ),
-
+    path('proposition/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
+    path('proposition/unite/depense_exp/update_comment/<int:id>', views.update_comment, name="update_comment"),
+    path('proposition/unite/depense_exp/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
+    #--------------------------------------------------------------------------------------------------------------------------------
 
 
 

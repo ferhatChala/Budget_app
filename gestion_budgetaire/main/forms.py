@@ -68,6 +68,16 @@ class CompteScfForm(forms.ModelForm):
 		fields = ("numero" ,"rubrique" ,"ref")
 		# pos doit etre rempli auto pos = numero.lenght
 
+# annee budgétaire 
+class AnneeBdgForm(forms.ModelForm):
+	class Meta:
+		model = Annee_Budgetaire
+		fields = ("annee","type_bdg","lancement","cloture")
+
+class UpdateAnneeBdgForm(forms.ModelForm):
+	class Meta:
+		model = Annee_Budgetaire
+		fields = ("lancement","cloture")
 
 # Create Monnaie form
 class AddMonnaieForm(forms.ModelForm):

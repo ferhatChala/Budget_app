@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import  render, redirect, get_object_or_404
-from .forms import (NewUserForm, InterimForm,
+from .forms import (NewUserForm, InterimForm, AnneeBdgForm, UpdateAnneeBdgForm,
 					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
 					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm, 
 					AffectCadreForm, AddCompteUniteForm, MontantCompteForm,UpdateMontantCompteForm,CommentaireForm
 					)
-from .models import (User, Interim,
+from .models import (User, Interim,Commentaire,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
                     SCF_Pos_1, SCF_Pos_2, SCF_Pos_3, SCF_Pos_6, SCF_Pos_7,Compte_SCF,
                     Unite_has_Compte, Compte_has_Montant, Cadre_has_Unite, Annee_Budgetaire
@@ -402,7 +402,7 @@ def add_taux_chng(request):
 	return render (request=request, template_name="others/add_taux_chng.html", context={"taux_chng_form":taux_chng_form})
 
 def taux_chng_list(request):
-	taux_chng = Taux_de_change.objects.all()
+	taux_chng = Taux_de_change.objects.all().order_by('-annee')
 	taux_chng_count = Taux_de_change.objects.all().count()
 	return render(request, "others/taux_chng_list.html" , {'taux_chng' : taux_chng, 'taux_chng_count':taux_chng_count})
 
@@ -413,7 +413,7 @@ class TauxUpdateView(UpdateView):
 	success_url = "/ref/taux_chng_list"
 
 def delete_taux_chng(request, id):
-    form = Taux_de_change.objects.get(annee=id)
+    form = Taux_de_change.objects.get(id=id)
     form.delete()
     return HttpResponseRedirect("/ref/taux_chng_list")
 
@@ -473,6 +473,39 @@ def delete_pays(request, id):
     form.delete()
     return HttpResponseRedirect("/ref/pays_list")
 
+# annee budgétaire -------------------------------------------
+
+def add_annee_bdg(request):
+	annee_bdg_form = AnneeBdgForm(request.POST or None)
+	if request.method == "POST":
+		if  annee_bdg_form.is_valid():
+			annee_bdg = annee_bdg_form.save(commit=False)
+			annee_bdg.code = annee_bdg.type_bdg + str(annee_bdg.annee)
+			annee_bdg.save()
+			messages.success(request, "Année Budgétaire added successfuly." )
+			return redirect("/annee_bdg")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="others/add_annee_bdg.html", context={"annee_bdg_form":annee_bdg_form})
+
+def annee_bdg(request):
+	annee_bdg = Annee_Budgetaire.objects.all().order_by('-annee')
+	return render(request, "others/annee_bdg_list.html" , {'annee_bdg' : annee_bdg })
+
+def update_annee_bdg(request, id): 
+	annee_bdg = get_object_or_404(Annee_Budgetaire, id = id)
+	form = UpdateAnneeBdgForm(request.POST or None, instance = annee_bdg)
+	if form.is_valid():
+		form.save()
+		messages.success(request, "Année budgétaire updated successfuly." )
+		return redirect("/annee_bdg")
+
+	return render (request=request, template_name="others/update_annee_bdg.html", context={"form":form, "annee_bdg":annee_bdg})
+
+def delete_annee_bdg(request, id):
+    form = Annee_Budgetaire.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/annee_bdg")
+
 
 # Affectation des cadres aux unités ---------------------------------------------------
 
@@ -504,6 +537,7 @@ def delete_unite_of_cadre(request, id):
 	form = Cadre_has_Unite.objects.get(id=id)
 	cu_id = form.cadre.id
 	form.delete()
+	messages.success(request, "United removed successfuly." )
 	return HttpResponseRedirect("/aff/show_unites/"+ str(cu_id)+"")
 
 
@@ -532,8 +566,12 @@ def show_comptes(request, id):
 	comptes = Unite_has_Compte.objects.filter(unite = u)
 	return render(request,"unite_comptes/comptes.html", {'comptes':comptes, 'u':u})
 
-# def delete_compte_of_unite(request, id):
-
+def delete_compte_of_unite(request, id):
+	form = Unite_has_Compte.objects.get(id=id)
+	u_id = form.unite.id
+	form.delete()
+	messages.success(request, "Compte removed successfuly." )
+	return HttpResponseRedirect("/show_comptes/"+ str(u_id)+"")
 
 # Proposition budget --------------------------------------------------------------------
 
@@ -865,7 +903,7 @@ def add_montant(request, id):
 			else:
 				return redirect("/proposition/unites")
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="proposition/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte})
+	return render (request=request, template_name="proposition/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte, "budget":budget})
 
 def update_montant(request, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)
@@ -1007,3 +1045,43 @@ def add_new_compte(request, id):
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="proposition/add_new_compte.html", context={"form":form})
 
+def delete_added_compte(request,id):
+	form = Unite_has_Compte.objects.get(id=id)
+	unite = form.unite
+	compte = form.compte
+	form.delete()
+	# Redirecter vers chaque chapitre
+	if compte.chapitre.code_num== 1:
+		return HttpResponseRedirect("/proposition/unite/offre/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/proposition/unite/traffic/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/proposition/unite/ca_emmission/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/proposition/unite/ca_transport/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/proposition/unite/recettes/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/proposition/unite/depense_fonc/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/proposition/unite/depense_exp/"+ str(unite.id)+"")
+	else:
+		return HttpResponseRedirect("/proposition/unites")	
+
+# comments
+def update_comment(request, id): 
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]
+	comment = get_object_or_404(Commentaire, id = id)
+	form = CommentaireForm(request.POST or None, instance = comment)
+	if form.is_valid():
+		form.save()
+		messages.success(request, "Commentaire updated successfuly." )
+		return redirect("/proposition/unites")
+
+	return render (request=request, template_name="proposition/update_comment.html", context={"form":form, "comment":comment, "budget":budget})
+
+def delete_comment(request, id):
+    form = Commentaire.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/proposition/unites")

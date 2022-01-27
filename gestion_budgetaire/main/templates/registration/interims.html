@@ -38,6 +38,7 @@
                             <a href="{% url 'add_interim' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
 						</div>
 						<div class="card-body">
+							<input class="form-control" id="myInput" type="text" placeholder="Search..">
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
@@ -50,7 +51,7 @@
 										<th>Action</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="myTable">
 									{% for i in interims %}
 									<tr>
 										<td>{{i.user.nom}}</td>
@@ -96,5 +97,19 @@
 
 
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+		var value = $(this).val().toLowerCase();
+		$("#myTable tr").filter(function() {
+		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		});
+	  });
+	});
+</script>
+
 
 {% endblock %}

@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 
-{% block aff_active %}
+{% block annee_active %}
 <li class="active">
 {% endblock %}
 
 {% block content %} 
 
 {% load crispy_forms_tags %}   
-
 <div class="breadcrumbs">
 	<div class="breadcrumbs-inner">
 		<div class="row m-0">
@@ -22,55 +21,48 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="#">Afféctation</a></li>
-							<li><a href="#">{{c.nom}}</a></li>
-							<li><a href="#">Unités</a></li>
+							<li><a href="#">Année Budgétaire</a></li>
 						</ol>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>    
+</div>      
 
 <div class="row content">
 				<div class="col-md-12">
-					<a href="{% url 'show_cadres' %}" class="btn btn-outline-dark"><span><i class="menu-icon fa fa-long-arrow-left"></i></span> Reteur</a> <br><br>
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">La list des unités affectés au <b>{{c.nom}}</b> </strong>
-                            <a href="add_unite_to_cadre/{{c.id}}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
+							<strong class="card-title">Les années budgétaires</strong>
+                            <a href="{% url 'add_annee_bdg' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
 						</div>
 						<div class="card-body">
 							<input class="form-control" id="myInput" type="text" placeholder="Search..">
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
-										<th>Code Num</th>
-										<th>Code Alpha</th>
-										<th>Département</th>
-										<th>Monnaie</th>
-                                        <th>Pays</th>
-                                        <th>Reseau</th>
-                                        <th>Action</th>
+										<th>Année</th>
+										<th>Type Budget</th>
+										<th>Lancement</th>
+										<th>Cloture</th>
+										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody id="myTable">
-									{% for u in unites %}
+									{% for a in annee_bdg %}
 									<tr>
-										<td>{{u.unite.code_num}}</td>
-										<td>{{u.unite.code_alpha}}</td>
-										<td>{{u.unite.departement.code}}</td>
-										<td>{{u.unite.monnaie.code_alpha}}</td>
-                                        <td>{{u.unite.pays.code_alpha_two}}</td>
-                                        <td>{{u.unite.region}}</td>
+										<td>{{a.annee}}</td>
+										<td>{{a.type_bdg}}</td>
+										<td>{{a.lancement}}</td>
+										<td>{{a.cloture}}</td>
 										<td>
-											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{u.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>
+											<a href="update_annee_bdg/{{a.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{a.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>
 										</td>
 									</tr>
-
 									<!-- Modal -->
-									<div class="modal fade" id="e{{u.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal fade" id="e{{a.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 								  			<div class="modal-content">
 												<div class="modal-header">
@@ -80,11 +72,11 @@
 									  				</button>
 												</div>
 												<div class="modal-body">
-									  				Are you sure you want to Delete <strong>" {{u.unite.code_alpha}} "</strong>  ?
+									  				Are you sure you want to Delete  <strong>" {{a.type_bdg}} - {{a.annee}} "</strong>  ?
 												</div>
 												<div class="modal-footer">
 									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-									  				<a href="delete_unite_of_cadre/{{u.id}}" class="btn btn-danger">Supprimer</a>
+									  				<a href="delete_annee_bdg/{{a.id}}" class="btn btn-danger">Supprimer</a>
 												</div>
 											</div>
 										</div>
@@ -100,6 +92,7 @@
 
 
 </div>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

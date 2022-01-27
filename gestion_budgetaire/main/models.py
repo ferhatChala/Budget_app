@@ -249,8 +249,8 @@ class Compte_has_Montant(models.Model):
 
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
-    commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.CASCADE)
-    commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.CASCADE)
+    commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
+    commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
     montant_chef_dep = models.FloatField(default=0) # saiser chef dep
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
     #la validation de chaque acteur
@@ -264,7 +264,6 @@ class Cadre_has_Unite(models.Model):
     cadre = models.ForeignKey("User", on_delete=models.CASCADE)
     unite = models.ForeignKey("Unite", on_delete=models.CASCADE)
     
-
 class Annee_Budgetaire(models.Model):
     TYPBDG_CHOICES = [
     ('PROPOS', 'Budget de proposition'),

@@ -39,6 +39,7 @@
                             <a href="{% url 'add_pays' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
 						</div>
 						<div class="card-body">
+							<input class="form-control" id="myInput" type="text" placeholder="Search..">
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
@@ -48,29 +49,29 @@
 										<th>Action</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody id="myTable">
 									{% for p in pays %}
 									<tr>
 										<td>{{p.id}}</td>
 										<td>{{p.code_alpha_two}}</td>
 										<td>{{p.lib}}</td>
 										<td>
-											<a href="update_pays/{{p.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal"><span><i class="menu-icon fa fa-trash-o"></i></span> Supprimer</button>
+											<a href="update_pays/{{p.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{p.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>
 										</td>
 									</tr>
 									<!-- Modal -->
-									<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal fade" id="e{{p.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 								  			<div class="modal-content">
 												<div class="modal-header">
-									  				<h5 class="modal-title" id="exampleModalLabel">Confirme Delete</h5>
+									  				<h3 class="modal-title" id="exampleModalLabel">Confirme Delete</h3>
 									  				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 														<span aria-hidden="true">&times;</span>
 									  				</button>
 												</div>
 												<div class="modal-body">
-									  				Are you sure you want to Delete this " {{p.lib}} " ?
+									  				Are you sure you want to Delete <strong>" {{p.lib}} "</strong>  ?
 												</div>
 												<div class="modal-footer">
 									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -90,5 +91,19 @@
 
 
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+		var value = $(this).val().toLowerCase();
+		$("#myTable tr").filter(function() {
+		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		});
+	  });
+	});
+</script>
+
 
 {% endblock %}
