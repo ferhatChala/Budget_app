@@ -1019,29 +1019,12 @@ def add_new_compte(request, id):
 		if  form.is_valid():
 			compte_unite = form.save(commit=False)
 			compte_unite.unite = unite
-			compte_unite.existe = True
 			compte_unite.added_by = request.user
 			compte_unite.code = compte_unite.unite.code_alpha + str(compte_unite.compte.numero) + compte_unite.regle_par.code_alpha + compte_unite.reseau_compte
 			compte_unite.save()
 			messages.success(request, "compte added successfuly." )
-			return HttpResponseRedirect("/proposition/unite/offre/"+ str(unite.id)+"")
-			# Redirecter vers chaque chapitre
-			if unite_compte.compte.chapitre.code_num== 1:
-				return HttpResponseRedirect("/proposition/unite/offre/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 2:
-				return HttpResponseRedirect("/proposition/unite/traffic/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 3:
-				return HttpResponseRedirect("/proposition/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 4:
-				return HttpResponseRedirect("/proposition/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 5:
-				return HttpResponseRedirect("/proposition/unite/recettes/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 6:
-				return HttpResponseRedirect("/proposition/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 7:
-				return HttpResponseRedirect("/proposition/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
-			else:
-				return HttpResponseRedirect("/proposition/unites")
+			return HttpResponseRedirect("/proposition/unite/"+ str(unite.id)+"")
+			
 		messages.error(request, "Unsuccessful . Invalid information.")
 	return render (request=request, template_name="proposition/add_new_compte.html", context={"form":form})
 
