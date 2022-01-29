@@ -590,11 +590,17 @@ def unite_detail(request, id):
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
 	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS").count()
+	comptes_vld_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True).count()	
 	# porcentage de saiser pour l unite
 	if comptes_nbr == 0:
-		pr = 0
+		pr_cdr = 0
 	else :
-		pr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])
+		pr_cdr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])
+
+	if comptes_nbr == 0:
+		pr_vcd = 0
+	else :
+		pr_vcd = int(math.modf((comptes_vld_nbr / comptes_nbr)*100)[1])
 
 	#nombre de comptes pour chaque chapitre
 	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
@@ -655,7 +661,7 @@ def unite_detail(request, id):
 	depense_fonc_non_v = depense_fonc_valid_nbr == 0
 	depense_exp_non_v = depense_exp_valid_nbr == 0
 
-	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, 'comptes_done_nbr':comptes_done_nbr, 'pr':pr, 'budget':budget,
+	return render(request,"proposition/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, 'comptes_done_nbr':comptes_done_nbr, 'pr_cdr':pr_cdr, 'pr_vcd':pr_vcd, 'budget':budget,
 															'offre_s':offre_s, 'traffic_s':traffic_s, 'ca_emmission_s':ca_emmission_s, 'ca_transport_s':ca_transport_s,
 															'recettes_s':recettes_s, 'depense_fonc_s':depense_fonc_s, 'depense_exp_s':depense_exp_s,
 															'offre_v':offre_v, 'traffic_v':traffic_v, 'ca_emmission_v':ca_emmission_v, 'ca_transport_v':ca_transport_v,
@@ -773,6 +779,11 @@ def depense_fonc_comptes(request, id):
 	
 	c2_par_unite = list(dict.fromkeys(c2_par_unite))
 	c2_par_autre = list(dict.fromkeys(c2_par_autre))
+	
+	# clacule les pos 2 saisier 
+	
+
+
 
 	#pos 3 comptes
 	all_c3 = SCF_Pos_3.objects.all()
@@ -796,6 +807,7 @@ def depense_fonc_comptes(request, id):
 	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6).count()
 	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=6).count()
 	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+
 
 	depense_fonc_s = depense_fonc_nbr==depense_fonc_done_nbr
 	depense_fonc_non_s = depense_fonc_done_nbr == 0

@@ -203,7 +203,7 @@
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
-													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+													{% if  m.annee_budgetaire == budget %}
 														<span>{{m.montant_cloture}}</span>																	
 													{% endif %}	
 												{% endfor %}
@@ -215,7 +215,7 @@
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
-													{% if m.type_bdg == "PROPOS" %}
+													{% if  m.annee_budgetaire == budget %}
 													
 															{% if m.vld_chef_dep %}
 																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
@@ -460,7 +460,7 @@
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
-													{% if m.type_bdg == "PROPOS" and m.annee_budgetaire.annee == budget.annee %}
+													{% if  m.annee_budgetaire == budget %}
 															<span>{{m.montant_cloture}}</span>																	
 													{% endif %}	
 												{% endfor %}
@@ -471,7 +471,7 @@
 										<td>
 											{% if c.montants.all %}
 												{% for m in c.montants.all  %}
-													{% if m.type_bdg == "PROPOS" %}
+													{% if  m.annee_budgetaire == budget %}
 													
 															{% if m.vld_chef_dep %}
 																<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
