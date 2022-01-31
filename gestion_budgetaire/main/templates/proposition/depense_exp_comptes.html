@@ -162,9 +162,9 @@
 																														{% if m.commentaire_montant.user.user_type == 6  %}
 																															<strong>Commentaire Cadre </strong> <br>
 																														{% elif m.commentaire_montant.user.user_type == 5 %}
-																															<strong>Commentaire Cadre </strong> <br>
+																															<strong>Commentaire Chef Département </strong> <br>
 																														{% elif m.commentaire_montant.user.user_type == 4 %}
-																															<strong>Commentaire Cadre </strong> <br>
+																															<strong>Commentaire Sous Directeur </strong> <br>
 																														{% endif %}
 																														{{m.commentaire_montant.text}}
 																													</div>
@@ -277,7 +277,7 @@
 																						{% endif %}	
 																					{% endfor %}
 																				{% else %}
-																					<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																					<a href="add_montant_depense_exp/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																				{% endif %}
 
 																				{% if user == c.added_by %}
@@ -422,9 +422,9 @@
 																														{% if m.commentaire_montant.user.user_type == 6  %}
 																															<strong>Commentaire Cadre </strong> <br>
 																														{% elif m.commentaire_montant.user.user_type == 5 %}
-																															<strong>Commentaire Cadre </strong> <br>
+																															<strong>Commentaire Chef Département </strong> <br>
 																														{% elif m.commentaire_montant.user.user_type == 4 %}
-																															<strong>Commentaire Cadre </strong> <br>
+																															<strong>Commentaire Sous Directeur </strong> <br>
 																														{% endif %}
 																														{{m.commentaire_montant.text}}
 																													</div>
@@ -537,7 +537,7 @@
 																						{% endif %}	
 																					{% endfor %}
 																				{% else %}
-																					<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																					<a href="add_montant_depense_exp/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																				{% endif %}
 
 																				{% if user == c.added_by %}
@@ -601,7 +601,7 @@
 					<!-- Reglé par unité  -->
 					<strong>Reglé par unité:</strong> 
 					<br>
-					<div class="accordion" id="accordionExampleu">
+				 	<div class="accordion" id="accordionExampleu">
 						
 						{% for c2 in c2_par_unite %}
 							<div style="margin-bottom:10px;">
@@ -713,9 +713,9 @@
 																															{% if m.commentaire_montant.user.user_type == 6  %}
 																																<strong>Commentaire Cadre </strong> <br>
 																															{% elif m.commentaire_montant.user.user_type == 5 %}
-																																<strong>Commentaire Cadre </strong> <br>
+																																<strong>Commentaire Chef Département </strong> <br>
 																															{% elif m.commentaire_montant.user.user_type == 4 %}
-																																<strong>Commentaire Cadre </strong> <br>
+																																<strong>Commentaire Sous Directeur </strong> <br>
 																															{% endif %}
 																															{{m.commentaire_montant.text}}
 																														</div>
@@ -807,7 +807,7 @@
 																							{% endif %}	
 																						{% endfor %}
 																					{% else %}
-																						<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																						<a href="add_montant_depense_exp/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																					{% endif %}
 
 																					{% if user == c.added_by %}
@@ -981,9 +981,9 @@
 																															{% if m.commentaire_montant.user.user_type == 6  %}
 																																<strong>Commentaire Cadre </strong> <br>
 																															{% elif m.commentaire_montant.user.user_type == 5 %}
-																																<strong>Commentaire Cadre </strong> <br>
+																																<strong>Commentaire Chef Département </strong> <br>
 																															{% elif m.commentaire_montant.user.user_type == 4 %}
-																																<strong>Commentaire Cadre </strong> <br>
+																																<strong>Commentaire Sous Directeur  </strong> <br>
 																															{% endif %}
 																															{{m.commentaire_montant.text}}
 																														</div>
@@ -1075,7 +1075,7 @@
 																							{% endif %}	
 																						{% endfor %}
 																					{% else %}
-																						<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																						<a href="add_montant_depense_exp/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																					{% endif %}
 
 																					{% if user == c.added_by %}

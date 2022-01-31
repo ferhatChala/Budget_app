@@ -246,8 +246,13 @@ class Compte_has_Montant(models.Model):
     montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
     montant_cloture = models.FloatField(default=0) # anne N 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
-
+    
+    # JANVIER 
+    # FEVRIER 
+    # MARS  ...
     # les montant pour chaque acteur
+    # decoupage type
+    
     montant_cadre  = models.FloatField(default=0) # saiser cadre
     commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
     commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL)

@@ -170,6 +170,9 @@ urlpatterns = [
     path('proposition/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
     path('proposition/unite/depense_exp/update_comment/<int:id>', views.update_comment, name="update_comment"),
     path('proposition/unite/depense_exp/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
+    # consultation bdg 
+    path('proposition/annees', views.annees_bdg_prop, name="annees"),
+    
     #--------------------------------------------------------------------------------------------------------------------------------
 
 

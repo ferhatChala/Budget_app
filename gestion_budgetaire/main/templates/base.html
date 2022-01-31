@@ -170,13 +170,20 @@
                         <a href="{% url 'cadres_list' %}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-money"></i>Porposition Budget</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-gears"></i><a href="{% url 'unites' %}">Conception</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="{% url 'annees' %}">Consultation</a></li>
+                        </ul>
+                    </li>
+
+                    {% block reu_active %}
+                    <li class="menu-item-has-children dropdown">
+                    {% endblock %}
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Réunion Budget</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-gears"></i><a href="#">Conception</a></li>
                             <li><i class="fa fa-folder-open"></i><a href="#">Consultation</a></li>
                         </ul>
                     </li>
 
-                    <li>
-                        <a href="#"><i class="menu-icon fa fa-users"></i>Réunion Budget </a>
-                    </li>
                     <li>
                         <a href="#"><i class="menu-icon fa fa-bell"></i>Notification Budget </a>
                     </li>

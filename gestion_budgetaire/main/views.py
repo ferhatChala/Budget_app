@@ -843,7 +843,24 @@ def depense_exp_comptes(request, id):
 				c2_par_autre.append(c2)
 	
 	c2_par_unite = list(dict.fromkeys(c2_par_unite))
-	c2_par_autre = list(dict.fromkeys(c2_par_autre))	
+	c2_par_autre = list(dict.fromkeys(c2_par_autre))
+
+	# pos 3 comptes
+	all_c3 = SCF_Pos_3.objects.all()
+	c3_par_unite = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_unite:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_unite.append(c3)
+
+	c3_par_autre = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_autre:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_autre.append(c3)
+	
+	c3_par_unite = list(dict.fromkeys(c3_par_unite))
+	c3_par_autre = list(dict.fromkeys(c3_par_autre))	
 
 
 	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7).count()
@@ -856,7 +873,7 @@ def depense_exp_comptes(request, id):
 
 	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																	"depense_exp_s":depense_exp_s, "depense_exp_non_s":depense_exp_non_s, "depense_exp_v":depense_exp_v, 'budget':budget,
-																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre})
+																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre})
 
 # add montant to compte 
 def add_montant(request, id):
@@ -1080,3 +1097,14 @@ def delete_comment(request, id):
     form = Commentaire.objects.get(id=id)
     form.delete()
     return HttpResponseRedirect("/proposition/unites")
+
+# consultation proposition budget 
+def annees_bdg_prop(request):
+	budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
+	return render(request,"proposition/consultation/annees.html", {'budgets':budgets})
+
+
+
+
+
+
