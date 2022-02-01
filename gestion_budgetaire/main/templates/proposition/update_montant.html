@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget 2022</h1>
+						<h1>Proposition Budget <strong>{{budget.annee}}</strong> </h1>
 					</div>
 				</div>
 			</div>
@@ -42,17 +42,20 @@
 						<div class="card-body">
 							
 							{% if montant.commentaire_montant.importance == "F" %}
-								<div class="alert alert-secondary" role="alert">
+								<div class="alert border alert-light" role="alert">
+									<strong>Commentaire</strong> <br>
 									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
 							{% if montant.commentaire_montant.importance == "M" %}
 								<div class="alert alert-warning" role="alert">
+									<strong>Commentaire</strong> <br>
 									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
 							{% if montant.commentaire_montant.importance == "C" %}
 								<div class="alert alert-danger" role="alert">
+									<strong>Commentaire</strong> <br>
 									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
@@ -60,8 +63,26 @@
 
                             <form method="post">
                                 {% csrf_token %}
-								{{ form.montant|as_crispy_field }}
-								{{ form.montant_cloture|as_crispy_field }}
+								<div class="form-row">
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-secondary" role="alert">
+											<strong>Clôture année courant (N)</strong> 
+											{{ form.montant_cloture|as_crispy_field }}
+										</div>
+									</div>
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-info" role="alert">
+											<strong>Proposition pour l'année {{budget.annee}}</strong>
+											<div class="form-row">
+												<div class="form-group col-md-12 mb-0">
+													{{ form.montant|as_crispy_field }}
+												</div>
+												<br>
+												
+											</div>
+										</div>
+									</div>
+								</div>
 
 
                                 <button type="submit" class="btn btn-primary">Modifier</button>

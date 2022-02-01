@@ -224,6 +224,8 @@ class Unite_has_Compte(models.Model):
         return self.unite.code_alpha + " - " + str(self.compte.numero) 
     
 class Compte_has_Montant(models.Model):
+    #decoupage choices 
+    # ajouter autre type de bdg (control , realisation )
     TYPBDG_CHOICES = [
     ('PROPOS', 'Budget de proposition'),
     ('REUN', 'Budget de Réunion'),
@@ -246,13 +248,24 @@ class Compte_has_Montant(models.Model):
     montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
     montant_cloture = models.FloatField(default=0) # anne N 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
-    
-    # JANVIER 
-    # FEVRIER 
-    # MARS  ...
-    # les montant pour chaque acteur
+    # les montant menseuiles
+    #janvier = models.FloatField(default=0, null=True, blank=True) 
+    #fevrier = models.FloatField(default=0, null=True, blank=True) 
+    #mars = models.FloatField(default=0, null=True, blank=True)
+    #avril = models.FloatField(default=0, null=True, blank=True)
+    #mai = models.FloatField(default=0, null=True, blank=True)
+    #juin = models.FloatField(default=0, null=True, blank=True)
+    #juillet = models.FloatField(default=0, null=True, blank=True)
+    #aout = models.FloatField(default=0, null=True, blank=True) 
+    #septemre = models.FloatField(default=0, null=True, blank=True) 
+    #octobre = models.FloatField(default=0, null=True, blank=True) 
+    #novembre = models.FloatField(default=0, null=True, blank=True) 
+    #decembre = models.FloatField(default=0, null=True, blank=True) 
+
     # decoupage type
+    #type_decoupage = models.CharField( max_length=50,choices=TYPDCPG_CHOICES, default="MS")
     
+    # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
     commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
     commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL)

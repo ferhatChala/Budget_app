@@ -937,6 +937,8 @@ def add_montant(request, id):
 def update_montant(request, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]	
 	form = UpdateMontantCompteForm(request.POST or None, instance = montant)
 	if form.is_valid():
 		form.save()
@@ -974,7 +976,7 @@ def update_montant(request, id):
 			return redirect("/proposition/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 		else:
 			return redirect("/proposition/unites")
-	return render (request=request, template_name="proposition/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant})
+	return render (request=request, template_name="proposition/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
 
 def valid_montant(request, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
@@ -1101,10 +1103,20 @@ def delete_comment(request, id):
 # consultation proposition budget 
 def annees_bdg_prop(request):
 	budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
-	return render(request,"proposition/consultation/annees.html", {'budgets':budgets})
+	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
+	dep_unites = Unite.objects.filter(departement=request.user.departement)
+	all_unites = Unite.objects.all()
 
+	
 
+	return render(request,"proposition/consultation/annees.html", {'budgets':budgets, 'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites})
 
+# -------------------------------------- Fin Proposition budget --------------------------------------------------------
+
+# Réunion --------------------------------------------------------------------------------------------------------------
+# méme view que proposition 
+# add montant et modifier monatnt on le modifier 
+# pour les url meme que proposition 
 
 
 

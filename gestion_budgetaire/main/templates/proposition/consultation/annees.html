@@ -8,43 +8,75 @@
 
 {% load crispy_forms_tags %}  
 
-<div class="breadcrumbs">
-	<div class="breadcrumbs-inner">
-		<div class="row m-0">
-			<div class="col-sm-8">
-				<div class="page-header float-left">
-					<div class="page-title">
-					    <h1>Consultation des budgets de proposition</h1>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-4">
-				<div class="page-header float-right">
-					<div class="page-title">
-						<ol class="breadcrumb text-right">
-							
-						</ol>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>  
-
 <div class="row content">
     <div class="col-md-12">
-        <div class="card">
-            {% for b in budgets %}
-            <div class="accordion" id="accordionExample">
-                <div class="container border" id="hu{{b.annee}}" data-toggle="collapse" data-target="#cu{{b.annee}}" aria-expanded="true" aria-controls="cu{{b.annee}}">
-                    <h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(11, 176, 226);"><i class="menu-icon fa fa-chevron-circle-right"></i></span> {{b.annee}} <span class="float-right">12000 $</span></h5>
-                </div>
-                <div id="cu{{b.annee}}" class="collapse container " aria-labelledby="hu{{b.annee}}" data-parent="#accordionExample">
-                    somthing here like unites
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+
+		<div class="card">
+			<div class="card-header">
+				Consultation des budgets de proposition
+			</div>
+			<div class="card-body">
+				{% for b in budgets %}
+				<div style="margin-bottom: 10px;" class="accordion" id="accordionExample">
+					<div style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="hu{{b.annee}}" role="tab" data-toggle="collapse" data-target="#cu{{b.annee}}" aria-expanded="true" aria-controls="cu{{b.annee}}">
+						<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{b.annee}} <span class="float-right">12000 $</span></h5>
+					</div>
+					<div id="cu{{b.annee}}" class="collapse container " aria-labelledby="hu{{b.annee}}" data-parent="#accordionExample">
+						<table id="bootstrap-data-table" class="table table-striped">
+							<thead>
+								<tr>
+									<th>Unité</th>
+									<th>Monnaie</th>
+									<th>Montant Totale</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody id="myTable" >
+								
+								{% if user.user_type == 6 %}	
+									{% for u in unites %}	
+									<tr>
+										<td>{{u.unite.code_alpha}}</td>
+										<td>{{u.unite.monnaie.code_alpha}}</td>
+										<td>10000</td>
+										<td>
+											<a href="#" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Détails</a>
+										</td>
+									</tr>
+									{% endfor %}
+								{% elif user.user_type == 5 %}
+									{% for u in dep_unites %}	
+									<tr>
+										<td>{{u.unite.code_alpha}}</td>
+										<td>{{u.unite.monnaie.code_alpha}}</td>
+										<td>10000</td>
+										<td>
+											<a href="#" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Détails</a>
+										</td>
+									</tr>
+									{% endfor %}
+								{% else %}
+									{% for u in all_unites %}	
+									<tr>
+										<td>{{u.unite.code_alpha}}</td>
+										<td>{{u.unite.monnaie.code_alpha}}</td>
+										<td>10000</td>
+										<td>
+											<a href="#" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Détails</a>
+										</td>
+									</tr>
+									{% endfor %}
+								{% endif %}
+					
+								
+							</tbody>
+						</table>
+					</div>
+				</div>
+          		{% endfor %}
+			</div>
+		  </div>
+		  
     </div>
 </div>
 
