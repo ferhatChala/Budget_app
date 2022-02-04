@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block prop_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Proposition Budget <strong>{{budget.annee}}</strong> </h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites' %}">Unités</a></li>
+                            <li><a href="#">{{unite_compte.unite.code_alpha}}</a></li>
+							<li><a href="#">Offre</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">{{unite_compte.compte}} <span class="float-right">Reglé par :{{unite_compte.regle_par}}</span></strong>
+						</div>
+						<div class="card-body">
+							
+							{% if montant.commentaire_montant.importance == "F" %}
+								<div class="alert border alert-light" role="alert">
+									<strong>Commentaire</strong> <br>
+									{{montant.commentaire_montant.text}}
+								</div>	
+							{% endif %}
+							{% if montant.commentaire_montant.importance == "M" %}
+								<div class="alert alert-warning" role="alert">
+									<strong>Commentaire</strong> <br>
+									{{montant.commentaire_montant.text}}
+								</div>	
+							{% endif %}
+							{% if montant.commentaire_montant.importance == "C" %}
+								<div class="alert alert-danger" role="alert">
+									<strong>Commentaire</strong> <br>
+									{{montant.commentaire_montant.text}}
+								</div>	
+							{% endif %}
+								
+
+                            <form method="post">
+                                {% csrf_token %}
+								<div class="form-row">
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-secondary" role="alert">
+											<strong>Clôture année courant (N)</strong> 
+											{{ form.montant_cloture|as_crispy_field }}
+										</div>
+									</div>
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-info" role="alert">
+											<strong>Proposition pour l'année {{budget.annee}}</strong>
+											<div class="form-row">
+												<div class="form-group col-md-12 mb-0">
+													{{ form.montant|as_crispy_field }}
+												</div>
+												<br>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+                                <button type="submit" class="btn btn-primary">Modifier</button>
+                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                            </form>
+						</div>
+					</div>
+				</div>
+</div>
+
+{% endblock %}

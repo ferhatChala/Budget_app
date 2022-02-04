@@ -175,6 +175,85 @@ urlpatterns = [
     
     #--------------------------------------------------------------------------------------------------------------------------------
 
+    # Reunion budget ----------------------------------------------------------------------------------------------------------
+    path('reunion/unites', views.unites_reunion, name="unites_reunion"),
+    path('reunion/unite/<int:id>', views.unite_detail_reunion, name="unite_reunion"),
+
+    #Offre
+    path('reunion/unite/offre/<int:id>', views.offre_comptes_reunion, name="offre_reunion"),
+    path('reunion/unite/offre/add_montant_offre/<int:id>', views.add_montant_reunion, name="add_montant_offre_reunion"),
+    path('reunion/unite/offre/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
+    path('reunion/unite/offre/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/offre/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
+    path('reunion/unite/offre/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
+    path('reunion/unite/offre/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
+    path('reunion/unite/offre/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
+    #Traffic
+    path('reunion/unite/traffic/<int:id>', views.traffic_comptes_reunion, name="traffic_reunion"),
+    path('reunion/unite/traffic/add_montant_traffic/<int:id>', views.add_montant_reunion, name="add_montant_traffic_reunion"),
+    path('reunion/unite/traffic/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
+    path('reunion/unite/traffic/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/traffic/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/traffic/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
+    path('reunion/unite/traffic/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
+    path('reunion/unite/traffic/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
+    path('reunion/unite/traffic/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
+    #ca emmission
+    path('reunion/unite/ca_emmission/<int:id>', views.ca_emmission_comptes_reunion, name="ca_emmission_reunion"),
+    path('reunion/unite/ca_emmission/add_montant_ca_emmission/<int:id>', views.add_montant_reunion, name="add_montant_ca_emmission_reunion"),
+    path('reunion/unite/ca_emmission/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
+    path('reunion/unite/ca_emmission/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/ca_emmission/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/ca_emmission/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
+    path('reunion/unite/ca_emmission/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
+    path('reunion/unite/ca_emmission/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
+    path('reunion/unite/ca_emmission/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
+    #ca transport
+    path('reunion/unite/ca_transport/<int:id>', views.ca_transport_comptes_reunion, name="ca_transport_reunion"),
+    path('reunion/unite/ca_transport/add_montant_ca_transport/<int:id>', views.add_montant_reunion, name="add_montant_ca_transport_reunion"),
+    path('reunion/unite/ca_transport/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
+    path('reunion/unite/ca_transport/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/ca_transport/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/ca_transport/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
+    path('reunion/unite/ca_transport/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
+    path('reunion/unite/ca_transport/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
+    path('reunion/unite/ca_transport/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
+    #autre reccettes
+    path('reunion/unite/recettes/<int:id>', views.recettes_comptes_reunion, name="recettes_reunion"),
+    path('reunion/unite/recettes/add_montant_recettes/<int:id>', views.add_montant_reunion, name="add_montant_recettes_reunion"),
+    path('reunion/unite/recettes/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
+    path('reunion/unite/recettes/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/recettes/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/recettes/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
+    path('reunion/unite/recettes/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
+    path('reunion/unite/recettes/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
+    path('reunion/unite/recettes/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
+    #depense foncionement
+    path('reunion/unite/depense_fonc/<int:id>', views.depense_fonc_comptes_reunion, name="depense_fonc_reunion"),
+    path('reunion/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant_reunion, name="add_montant_depense_fonc_reunion"),
+    path('reunion/unite/depense_fonc/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
+    path('reunion/unite/depense_fonc/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/depense_fonc/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/depense_fonc/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
+    path('reunion/unite/depense_fonc/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
+    path('reunion/unite/depense_fonc/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
+    path('reunion/unite/depense_fonc/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
+    #depense exploitation
+    path('reunion/unite/depense_exp/<int:id>', views.depense_exp_comptes_reunion, name="depense_exp_reunion"),
+    path('reunion/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant_reunion, name="add_montant_depense_exp_reunion"),
+    path('reunion/unite/depense_exp/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
+    path('reunion/unite/depense_exp/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/depense_exp/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/depense_exp/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
+    path('reunion/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
+    path('reunion/unite/depense_exp/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
+    path('reunion/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
+    # consultation bdg 
+    path('reunion/annees', views.annees_bdg_reunion, name="annees_reunion"),
+    
+    #--------------------------------------------------------------------------------------------------------------------------------
+
 
 
 

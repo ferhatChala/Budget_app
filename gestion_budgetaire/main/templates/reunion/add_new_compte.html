@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block prop_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Proposition Budget 2022</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites' %}">Unités</a></li>
+							<li><a href="#">Offre</a></li>
+                            <li><a href="#">Ajouter compte</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">Ajouter compte <span class="float-right">Offre</span></strong>
+						</div>
+						<div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-row">
+									<div class="form-group col-md-5 mb-0">
+                                        {{form.compte|as_crispy_field }}
+                                    </div>
+                                    <div class="form-group col-md-2 mb-0">
+                                        {{ form.regle_par|as_crispy_field }}
+                                    </div>
+                                    <div class="form-group col-md-3 mb-0">
+                                        {{ form.reseau_compte|as_crispy_field }}
+                                    </div>
+									<div class="form-group col-md-2 mb-0">
+                                        {{ form.monnaie|as_crispy_field }}
+                                    </div>
+								</div>
+                                <br>
+                                <button type="submit" class="btn btn-primary">Ajouter</button>
+                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                            </form>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}

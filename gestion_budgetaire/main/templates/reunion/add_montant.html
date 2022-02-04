@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block prop_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Proposition Budget <strong> {{budget.annee}}</strong></h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites' %}">Unités</a></li>
+                            <li><a href="#">{{unite_compte.unite.code_alpha}}</a></li>
+							<li><a href="#">Offre</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">{{unite_compte.compte}} <span class="float-right">Reglé par :{{unite_compte.regle_par}}</span></strong>
+						</div>
+						<div class="card-body">
+
+                            <form method="post">
+                                {% csrf_token %}
+								
+								<div class="form-row">
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-secondary" role="alert">
+											<strong>Clôture année courant (N)</strong> 
+											{{ montant_form.montant_cloture|as_crispy_field }}
+										</div>
+									</div>
+									<div class="form-group col-md-6 mb-0">
+										<div class="alert alert-info" role="alert">
+											<strong>Proposition pour l'année {{budget.annee}}</strong>
+											<div class="form-row">
+												<div class="form-group col-md-12 mb-0">
+													{{ montant_form.montant|as_crispy_field }}
+												</div>
+												<br>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="alert alert-light border" role="alert">
+									<strong>Ajouter commentaire</strong>
+									<div class="form-row">
+										<div class="form-group col-md-9 mb-0">
+											{{ comment_form.text|as_crispy_field }}
+										</div>
+										<div class="form-group col-md-3 mb-0">
+											{{ comment_form.importance|as_crispy_field }}
+										</div>
+									</div>
+								</div>
+        				
+                                <button type="submit" class="btn btn-primary">Valider</button>
+                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                            </form>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}

@@ -225,6 +225,13 @@ class Unite_has_Compte(models.Model):
     
 class Compte_has_Montant(models.Model):
     #decoupage choices 
+    TYPDCPG_CHOICES = [
+    ('MS', 'Mensuelles'), # chaque mois
+    ('BM', 'Bimestriel'), # chaque 2 mois start with janvier
+    ('TR', 'Trimestriel'), # Janvier , Avrile, Juillet, Octobre
+    ('SM', 'Semestriel'), # Janvier , Juillet
+    ('AU', 'Autre'), # mannuelle 
+    ]    
     # ajouter autre type de bdg (control , realisation )
     TYPBDG_CHOICES = [
     ('PROPOS', 'Budget de proposition'),
@@ -249,21 +256,21 @@ class Compte_has_Montant(models.Model):
     montant_cloture = models.FloatField(default=0) # anne N 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
     # les montant menseuiles
-    #janvier = models.FloatField(default=0, null=True, blank=True) 
-    #fevrier = models.FloatField(default=0, null=True, blank=True) 
-    #mars = models.FloatField(default=0, null=True, blank=True)
-    #avril = models.FloatField(default=0, null=True, blank=True)
-    #mai = models.FloatField(default=0, null=True, blank=True)
-    #juin = models.FloatField(default=0, null=True, blank=True)
-    #juillet = models.FloatField(default=0, null=True, blank=True)
-    #aout = models.FloatField(default=0, null=True, blank=True) 
-    #septemre = models.FloatField(default=0, null=True, blank=True) 
-    #octobre = models.FloatField(default=0, null=True, blank=True) 
-    #novembre = models.FloatField(default=0, null=True, blank=True) 
-    #decembre = models.FloatField(default=0, null=True, blank=True) 
+    janvier = models.FloatField(null=True, blank=True) 
+    fevrier = models.FloatField(null=True, blank=True) 
+    mars = models.FloatField(null=True, blank=True)
+    avril = models.FloatField(null=True, blank=True)
+    mai = models.FloatField(null=True, blank=True)
+    juin = models.FloatField(null=True, blank=True)
+    juillet = models.FloatField(null=True, blank=True)
+    aout = models.FloatField(null=True, blank=True) 
+    septemre = models.FloatField(null=True, blank=True) 
+    octobre = models.FloatField(null=True, blank=True) 
+    novembre = models.FloatField(null=True, blank=True) 
+    decembre = models.FloatField(null=True, blank=True) 
 
     # decoupage type
-    #type_decoupage = models.CharField( max_length=50,choices=TYPDCPG_CHOICES, default="MS")
+    type_decoupage = models.CharField( max_length=50,choices=TYPDCPG_CHOICES, default="MS")
     
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
