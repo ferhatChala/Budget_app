@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
+{% block reu_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget <strong> {{budget.annee}}</strong>   </h1>
+						<h1>Réunion Budget <strong> {{budget.annee}}</strong>   </h1>
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites' %}">Unités</a></li>
+							<li><a href="{% url 'unites_reunion' %}">Unités</a></li>
                             <li><a href="#">{{unite.code_alpha}} </a></li>
 						</ol>
 					</div>
@@ -251,6 +251,7 @@
 					</tbody>
 				</table>
 				{% endif %}
+
 				{% if user.user_type == 6 %}
 				<table id="bootstrap-data-table" class="table table-striped">
 					<thead>

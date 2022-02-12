@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
+{% block reu_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -17,7 +17,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget <strong>{{budget.annee}}</strong></h1>
+						<h1>Réunion Budget <strong>{{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -25,7 +25,7 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites' %}">Unités</a></li>
+							<li><a href="{% url 'unites_reunion' %}">Unités</a></li>
 						</ol>
 					</div>
 				</div>
@@ -93,9 +93,9 @@
 					<div class="page-title">
                         
                         {% if budget.cloture  %}
-                            <h1>Proposition budget de l'année {{budget.annee}} est <strong>Cloturé !</strong>.</h1>
+                            <h1>Réunion budget pour l'année {{budget.annee}} est <strong>Cloturé !</strong>.</h1>
                         {% else %}
-                            <h1>Proposition budget de l'année {{budget.annee}} pas encore lancé.</h1>
+                            <h1>Réunion budget pour l'année {{budget.annee}} pas encore lancé.</h1>
                         {% endif %}
 					</div>
 				</div>
@@ -104,7 +104,7 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les proposition budgets</a></li>
+							<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les Réunion budgets</a></li>
 						</ol>
 					</div>
 				</div>

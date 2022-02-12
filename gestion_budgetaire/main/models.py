@@ -270,7 +270,7 @@ class Compte_has_Montant(models.Model):
     decembre = models.FloatField(null=True, blank=True) 
 
     # decoupage type
-    type_decoupage = models.CharField( max_length=50,choices=TYPDCPG_CHOICES, default="MS")
+    type_decoupage = models.CharField( max_length=50, null=True, blank=True, choices=TYPDCPG_CHOICES, default="MS")
     
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre

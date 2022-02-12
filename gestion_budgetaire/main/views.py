@@ -674,10 +674,19 @@ def unite_detail(request, id):
 
 def offre_comptes(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+
 	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
 	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
 	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
@@ -686,7 +695,7 @@ def offre_comptes(request, id):
 	offre_non_s = offre_done_nbr == 0
 	offre_v = offre_nbr==offre_valid_nbr
 
-	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes, "offre_s":offre_s, "offre_non_s":offre_non_s, "offre_v":offre_v, 'budget':budget,})
+	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes, "offre_s":offre_s, "offre_non_s":offre_non_s, "offre_v":offre_v, 'budget':budget, 'cm_dict':cm_dict})
 
 def traffic_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1211,10 +1220,23 @@ def unite_detail_reunion(request, id):
 
 def offre_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
+	#montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, unite_compte__compte__chapitre__code_num=1)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]
+	
+	#print(cm_dict)
+
+	# montants = Compte_has_Monatnt.objects.filter(unite_compte.unite=unite, type_bdg="REUN", unite_compte_compte__chapitre__code_num=1)
 	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
 	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=1).count()
 	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
@@ -1223,7 +1245,7 @@ def offre_comptes_reunion(request, id):
 	offre_non_s = offre_done_nbr == 0
 	offre_v = offre_nbr==offre_valid_nbr
 
-	return render(request,"reunion/offre_comptes.html", {'unite':unite, 'comptes':comptes, "offre_s":offre_s, "offre_non_s":offre_non_s, "offre_v":offre_v, 'budget':budget,})
+	return render(request,"reunion/offre_comptes.html", {'unite':unite, 'comptes':comptes, "offre_s":offre_s, "offre_non_s":offre_non_s, "offre_v":offre_v, 'budget':budget, 'cm_dict':cm_dict})
 
 def traffic_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1564,21 +1586,21 @@ def cancel_valid_montant_reunion(request, id):
 		new_montant.save()
 	# Redirecter vers chaque chapitre
 	if unite_compte.compte.chapitre.code_num== 1:
-		return HttpResponseRedirect("/proposition/unite/offre/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/reunion/unite/offre/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 2:
-		return HttpResponseRedirect("/proposition/unite/traffic/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/reunion/unite/traffic/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 3:
-		return HttpResponseRedirect("/proposition/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/reunion/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 4:
-		return HttpResponseRedirect("/proposition/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/reunion/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 5:
-		return HttpResponseRedirect("/proposition/unite/recettes/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/reunion/unite/recettes/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 6:
-		return HttpResponseRedirect("/proposition/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/reunion/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 7:
-		return HttpResponseRedirect("/proposition/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/reunion/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 	else:
-		return HttpResponseRedirect("/proposition/unites")
+		return HttpResponseRedirect("/reunion/unites")
 
 def add_new_compte_reunion(request, id):
 	unite = Unite.objects.get(id=id)

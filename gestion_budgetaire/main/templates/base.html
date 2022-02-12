@@ -177,9 +177,9 @@
                     {% block reu_active %}
                     <li class="menu-item-has-children dropdown">
                     {% endblock %}
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Réunion Budget</a>
+                        <a href="{% url 'unites_reunion' %}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Réunion Budget</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-gears"></i><a href="#">Conception</a></li>
+                            <li><i class="fa fa-gears"></i><a href="{% url 'unites_reunion' %}">Conception</a></li>
                             <li><i class="fa fa-folder-open"></i><a href="#">Consultation</a></li>
                         </ul>
                     </li>
