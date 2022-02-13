@@ -699,10 +699,19 @@ def offre_comptes(request, id):
 
 def traffic_comptes(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=2)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
 	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
 	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=2).count()
 	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
@@ -711,14 +720,23 @@ def traffic_comptes(request, id):
 	traffic_non_s = traffic_done_nbr == 0
 	traffic_v = traffic_nbr==traffic_valid_nbr
 
-	return render(request,"proposition/traffic_comptes.html", {'unite':unite, 'comptes':comptes,  "traffic_s":traffic_s, "traffic_non_s":traffic_non_s, "traffic_v":traffic_v, 'budget':budget })
+	return render(request,"proposition/traffic_comptes.html", {'unite':unite, 'comptes':comptes,  "traffic_s":traffic_s, "traffic_non_s":traffic_non_s, "traffic_v":traffic_v, 'budget':budget, 'cm_dict':cm_dict })
 
 def ca_emmission_comptes(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=3)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
 	ca_emmission_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=3).count()
 	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=3).count()
 	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
@@ -727,14 +745,23 @@ def ca_emmission_comptes(request, id):
 	ca_emmission_non_s = ca_emmission_done_nbr == 0
 	ca_emmission_v = ca_emmission_nbr==ca_emmission_valid_nbr
 
-	return render(request,"proposition/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, "ca_emmission_s":ca_emmission_s, "ca_emmission_non_s":ca_emmission_non_s, "ca_emmission_v":ca_emmission_v, 'budget':budget})
+	return render(request,"proposition/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, "ca_emmission_s":ca_emmission_s, "ca_emmission_non_s":ca_emmission_non_s, "ca_emmission_v":ca_emmission_v, 'budget':budget, 'cm_dict':cm_dict})
 
 def ca_transport_comptes(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=4).order_by('-reseau_compte')
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
 	ca_transport_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=4).count()
 	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=4).count()
 	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
@@ -743,14 +770,23 @@ def ca_transport_comptes(request, id):
 	ca_transport_non_s = ca_transport_done_nbr == 0
 	ca_transport_v = ca_transport_nbr==ca_transport_valid_nbr
 
-	return render(request,"proposition/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, "ca_transport_s":ca_transport_s, "ca_transport_non_s":ca_transport_non_s, "ca_transport_v":ca_transport_v, 'budget':budget})
+	return render(request,"proposition/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, "ca_transport_s":ca_transport_s, "ca_transport_non_s":ca_transport_non_s, "ca_transport_v":ca_transport_v, 'budget':budget, 'cm_dict':cm_dict})
 
 def recettes_comptes(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=5)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
 	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
 	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=5).count()
 	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
@@ -759,14 +795,23 @@ def recettes_comptes(request, id):
 	recettes_non_s = recettes_done_nbr == 0
 	recettes_v = recettes_nbr==recettes_valid_nbr
 
-	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes, "recettes_s":recettes_s, "recettes_non_s":recettes_non_s, "recettes_v":recettes_v, 'budget':budget})
+	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes, "recettes_s":recettes_s, "recettes_non_s":recettes_non_s, "recettes_v":recettes_v, 'budget':budget, 'cm_dict':cm_dict})
 
 def depense_fonc_comptes(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+		
 	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=6)
 	comptes_regle_par_autre = []
 	for c in comptes:
@@ -790,9 +835,6 @@ def depense_fonc_comptes(request, id):
 	c2_par_autre = list(dict.fromkeys(c2_par_autre))
 	
 	# clacule les pos 2 saisier 
-	
-
-
 
 	#pos 3 comptes
 	all_c3 = SCF_Pos_3.objects.all()
@@ -824,14 +866,23 @@ def depense_fonc_comptes(request, id):
 
 	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																  "depense_fonc_s":depense_fonc_s, "depense_fonc_non_s":depense_fonc_non_s, "depense_fonc_v":depense_fonc_v, 'budget':budget,
-																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre})
+																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict})
 
 def depense_exp_comptes(request, id):
 	unite = Unite.objects.get(id=id)
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+		
 	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=7)
 	comptes_regle_par_autre = []
 	for c in comptes:
@@ -882,7 +933,7 @@ def depense_exp_comptes(request, id):
 
 	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																	"depense_exp_s":depense_exp_s, "depense_exp_non_s":depense_exp_non_s, "depense_exp_v":depense_exp_v, 'budget':budget,
-																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre})
+																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict})
 
 # add montant to compte 
 def add_montant(request, id):
