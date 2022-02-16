@@ -169,8 +169,11 @@
                     {% endblock %}
                         <a href="{% url 'cadres_list' %}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-money"></i>Porposition Budget</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-gears"></i><a href="{% url 'unites' %}">Conception</a></li>
+                            {% if user.user_type != 4  %}
+                                <li><i class="fa fa-gears"></i><a href="{% url 'unites' %}">Conception</a></li>
+                            {% endif %}
                             <li><i class="fa fa-folder-open"></i><a href="{% url 'annees' %}">Consultation</a></li>
+                            
                         </ul>
                     </li>
 

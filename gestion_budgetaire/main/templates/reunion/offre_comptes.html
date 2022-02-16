@@ -42,7 +42,9 @@
 							{% if user.user_type == 5 %}
 								{% if offre_v and offre_v_sdir == False %}	
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif offre_s and offre_v == False  %}
+								{% elif offre_valid  and offre_s and offre_v_sdir == False%}
+								<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
+								{% elif offre_s and offre_v == False and  offre_valid == False %}
 									<strong class="card-title">Offre <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></strong>
 								{% elif offre_non_s %}
 									<strong class="card-title">Offre <span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
@@ -56,28 +58,26 @@
 							<!-- Header status Cadre  -->
 							{% elif user.user_type == 6 %}
 
-								{% if offre_s and offre_v == False %}	
+								{% if offre_s and offre_valid == False %}	
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
 								{% elif offre_non_s  %}
 									<strong class="card-title">Offre <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Non saisie</span></strong>
 								{% elif offre_non_s == False and offre_s == False %}
 									<strong class="card-title">Offre <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
-								{% elif offre_v or offre_v_sdir %}
+								{% elif offre_valid and offre_s %}
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></strong>
 								{% endif %}
 							<!-- End Header status Cadre  -->
 
 							<!-- Header status Sous Directeur  -->
 							{% elif user.user_type == 4 %}
-								{% if offre_v_sdir %}	
+								{% if offre_v_sdir and offre_s %}	
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif offre_v and offre_v_sdir == False  %}
+								{% elif offre_valid and offre_s and offre_v_sdir == False  %}
 									<strong class="card-title">Offre <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></strong>
 								{% elif offre_non_s %}
 									<strong class="card-title">Offre <span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
-								{% elif offre_non_s == False and offre_s == False%}
-									<strong class="card-title">Offre <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
-								{% elif offre_v == False and offre_v_sdir == False%}
+								{% else%}
 									<strong class="card-title">Offre <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
 								{% endif %}
 							<!-- End status sous Directeur  -->
@@ -267,37 +267,39 @@
 													{% else %}
 														<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 													{% endif %}	
+
+													{% if user == c.added_by and m.vld_sous_dir == False %}
+														<a href="#" data-toggle="modal" data-target="#delec{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
+														<!-- Modal -->
+														<div class="modal fade" id="delec{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+															<div class="modal-dialog">
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
+																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																			<span aria-hidden="true">&times;</span>
+																		</button>
+																	</div>
+																	<div class="modal-body">
+																		Vous êtes sûre de supprimer ce compte ?<br>
+																		Numéro : <strong> {{c.compte.numero}} </strong> <br>
+																		Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
+																		Réseau : <strong> {{c.reseau_compte}}</strong>
+																		<br>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+																		<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<!-- End Modal -->
+													{% endif %}
+
 												{% endif %}
 											{% endfor %}
 								
-											{% if user == c.added_by %}
-											<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
-											<!-- Modal -->
-											<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-												<div class="modal-dialog">
-													<div class="modal-content">
-														<div class="modal-header">
-															<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
-															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																<span aria-hidden="true">&times;</span>
-															</button>
-														</div>
-														<div class="modal-body">
-															Vous êtes sûre de supprimer ce compte ?<br>
-															Numéro : <strong> {{c.compte.numero}} </strong> <br>
-															Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
-															Réseau : <strong> {{c.reseau_compte}}</strong>
-															<br>
-														</div>
-														<div class="modal-footer">
-															<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-															<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
-														</div>
-													</div>
-												</div>
-											</div>
-											<!-- End Modal -->
-											{% endif %}
 										</td>
 									</tr>
 						
@@ -309,7 +311,14 @@
 
 							<!-- Chef département section -->
 							{% if user.user_type == 5 %}
-							<input class="form-control" id="myInput" type="text" placeholder="Search..">
+							<div class="form-row">
+								<div class="form-group col-md-10 mb-0">
+									<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
+								</div>
+								<div class="form-group col-md-2 mb-0">
+									<a href="#" class="btn btn-outline-success float-right"><span><i class="menu-icon fa fa-check"></i></span> Valider tous </a>		
+								</div>
+							</div> <br>
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
@@ -491,32 +500,32 @@
 													{% endif %}
 
 													{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}
-													<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
-													<!-- Modal -->
-													<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-														<div class="modal-dialog">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
-																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																		<span aria-hidden="true">&times;</span>
-																	</button>
-																</div>
-																<div class="modal-body">
-																	Vous êtes sûre de supprimer ce compte ?<br>
-																	Numéro : <strong> {{c.compte.numero}} </strong> <br>
-																	Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
-																	Réseau : <strong> {{c.reseau_compte}}</strong>
-																	<br>
-																</div>
-																<div class="modal-footer">
-																	<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-																	<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
+														<a href="#" data-toggle="modal" data-target="#delec{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
+														<!-- Modal -->
+														<div class="modal fade" id="delec{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+															<div class="modal-dialog">
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
+																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																			<span aria-hidden="true">&times;</span>
+																		</button>
+																	</div>
+																	<div class="modal-body">
+																		Vous êtes sûre de supprimer ce compte ?<br>
+																		Numéro : <strong> {{c.compte.numero}} </strong> <br>
+																		Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
+																		Réseau : <strong> {{c.reseau_compte}}</strong>
+																		<br>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+																		<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
+																	</div>
 																</div>
 															</div>
 														</div>
-													</div>
-													<!-- End Modal -->
+														<!-- End Modal -->
 													{% endif %}
 
 												{% endif %}
@@ -568,7 +577,7 @@
 																	<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
 																{% endif %}
 
-															{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
+															{% elif m.validation != "CADRE" and m.montant == m.montant_cadre %}
 																<span style="color: green;">{{m.montant}}</span>
 														
 																{% if m.commentaire_montant.importance == "F" %}
@@ -579,7 +588,7 @@
 																	<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
 																{% endif %}
 
-															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
+															{% elif m.validation != "CADRE" and m.vld_cadre == True  and m.montant != m.montant_cadre %}
 																<span style="color: orange;"> {{m.montant}}</i></span>
 
 																{% if m.commentaire_montant.importance == "F" %}
@@ -589,7 +598,7 @@
 																{% elif m.commentaire_montant.importance == "C" %}
 																	<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
 																{% endif %}
-															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
+															{% elif m.montant != m.montant_cadre and m.vld_cadre == False  %}
 																<span style="color: red;">{{m.montant}}</span>
 
 																{% if m.commentaire_montant.importance == "F" %}
@@ -674,11 +683,11 @@
 														{% else %}
 															{% if m.vld_chef_dep == False and m.vld_sous_dir == False %}
 																<span>{{m.montant}}</span>	
-															{% elif m.vld_chef_dep and m.montant == m.montant_cadre  %}
+															{% elif m.validation != "CADRE" and m.montant == m.montant_cadre %}
 																<span style="color: green;">{{m.montant}}														
-															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == True  %}
+															{% elif m.validation != "CADRE" and m.vld_cadre == True  and m.montant != m.montant_cadre  %}
 																<span style="color: orange;"> {{m.montant}}</i></span>
-															{% elif m.vld_chef_dep and m.montant == m.montant_chef_dep and m.vld_cadre == False  %}
+															{% elif m.montant != m.montant_cadre and m.vld_cadre == False  %}
 																<span style="color: red;">{{m.montant}}</span>
 															{% else %}
 																<span>{{m.montant}}</span>

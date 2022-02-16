@@ -43,6 +43,7 @@
                 <span><i class="menu-icon fa fa-building-o"></i></span>  <strong class="card-title">  {{unite.lib}} <span class="float-right"> {{pr_cdr}} %</span></strong>
             </div>
             <div class="card-body">
+				<!-- status sous dir  -->
 				{% if user.user_type == 4 %}
 				<table id="bootstrap-data-table" class="table table-striped">
 					<thead>
@@ -69,13 +70,11 @@
 
 							{% if offre_v_sdir and offre_s %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif offre_v and offre_v_sdir == False  %}
+							{% elif offre_valid and offre_s and offre_v_sdir == False %}
 							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif offre_non_s %}
 							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif offre_non_s == False and offre_s == False or offre_s and offre_non_v %}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
-							{% elif offre_v == False and offre_v_sdir == False %}
+							{% else %}
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
@@ -97,13 +96,11 @@
 
 							{% if traffic_v_sdir and traffic_s %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif traffic_v and traffic_v_sdir == False  %}
+							{% elif traffic_valid and traffic_s and traffic_v_sdir == False %}
 							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif traffic_non_s %}
 							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif traffic_non_s == False and traffic_s == False %}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
-							{% elif traffic_v == False and traffic_v_sdir == False %}
+							{% else %}
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
@@ -125,13 +122,13 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if ca_emmission_v and ca_emmission_s %}	
+							{% if ca_emmission_v_sdir and ca_emmission_s %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif ca_emmission_s and ca_emmission_v == False  %}
+							{% elif ca_emmission_valid and ca_emmission_s and ca_emmission_v_sdir == False %}
 							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif ca_emmission_non_s %}
 							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif ca_emmission_non_s == False and ca_emmission_s == False %}
+							{% else %}
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
@@ -153,13 +150,13 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if ca_transport_v and ca_transport_s %}	
+							{% if ca_transport_v_sdir and ca_transport_s %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif ca_transport_s and ca_transport_v == False  %}
+							{% elif ca_transport_valid and ca_transport_s and ca_transport_v_sdir == False %}
 							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif ca_transport_non_s %}
 							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif ca_transport_non_s == False and ca_transport_s == False%}
+							{% else %}
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
@@ -181,13 +178,13 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if recettes_v and recettes_s %}	
+							{% if recettes_v_sdir and recettes_s %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif recettes_s and recettes_v == False  %}
+							{% elif recettes_valid and recettes_s and recettes_v_sdir == False %}
 							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif recettes_non_s %}
 							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif recettes_non_s == False and recettes_s == False%}
+							{% else %}
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
@@ -208,13 +205,13 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if depense_fonc_v and depense_fonc_s %}	
+							{% if depense_fonc_v_sdir and depense_fonc_s %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif depense_fonc_s and depense_fonc_v == False  %}
+							{% elif depense_fonc_valid and depense_fonc_s and depense_fonc_v_sdir == False %}
 							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif depense_fonc_non_s %}
 							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif depense_fonc_non_s == False and depense_fonc_s == False%}
+							{% else %}
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
@@ -235,13 +232,13 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if depense_exp_v and depense_exp_s %}	
+							{% if depense_exp_v_sdir and depense_exp_s %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif depense_exp_s and depense_exp_v == False  %}
+							{% elif depense_exp_valid and depense_exp_s and depense_exp_v_sdir == False %}
 							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif depense_exp_non_s %}
 							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif depense_exp_non_s == False and depense_exp_s == False%}
+							{% else %}
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
@@ -255,6 +252,7 @@
 				</table>
 				{% endif %}
 
+				<!-- status Chef dep  -->
 				{% if user.user_type == 5 %}
 				<table id="bootstrap-data-table" class="table table-striped">
 					<thead>
@@ -279,14 +277,18 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if offre_v and offre_s %}	
+							{% if offre_v and offre_v_sdir == False %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif offre_s and offre_v == False  %}
-							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif offre_valid  and offre_s and offre_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif offre_s and offre_v == False and  offre_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif offre_non_s %}
-							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
 							{% elif offre_non_s == False and offre_s == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif offre_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
 							{% endif %}
 
 							<td>
@@ -305,14 +307,18 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if traffic_v and traffic_s %}	
+							{% if traffic_v and traffic_v_sdir == False %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif traffic_s and traffic_v == False  %}
-							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif traffic_valid  and traffic_s and traffic_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif traffic_s and traffic_v == False and  traffic_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif traffic_non_s %}
-							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif traffic_non_s == False and traffic_s == False %}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif traffic_non_s == False and traffic_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif traffic_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
 							{% endif %}
 
 							<td>
@@ -333,14 +339,18 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if ca_emmission_v and ca_emmission_s %}	
+							{% if ca_emmission_v and ca_emmission_v_sdir == False %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif ca_emmission_s and ca_emmission_v == False  %}
-							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif ca_emmission_valid  and ca_emmission_s and ca_emmission_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_emmission_s and ca_emmission_v == False and  ca_emmission_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif ca_emmission_non_s %}
-							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
-							{% elif ca_emmission_non_s == False and ca_emmission_s == False %}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif ca_emmission_non_s == False and ca_emmission_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif ca_emmission_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
 							{% endif %}
 
 							<td>
@@ -361,14 +371,18 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if ca_transport_v and ca_transport_s %}	
+							{% if ca_transport_v and ca_transport_v_sdir == False %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif ca_transport_s and ca_transport_v == False  %}
-							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif ca_transport_valid  and ca_transport_s and ca_transport_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_transport_s and ca_transport_v == False and  ca_transport_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif ca_transport_non_s %}
-							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
 							{% elif ca_transport_non_s == False and ca_transport_s == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif ca_transport_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
 							{% endif %}
 
 							<td>
@@ -389,14 +403,18 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if recettes_v and recettes_s %}	
+							{% if recettes_v and recettes_v_sdir == False %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif recettes_s and recettes_v == False  %}
-							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif recettes_valid  and recettes_s and recettes_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif recettes_s and recettes_v == False and  recettes_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif recettes_non_s %}
-							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
 							{% elif recettes_non_s == False and recettes_s == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif recettes_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
 							{% endif %}
 
 							<td>
@@ -416,14 +434,18 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if depense_fonc_v and depense_fonc_s %}	
+							{% if depense_fonc_v and depense_fonc_v_sdir == False %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif depense_fonc_s and depense_fonc_v == False  %}
-							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif depense_fonc_valid  and depense_fonc_s and depense_fonc_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_fonc_s and depense_fonc_v == False and  depense_fonc_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif depense_fonc_non_s %}
-							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
 							{% elif depense_fonc_non_s == False and depense_fonc_s == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif depense_fonc_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
 							{% endif %}
 
 							<td>
@@ -443,14 +465,18 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if depense_exp_v and depense_exp_s %}	
+							{% if depense_exp_v and depense_exp_v_sdir == False %}	
 							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
-							{% elif depense_exp_s and depense_exp_v == False  %}
-							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif depense_exp_valid  and depense_exp_s and depense_exp_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_exp_s and depense_exp_v == False and  depense_exp_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
 							{% elif depense_exp_non_s %}
-							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
 							{% elif depense_exp_non_s == False and depense_exp_s == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif depense_exp_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
 							{% endif %}
 
 							<td>
@@ -463,6 +489,7 @@
 				</table>
 				{% endif %}
 
+				<!-- status Cadre  -->
 				{% if user.user_type == 6 %}
 				<table id="bootstrap-data-table" class="table table-striped">
 					<thead>
@@ -487,12 +514,12 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if offre_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
-							{% elif offre_non_v %}
-							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
-							{% elif offre_non_v == False and offre_v == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil"></i> En cours</span></td>
+							{% if offre_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif offre_valid and offre_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
 							<td>
@@ -511,12 +538,12 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if traffic_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
-							{% elif traffic_non_v %}
-							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
-							{% elif traffic_non_v == False and traffic_v == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil"></i> En cours</span></td>
+							{% if traffic_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif traffic_valid and traffic_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
 							<td>
@@ -537,12 +564,12 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if ca_emmission_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
-							{% elif ca_emmission_non_v %}
-							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
-							{% elif ca_emmission_non_v == False and ca_emmission_v == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil"></i> En cours</span></td>
+							{% if ca_emmission_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif ca_emmission_valid and ca_emmission_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 							
 							<td>
@@ -563,12 +590,12 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if ca_transport_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
-							{% elif ca_transport_non_v %}
-							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
-							{% elif ca_transport_non_v == False and ca_transport_v == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil"></i> En cours</span></td>
+							{% if ca_transport_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif ca_transport_valid and ca_transport_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
 							<td>
@@ -589,12 +616,12 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if recettes_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
-							{% elif recettes_non_v %}
-							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
-							{% elif recettes_non_v == False and recettes_v == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil"></i> En cours</span></td>
+							{% if recettes_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif recettes_valid and recettes_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
 							<td>
@@ -614,12 +641,12 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if depense_fonc_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
-							{% elif depense_fonc_non_v %}
-							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
-							{% elif depense_fonc_v == False and depense_fonc_v == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil"></i> En cours</span></td>
+							{% if depense_fonc_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif depense_fonc_valid and depense_fonc_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
 							<td>
@@ -639,12 +666,12 @@
 							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
-							{% if depense_exp_v %}	
-							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Terminé</span></td>
-							{% elif depense_exp_non_v %}
-							<td><span"><i class="menu-icon fa fa-times"></i> Non Validé</span></td>
-							{% elif depense_exp_non_v == False and depense_exp_v == False%}
-							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil"></i> En cours</span></td>
+							{% if depense_exp_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif depense_exp_valid and depense_exp_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
 							{% endif %}
 
 							<td>
