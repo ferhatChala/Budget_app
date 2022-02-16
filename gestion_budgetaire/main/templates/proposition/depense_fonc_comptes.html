@@ -56,7 +56,7 @@
 								{% if depense_fonc_s and depense_fonc_v == False %}	
 									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
 								{% elif depense_fonc_non_s  %}
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Non saisie</span></strong>
+									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
 								{% elif depense_fonc_non_s == False and depense_fonc_s == False %}
 									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
 								{% elif depense_fonc_s and depense_fonc_v %}
@@ -81,8 +81,8 @@
 									
 									{% for c2 in c2_par_unite %}
 										<div style="margin-bottom:10px;">
-											<div style="background-color: rgba(158, 224, 250, 0.356);"  class="container border" id="hu{{c2.numero}}" data-toggle="collapse" data-target="#cu{{c2.numero}}" aria-expanded="true" aria-controls="cu{{c2.numero}}">
-												<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(11, 176, 226);"><i class="menu-icon fa fa-chevron-circle-right"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+											<div style="background-color: rgba(229, 239, 243, 0.356);"  class="container border" id="hu{{c2.numero}}" data-toggle="collapse" data-target="#cu{{c2.numero}}" aria-expanded="true" aria-controls="cu{{c2.numero}}">
+												<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
 											</div>
 										
 											<div id="cu{{c2.numero}}" class="collapse container " aria-labelledby="hu{{c2.numero}}" data-parent="#accordionExampleu">
@@ -91,8 +91,8 @@
 													{% for c3 in c3_par_unite %}
 														
 														{% if c2.numero == c3.ref.numero %}
-															<div  style="background-color: rgba(158, 224, 250, 0.356);" class="container border" id="hu{{c3.numero}}" data-toggle="collapse" data-target="#cu{{c3.numero}}" aria-expanded="true" aria-controls="cu{{c3.numero}}">
-																<h5 style="padding: 10px;">{{c3.numero}} -	{{c3.rubrique}}</h5> 
+															<div  style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="hu{{c3.numero}}" data-toggle="collapse" data-target="#cu{{c3.numero}}" aria-expanded="true" aria-controls="cu{{c3.numero}}">
+																<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c3.numero}} -	{{c3.rubrique}}</h5> 
 																
 															</div>
 														
@@ -339,8 +339,8 @@
 									
 									{% for c2 in c2_par_autre %}
 										<div style="margin-bottom:10px;">
-											<div style="background-color: rgba(158, 224, 250, 0.356);" class="container border" id="h{{c2.numero}}" data-toggle="collapse" data-target="#c{{c2.numero}}" aria-expanded="true" aria-controls="c{{c2.numero}}">
-												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(11, 176, 226);"><i class="menu-icon fa fa-chevron-circle-right"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+											<div style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="h{{c2.numero}}" data-toggle="collapse" data-target="#c{{c2.numero}}" aria-expanded="true" aria-controls="c{{c2.numero}}">
+												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
 											</div>
 										
 											<div id="c{{c2.numero}}" class="collapse container " aria-labelledby="h{{c2.numero}}" data-parent="#accordionExample">
@@ -349,12 +349,12 @@
 													{% for c3 in c3_par_autre %}
 														
 														{% if c2.numero == c3.ref.numero %}
-															<div style="background-color: rgba(158, 224, 250, 0.356);" class="container border" id="h{{c3.numero}}" data-toggle="collapse" data-target="#c{{c3.numero}}" aria-expanded="true" aria-controls="c{{c3.numero}}">
-																<h5 style="padding: 10px;">{{c3.numero}} -	{{c3.rubrique}}</h5> 
+															<div style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="h{{c3.numero}}" data-toggle="collapse" data-target="#c{{c3.numero}}" aria-expanded="true" aria-controls="c{{c3.numero}}">
+																<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c3.numero}} -	{{c3.rubrique}}</h5> 
 																
 															</div>
 														
-															<div id="c{{c3.numero}}" class="collapse container border" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
+															<div id="c{{c3.numero}}" class="collapse container" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
 																<table id="bootstrap-data-table" class="table table-striped">
 																	<thead>
 																		<tr>
@@ -605,8 +605,8 @@
 									
 									{% for c2 in c2_par_unite %}
 										<div style="margin-bottom:10px;">
-											<div style="background-color: rgba(158, 224, 250, 0.356);"  class="container border" id="hu{{c2.numero}}" data-toggle="collapse" data-target="#cu{{c2.numero}}" aria-expanded="true" aria-controls="cu{{c2.numero}}">
-												<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(11, 176, 226);"><i class="menu-icon fa fa-chevron-circle-right"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+											<div style="background-color: rgba(229, 239, 243, 0.356);"  class="container border" id="hu{{c2.numero}}" data-toggle="collapse" data-target="#cu{{c2.numero}}" aria-expanded="true" aria-controls="cu{{c2.numero}}">
+												<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
 											</div>
 										
 											<div id="cu{{c2.numero}}" class="collapse container " aria-labelledby="hu{{c2.numero}}" data-parent="#accordionExampleu">
@@ -615,8 +615,8 @@
 													{% for c3 in c3_par_unite %}
 														
 														{% if c2.numero == c3.ref.numero %}
-															<div  style="background-color: rgba(158, 224, 250, 0.356);" class="container border" id="hu{{c3.numero}}" data-toggle="collapse" data-target="#cu{{c3.numero}}" aria-expanded="true" aria-controls="cu{{c3.numero}}">
-																<h5 style="padding: 10px;">{{c3.numero}} -	{{c3.rubrique}}</h5> 
+															<div  style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="hu{{c3.numero}}" data-toggle="collapse" data-target="#cu{{c3.numero}}" aria-expanded="true" aria-controls="cu{{c3.numero}}">
+																<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c3.numero}} -	{{c3.rubrique}}</h5> 
 																
 															</div>
 														
@@ -868,8 +868,8 @@
 									
 									{% for c2 in c2_par_autre %}
 										<div style="margin-bottom:10px;">
-											<div style="background-color: rgba(158, 224, 250, 0.356);" class="container border" id="h{{c2.numero}}" data-toggle="collapse" data-target="#c{{c2.numero}}" aria-expanded="true" aria-controls="c{{c2.numero}}">
-												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(11, 176, 226);"><i class="menu-icon fa fa-chevron-circle-right"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+											<div style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="h{{c2.numero}}" data-toggle="collapse" data-target="#c{{c2.numero}}" aria-expanded="true" aria-controls="c{{c2.numero}}">
+												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
 											</div>
 										
 											<div id="c{{c2.numero}}" class="collapse container " aria-labelledby="h{{c2.numero}}" data-parent="#accordionExample">
@@ -878,12 +878,12 @@
 													{% for c3 in c3_par_autre %}
 														
 														{% if c2.numero == c3.ref.numero %}
-															<div style="background-color: rgba(158, 224, 250, 0.356);" class="container border" id="h{{c3.numero}}" data-toggle="collapse" data-target="#c{{c3.numero}}" aria-expanded="true" aria-controls="c{{c3.numero}}">
-																<h5 style="padding: 10px;">{{c3.numero}} -	{{c3.rubrique}}</h5> 
+															<div style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="h{{c3.numero}}" data-toggle="collapse" data-target="#c{{c3.numero}}" aria-expanded="true" aria-controls="c{{c3.numero}}">
+																<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c3.numero}} -	{{c3.rubrique}}</h5> 
 																
 															</div>
 														
-															<div id="c{{c3.numero}}" class="collapse container border" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
+															<div id="c{{c3.numero}}" class="collapse container" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
 																<table id="bootstrap-data-table" class="table table-striped">
 																	<thead>
 																		<tr>

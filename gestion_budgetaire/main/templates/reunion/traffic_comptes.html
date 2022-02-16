@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
+{% block reu_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget <strong> {{budget.annee}}</strong></h1>
+						<h1>Réunion Budget <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -89,9 +89,9 @@
 										<td>{{c.compte.rubrique}}</td>
 										<td>{{c.reseau_compte}}</td>
 										<td>
-											{% if c.montants.all %}
-												{% for m in c.montants.all  %}
-													{% if m.annee_budgetaire == budget %}
+											{% for key, m in cm_dict.items %}
+												{% if key == c.id %}
+													{% if m != "null" %}
 														{% if m.commentaire_montant != None %}
 
 															{% if m.vld_chef_dep %}
@@ -186,68 +186,68 @@
 															{% else %}
 																<span style="color: orange;">{{m.montant}}</span>
 															{% endif %}
-														{% endif %}																		
+														{% endif %}	
+													{% else %}	
+														--------																
 													{% endif %}	
-												{% endfor %}
-											{% else %}
-												--------
-											{% endif %}	
+
+												{% endif %}	
+											{% endfor %}
 										</td>
 										<td>
-											{% if c.montants.all %}
-												{% for m in c.montants.all  %}
-													{% if m.annee_budgetaire == budget %}
-														<span>{{m.montant_cloture}}</span>																	
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant_cloture}}</span>
+													{% else %}
+														--------																	
 													{% endif %}	
-												{% endfor %}
-											{% else %}
-											--------
-											{% endif %}
+												{% endif %}	
+											{% endfor %}
 										</td>
 										<td>
-											{% if c.montants.all %}
-												{% for m in c.montants.all  %}
-													{% if m.annee_budgetaire == budget  %}
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null"   %}
 													
-															{% if m.vld_chef_dep %}
-																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-																<!-- Button trigger modal -->
-																<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}">
-																	<span><i class="menu-icon fa fa-times-circle"></i></span>
-																</button>
-																<!-- Modal -->
-																<div class="modal fade" id="valid{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-																	<div class="modal-dialog">
-																	<div class="modal-content">
-																		<div class="modal-header">
-																		<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
-																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span>
-																		</button>
-																		</div>
-																		<div class="modal-body">
-																			Vous êtes sûre d'annuler la validation pour ce compte ? <br>
-																			Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
-																			Montant : <span style="color: red;"> {{m.montant}}</span>
-																		</div>
-																		<div class="modal-footer">
-																		<a href="cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
-																		<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
-																		</div>
+														{% if m.vld_chef_dep %}
+															<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+															<!-- Button trigger modal -->
+															<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}">
+																<span><i class="menu-icon fa fa-times-circle"></i></span>
+															</button>
+															<!-- Modal -->
+															<div class="modal fade" id="valid{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																<div class="modal-content">
+																	<div class="modal-header">
+																	<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
 																	</div>
+																	<div class="modal-body">
+																		Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																		Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																		Montant : <span style="color: red;"> {{m.montant}}</span>
+																	</div>
+																	<div class="modal-footer">
+																	<a href="cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																	<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
 																	</div>
 																</div>
+																</div>
+															</div>
 
-															{% else %}
-																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-																<a href="valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>		
-															{% endif %}
-
+														{% else %}
+															<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+															<a href="valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>		
+														{% endif %}
+													{% else %}
+														<a href="add_montant_traffic/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 													{% endif %}	
-												{% endfor %}
-											{% else %}
-												<a href="add_montant_traffic/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
-											{% endif %}
+												{% endif %}
+											{% endfor %}
 
 											{% if user == c.added_by %}
 											<a href="#" data-toggle="modal" data-target="#delec{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
@@ -278,9 +278,7 @@
 											<!-- End Modal -->
 											{% endif %}
 										</td>
-										
 									</tr>
-						
 									{% endfor %}
 								</tbody>
 							</table>
@@ -306,11 +304,10 @@
 										<td>{{c.compte.rubrique}}</td>
 										<td>{{c.reseau_compte}}</td>
 										<td>
-											{% if c.montants.all %}
-												{% for m in c.montants.all  %}
-													{% if m.annee_budgetaire == budget %}
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
 														
-																												
 														{% if m.commentaire_montant != None %}													
 															{% if m.vld_chef_dep == False %}
 																<span>{{m.montant}}</span>	
@@ -437,43 +434,38 @@
 															{% else %}
 																<span>{{m.montant}}</span>
 														{% endif %}
-
-
+														{% endif %}			
+													{% else %}	
+														--------																
+													{% endif %}	
+												{% endif %}
+											{% endfor %}
+										</td>
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null"  %}
+														<span>{{m.montant_cloture}}</span>																	
+													{% else %}
+														--------	
+													{% endif %}	
+												{% endif %}	
+											{% endfor %}
+										</td>
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														{% if m.vld_chef_dep %}
+															<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+														{% else %}
+															<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 														{% endif %}
-																															
+													{% else %}
+														<a href="add_montant_traffic/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 													{% endif %}	
-												{% endfor %}
-											{% else %}
-												--------
-											{% endif %}	
-										</td>
-										<td>
-											{% if c.montants.all %}
-												{% for m in c.montants.all  %}
-													{% if m.annee_budgetaire == budget  %}
-															<span>{{m.montant_cloture}}</span>																	
-													{% endif %}	
-												{% endfor %}
-											{% else %}
-											--------
-											{% endif %}
-										</td>
-										<td>
-											{% if c.montants.all %}
-												{% for m in c.montants.all  %}
-													{% if m.annee_budgetaire == budget  %}
-													
-															{% if m.vld_chef_dep %}
-																<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-															{% else %}
-																<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-															{% endif %}
-
-													{% endif %}	
-												{% endfor %}
-											{% else %}
-												<a href="add_montant_traffic/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
-											{% endif %}
+												{% endif %}	
+											{% endfor %}
 
 											{% if user == c.added_by %}
 											<a href="#" data-toggle="modal" data-target="#delec{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
@@ -512,7 +504,6 @@
 							{% endif %}
 							<!-- End Cadre section -->	
 								
-
 						</div>
 						<div class="card-footer">
 							<a href="add_new_compte/{{unite.id}}" class="btn btn-info btn-sm btn-block"><span><i class="menu-icon fa fa-plus"></i></span> Ajouter autre compte<span></a>

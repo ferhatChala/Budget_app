@@ -237,6 +237,8 @@ class Compte_has_Montant(models.Model):
     ('PROPOS', 'Budget de proposition'),
     ('REUN', 'Budget de Réunion'),
     ('NOTIF', 'Budget notifié'),
+    ('CTRL', 'Budget de contrôle'),
+    ('RELS', 'Budget réalisation'),
     ]
 
     VALID_CHOICES = [
@@ -294,6 +296,8 @@ class Annee_Budgetaire(models.Model):
     ('PROPOS', 'Budget de proposition'),
     ('REUN', 'Budget de Réunion'),
     ('NOTIF', 'Budget notifié'),
+    ('CTRL', 'Budget de contrôle'),
+    ('RELS', 'Budget réalisation'),
     ]
     # code =  type + annee
     code = models.CharField(max_length=50, unique=True) 
