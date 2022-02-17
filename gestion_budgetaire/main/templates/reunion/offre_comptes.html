@@ -40,17 +40,17 @@
 					
 							<!-- Header status Chef dep  -->
 							{% if user.user_type == 5 %}
-								{% if offre_v and offre_v_sdir == False %}	
+								{% if c_v and c_v_sdir == False %}	
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif offre_valid  and offre_s and offre_v_sdir == False%}
+								{% elif c_valid  and c_s and c_v_sdir == False%}
 								<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif offre_s and offre_v == False and  offre_valid == False %}
+								{% elif c_s and c_v == False and  c_valid == False %}
 									<strong class="card-title">Offre <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></strong>
-								{% elif offre_non_s %}
+								{% elif c_non_s %}
 									<strong class="card-title">Offre <span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
-								{% elif offre_non_s == False and offre_s == False%}
+								{% elif c_non_s == False and c_s == False%}
 									<strong class="card-title">Offre <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
-								{% elif offre_v_sdir %}
+								{% elif c_v_sdir %}
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></strong>
 								{% endif %}
 							<!-- End status Chef dep  -->
@@ -58,24 +58,24 @@
 							<!-- Header status Cadre  -->
 							{% elif user.user_type == 6 %}
 
-								{% if offre_s and offre_valid == False %}	
+								{% if c_s and c_valid == False %}	
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif offre_non_s  %}
+								{% elif c_non_s  %}
 									<strong class="card-title">Offre <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Non saisie</span></strong>
-								{% elif offre_non_s == False and offre_s == False %}
+								{% elif c_non_s == False and c_s == False %}
 									<strong class="card-title">Offre <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
-								{% elif offre_valid and offre_s %}
+								{% elif c_valid and c_s %}
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></strong>
 								{% endif %}
 							<!-- End Header status Cadre  -->
 
 							<!-- Header status Sous Directeur  -->
 							{% elif user.user_type == 4 %}
-								{% if offre_v_sdir and offre_s %}	
+								{% if c_v_sdir and c_s %}	
 									<strong class="card-title">Offre <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif offre_valid and offre_s and offre_v_sdir == False  %}
+								{% elif c_valid and c_s and c_v_sdir == False  %}
 									<strong class="card-title">Offre <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></strong>
-								{% elif offre_non_s %}
+								{% elif c_non_s %}
 									<strong class="card-title">Offre <span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
 								{% else%}
 									<strong class="card-title">Offre <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>

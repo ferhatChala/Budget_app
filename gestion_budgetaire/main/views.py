@@ -834,7 +834,85 @@ def depense_fonc_comptes(request, id):
 	c2_par_unite = list(dict.fromkeys(c2_par_unite))
 	c2_par_autre = list(dict.fromkeys(c2_par_autre))
 	
-	# clacule les pos 2 saisier 
+	# clacule les pos 2 saisier state 
+	# comptes par unité ------------
+	state_cadre_dic_par_unite = {}
+	state_chef_dic_par_unite = {}
+	for c2 in c2_par_unite:
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
+		comptes_v_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_unite[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_unite[c2.numero]= state_chef
+
+	# comptes par unité -----------
+	state_cadre_dic_par_autre = {}
+	state_chef_dic_par_autre = {}
+	for c2 in c2_par_autre:
+		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, compte__ref__ref__ref=c2).count()
+		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+
+		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
+		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
+		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+
+		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		comptes_v_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		comptes_v_nbr = comptes_v_all_nbr - comptes_v_unite_nbr
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_autre[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_autre[c2.numero]= state_chef
+	# ------------------------------------
+
+
 
 	#pos 3 comptes
 	all_c3 = SCF_Pos_3.objects.all()
@@ -866,7 +944,9 @@ def depense_fonc_comptes(request, id):
 
 	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																  "depense_fonc_s":depense_fonc_s, "depense_fonc_non_s":depense_fonc_non_s, "depense_fonc_v":depense_fonc_v, 'budget':budget,
-																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict})
+																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
+																  'state_cadre_dic_par_unite':state_cadre_dic_par_unite, 'state_chef_dic_par_unite':state_chef_dic_par_unite,
+																  'state_cadre_dic_par_autre':state_cadre_dic_par_autre, 'state_chef_dic_par_autre':state_chef_dic_par_autre })
 
 def depense_exp_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -905,6 +985,84 @@ def depense_exp_comptes(request, id):
 	c2_par_unite = list(dict.fromkeys(c2_par_unite))
 	c2_par_autre = list(dict.fromkeys(c2_par_autre))
 
+	# clacule les pos 2 saisier state 
+	# comptes par unité ------------
+	state_cadre_dic_par_unite = {}
+	state_chef_dic_par_unite = {}
+	for c2 in c2_par_unite:
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
+		comptes_v_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_unite[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_unite[c2.numero]= state_chef
+
+	# comptes par unité -----------
+	state_cadre_dic_par_autre = {}
+	state_chef_dic_par_autre = {}
+	for c2 in c2_par_autre:
+		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, compte__ref__ref__ref=c2).count()
+		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+
+		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
+		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
+		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+
+		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		comptes_v_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		comptes_v_nbr = comptes_v_all_nbr - comptes_v_unite_nbr
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_autre[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_autre[c2.numero]= state_chef
+	# ------------------------------------
+
 	# pos 3 comptes
 	all_c3 = SCF_Pos_3.objects.all()
 	c3_par_unite = []
@@ -933,7 +1091,9 @@ def depense_exp_comptes(request, id):
 
 	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																	"depense_exp_s":depense_exp_s, "depense_exp_non_s":depense_exp_non_s, "depense_exp_v":depense_exp_v, 'budget':budget,
-																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict})
+																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
+																	'state_cadre_dic_par_unite':state_cadre_dic_par_unite, 'state_chef_dic_par_unite':state_chef_dic_par_unite,
+																	'state_cadre_dic_par_autre':state_cadre_dic_par_autre, 'state_chef_dic_par_autre':state_chef_dic_par_autre})
 
 # add montant to compte 
 def add_montant(request, id):
@@ -1369,7 +1529,7 @@ def offre_comptes_reunion(request, id):
 	offre_v = offre_nbr==offre_valid_nbr
 	offre_v_sdir = offre_nbr==offre_valid_sdir_nbr
 
-	return render(request,"reunion/offre_comptes.html", {'unite':unite, 'comptes':comptes, "offre_s":offre_s, "offre_non_s":offre_non_s, "offre_v":offre_v, 'budget':budget, 'offre_v_sdir':offre_v_sdir, 'offre_valid':offre_valid , 'cm_dict':cm_dict})
+	return render(request,"reunion/offre_comptes.html", {'unite':unite, 'comptes':comptes, "c_s":offre_s, "c_non_s":offre_non_s, "c_v":offre_v, 'c_v_sdir':offre_v_sdir, 'c_valid':offre_valid , 'cm_dict':cm_dict, 'budget':budget})
 
 def traffic_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1413,8 +1573,8 @@ def traffic_comptes_reunion(request, id):
 	traffic_valid = is_valid(2)	
 
 
-	return render(request,"reunion/traffic_comptes.html", {'unite':unite, 'comptes':comptes, "traffic_s":traffic_s, "traffic_non_s":traffic_non_s, "traffic_v":traffic_v, 'budget':budget, 'cm_dict':cm_dict,
-															'traffic_valid':traffic_valid, 'traffic_v_sdir':traffic_v_sdir })
+	return render(request,"reunion/traffic_comptes.html", {'unite':unite, 'comptes':comptes, "c_s":traffic_s, "c_non_s":traffic_non_s, "c_v":traffic_v, 'budget':budget, 'cm_dict':cm_dict,
+															'c_valid':traffic_valid, 'c_v_sdir':traffic_v_sdir })
 
 def ca_emmission_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1458,8 +1618,8 @@ def ca_emmission_comptes_reunion(request, id):
 	#--------------------------
 	ca_emmission_valid = is_valid(3)	
 
-	return render(request,"reunion/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, "ca_emmission_s":ca_emmission_s, "ca_emmission_non_s":ca_emmission_non_s, "ca_emmission_v":ca_emmission_v, 'budget':budget, 'cm_dict':cm_dict,
-																'ca_emmission_valid':ca_emmission_valid, 'ca_emmission_v_sdir':ca_emmission_v_sdir })
+	return render(request,"reunion/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, "c_s":ca_emmission_s, "c_non_s":ca_emmission_non_s, "c_v":ca_emmission_v, 'budget':budget, 'cm_dict':cm_dict,
+																'c_valid':ca_emmission_valid, 'c_v_sdir':ca_emmission_v_sdir })
 
 def ca_transport_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1502,8 +1662,8 @@ def ca_transport_comptes_reunion(request, id):
 	#--------------------------
 	ca_transport_valid = is_valid(4)	
 
-	return render(request,"reunion/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, "ca_transport_s":ca_transport_s, "ca_transport_non_s":ca_transport_non_s, "ca_transport_v":ca_transport_v, 'budget':budget, 'cm_dict':cm_dict,
-																'ca_transport_valid':ca_transport_valid, 'ca_transport_v_sdir':ca_transport_v_sdir })
+	return render(request,"reunion/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, "c_s":ca_transport_s, "c_non_s":ca_transport_non_s, "c_v":ca_transport_v, 'budget':budget, 'cm_dict':cm_dict,
+																'c_valid':ca_transport_valid, 'c_v_sdir':ca_transport_v_sdir })
 
 def recettes_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1546,8 +1706,8 @@ def recettes_comptes_reunion(request, id):
 	#--------------------------
 	recettes_valid = is_valid(5)	
 
-	return render(request,"reunion/recettes_comptes.html", {'unite':unite, 'comptes':comptes, "recettes_s":recettes_s, "recettes_non_s":recettes_non_s, "recettes_v":recettes_v, 'budget':budget, 'cm_dict':cm_dict,
-															'recettes_valid':recettes_valid, 'recettes_v_sdir':recettes_v_sdir })
+	return render(request,"reunion/recettes_comptes.html", {'unite':unite, 'comptes':comptes, "c_s":recettes_s, "c_non_s":recettes_non_s, "c_v":recettes_v, 'budget':budget, 'cm_dict':cm_dict,
+															'c_valid':recettes_valid, 'c_v_sdir':recettes_v_sdir })
 
 def depense_fonc_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1638,9 +1798,9 @@ def depense_fonc_comptes_reunion(request, id):
 	depense_fonc_valid = is_valid(6)	
 
 	return render(request,"reunion/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
-																  "depense_fonc_s":depense_fonc_s, "depense_fonc_non_s":depense_fonc_non_s, "depense_fonc_v":depense_fonc_v, 'budget':budget,
+																  "c_s":depense_fonc_s, "c_non_s":depense_fonc_non_s, "c_v":depense_fonc_v, 'budget':budget,
 																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
-																  "depense_fonc_valid":depense_fonc_valid, 'depense_fonc_v_sdir':depense_fonc_v_sdir })
+																  "c_valid":depense_fonc_valid, 'c_v_sdir':depense_fonc_v_sdir })
 
 def depense_exp_comptes_reunion(request, id):
 	unite = Unite.objects.get(id=id)
@@ -1724,9 +1884,9 @@ def depense_exp_comptes_reunion(request, id):
 	depense_exp_valid = is_valid(7)	
 
 	return render(request,"reunion/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
-																	"depense_exp_s":depense_exp_s, "depense_exp_non_s":depense_exp_non_s, "depense_exp_v":depense_exp_v, 'budget':budget,
+																	"c_s":depense_exp_s, "c_non_s":depense_exp_non_s, "c_v":depense_exp_v, 'budget':budget,
 																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
-																	"depense_exp_valid":depense_exp_valid, 'depense_exp_v_sdir':depense_exp_v_sdir })
+																	"c_valid":depense_exp_valid, 'c_v_sdir':depense_exp_v_sdir })
 
 # add montant to compte 
 def add_montant_reunion(request, id):
@@ -1882,6 +2042,8 @@ def valid_montant_reunion(request, id):
 		return HttpResponseRedirect("/reunion/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 	else:
 		return HttpResponseRedirect("/reunion/unites")
+
+#def valid_tous(request, id):
 
 def cancel_valid_montant_reunion(request, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)

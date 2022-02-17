@@ -82,7 +82,23 @@
 									{% for c2 in c2_par_unite %}
 										<div style="margin-bottom:10px;">
 											<div style="background-color: rgba(229, 239, 243, 0.356);"  class="container border" id="hu{{c2.numero}}" data-toggle="collapse" data-target="#cu{{c2.numero}}" aria-expanded="true" aria-controls="cu{{c2.numero}}">
-												<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+												<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} 
+													{% for key, s in state_chef_dic_par_unite.items  %}
+														{% if key == c2.numero %}
+															
+															{% if s == "Terminé" %}
+																<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+															{% elif s == "Instance" %}
+																<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+															{% elif s == "Non saisie" %}
+																<span class="float-right"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+															{% elif s == "En cours" %}
+																<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+															{% endif %}
+																
+														{% endif %}
+													{% endfor %}
+												</h5>
 											</div>
 										
 											<div id="cu{{c2.numero}}" class="collapse container " aria-labelledby="hu{{c2.numero}}" data-parent="#accordionExampleu">
@@ -96,7 +112,7 @@
 																
 															</div>
 														
-															<div id="cu{{c3.numero}}" class="collapse container " aria-labelledby="hu{{c3.numero}}" data-parent="#accordionExample1">								
+															<div id="cu{{c3.numero}}" class="collapse container show " aria-labelledby="hu{{c3.numero}}" data-parent="#accordionExample1">								
 																<table id="bootstrap-data-table" class="table table-striped">
 																	<thead>
 																		<tr>
@@ -340,7 +356,23 @@
 									{% for c2 in c2_par_autre %}
 										<div style="margin-bottom:10px;">
 											<div style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="h{{c2.numero}}" data-toggle="collapse" data-target="#c{{c2.numero}}" aria-expanded="true" aria-controls="c{{c2.numero}}">
-												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} 
+													{% for key, s in state_chef_dic_par_autre.items  %}
+														{% if key == c2.numero %}
+															
+															{% if s == "Terminé" %}
+																<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+															{% elif s == "Instance" %}
+																<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+															{% elif s == "Non saisie" %}
+																<span class="float-right"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+															{% elif s == "En cours" %}
+																<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+															{% endif %}
+																
+														{% endif %}
+													{% endfor %}
+												</h5>
 											</div>
 										
 											<div id="c{{c2.numero}}" class="collapse container " aria-labelledby="h{{c2.numero}}" data-parent="#accordionExample">
@@ -354,7 +386,7 @@
 																
 															</div>
 														
-															<div id="c{{c3.numero}}" class="collapse container" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
+															<div id="c{{c3.numero}}" class="collapse container show" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
 																<table id="bootstrap-data-table" class="table table-striped">
 																	<thead>
 																		<tr>
@@ -606,7 +638,24 @@
 									{% for c2 in c2_par_unite %}
 										<div style="margin-bottom:10px;">
 											<div style="background-color: rgba(229, 239, 243, 0.356);"  class="container border" id="hu{{c2.numero}}" data-toggle="collapse" data-target="#cu{{c2.numero}}" aria-expanded="true" aria-controls="cu{{c2.numero}}">
-												<h5 style="padding: 10px;"> <span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+												<h5 style="padding: 10px;"> 
+													<span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}}
+													{% for key, s in state_cadre_dic_par_unite.items  %}
+														{% if key == c2.numero %}
+															
+															{% if s == "Terminé" %}
+																<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+															{% elif s == "Validé" %}
+																<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+															{% elif s == "Non saisie" %}
+																<span class="float-right" style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+															{% elif s == "En cours" %}
+																<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+															{% endif %}
+																
+														{% endif %}
+													{% endfor %}
+												</h5>
 											</div>
 										
 											<div id="cu{{c2.numero}}" class="collapse container " aria-labelledby="hu{{c2.numero}}" data-parent="#accordionExampleu">
@@ -620,7 +669,7 @@
 																
 															</div>
 														
-															<div id="cu{{c3.numero}}" class="collapse container " aria-labelledby="hu{{c3.numero}}" data-parent="#accordionExample1">								
+															<div id="cu{{c3.numero}}" class="collapse container show " aria-labelledby="hu{{c3.numero}}" data-parent="#accordionExample1">								
 																<table id="bootstrap-data-table" class="table table-striped">
 
 																	<thead>
@@ -869,7 +918,23 @@
 									{% for c2 in c2_par_autre %}
 										<div style="margin-bottom:10px;">
 											<div style="background-color: rgba(229, 239, 243, 0.356);" class="container border" id="h{{c2.numero}}" data-toggle="collapse" data-target="#c{{c2.numero}}" aria-expanded="true" aria-controls="c{{c2.numero}}">
-												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></h5>
+												<h5 style="padding: 10px;"><span style="margin-right: 10px; color: rgb(162, 165, 167);"><i class="menu-icon fa fa-angle-right rotate-icon"></i></span> {{c2.numero}} -	{{c2.rubrique}} 
+													{% for key, s in state_cadre_dic_par_autre.items  %}
+														{% if key == c2.numero %}
+															
+															{% if s == "Terminé" %}
+																<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+															{% elif s == "Validé" %}
+																<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+															{% elif s == "Non saisie" %}
+																<span class="float-right" style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+															{% elif s == "En cours" %}
+																<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+															{% endif %}
+																
+														{% endif %}
+													{% endfor %}
+												</h5>
 											</div>
 										
 											<div id="c{{c2.numero}}" class="collapse container " aria-labelledby="h{{c2.numero}}" data-parent="#accordionExample">
@@ -883,7 +948,7 @@
 																
 															</div>
 														
-															<div id="c{{c3.numero}}" class="collapse container" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
+															<div id="c{{c3.numero}}" class="collapse container show" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
 																<table id="bootstrap-data-table" class="table table-striped">
 																	<thead>
 																		<tr>
