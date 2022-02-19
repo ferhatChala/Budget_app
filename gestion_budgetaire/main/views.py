@@ -2043,7 +2043,74 @@ def valid_montant_reunion(request, id):
 	else:
 		return HttpResponseRedirect("/reunion/unites")
 
-#def valid_tous(request, id):
+#valider tous 
+def valid_tous_reunion(request, id_unite, ch_num):
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
+	budget = all_budgets[0]
+	print("unite id is :")
+	print(id_unite)
+	print("chapitre num is :")
+	print(ch_num)
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_chef_dep = True
+			m.validation = "CHEFD"
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_sous_dir = True
+			m.validation = "SOUSD"
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/reunion/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/reunion/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/reunion/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/reunion/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/reunion/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/reunion/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/reunion/unite/depense_exp/"+ str(id_unite)+"")
+	else:
+		return HttpResponseRedirect("/reunion/unites")
+
+def cancel_valid_tous_reunion(request, id_unite, ch_num):
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
+	budget = all_budgets[0]
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_chef_dep = False
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_sous_dir = False
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/reunion/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/reunion/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/reunion/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/reunion/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/reunion/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/reunion/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/reunion/unite/depense_exp/"+ str(id_unite)+"")
+	else:
+		return HttpResponseRedirect("/reunion/unites")	
 
 def cancel_valid_montant_reunion(request, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)

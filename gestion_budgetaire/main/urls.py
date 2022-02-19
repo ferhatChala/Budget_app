@@ -184,6 +184,9 @@ urlpatterns = [
     path('reunion/unite/offre/add_montant_offre/<int:id>', views.add_montant_reunion, name="add_montant_offre_reunion"),
     path('reunion/unite/offre/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
     path('reunion/unite/offre/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
+    path('reunion/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
+    path('reunion/unite/offre/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),
+
     path('reunion/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
     path('reunion/unite/offre/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/offre/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
