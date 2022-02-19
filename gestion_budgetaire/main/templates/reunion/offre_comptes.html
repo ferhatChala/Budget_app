@@ -23,8 +23,8 @@
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
 							<li><a href="{% url 'unites_reunion' %}">Unités</a></li>
-                            <li><a href="#">{{unite.code_alpha}}</a></li>
-							<li><a href="#">Offre</a></li>
+                            <li><a href="/reunion/unite/{{unite.id}}">{{unite.code_alpha}}</a></li>
+							<li><a href="#">{{chapitre.lib}}</a></li>
 						</ol>
 					</div>
 				</div>
@@ -37,7 +37,7 @@
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header">
-				<strong class="card-title">Offre
+				<strong class="card-title">{{chapitre.lib}}
 					<!-- Header status Chef dep  -->
 					{% if user.user_type == 5 %}
 						{% if c_v and c_v_sdir == False %}	
@@ -95,10 +95,55 @@
 						
 						<div class="form-group col-md-2 mb-0">
 							{% if c_s and c_v_sdir == False %}
-								<a href="valid_tous/{{unite.id}}/1" class="btn btn-outline-success float-right"><span><i class="menu-icon fa fa-check"></i></span> Valider tous </a>
+								<a href="#" data-toggle="modal" data-target="#validtous" class="btn btn-outline-success float-right"><span><i class="menu-icon fa fa-check"></i></span> Valider tous </a>
 							{% else %}	
-								<a href="cancel_valid_tous/{{unite.id}}/1" class="btn btn-outline-danger float-right"> <span><i class="menu-icon fa fa-times-circle"></i></span> Annuler tous</a>
-							{% endif %}		
+								<a href="#" data-toggle="modal" data-target="#canceltous" class="btn btn-outline-danger float-right"> <span><i class="menu-icon fa fa-times-circle"></i></span> Annuler tous</a>
+							{% endif %}	
+							<!-- Modal pour valider tous  -->
+							<div class="modal fade" id="validtous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h3 class="modal-title" id="exampleModalLabel">Confirmer la validation</h3>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<strong>Vous êtes sûre de valider tout les comptes ?</strong><br>
+											<br>
+										</div>
+										<div class="modal-footer">
+											<a href="valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-success">Oui, Valider</a>
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End Modal -->
+							
+							<!-- Modal pour annuler la validation pour tous  -->
+							<div class="modal fade" id="canceltous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<strong>Vous êtes sûre d'annuler la validation pour tout les comptes ?</strong><br>
+											<br>
+										</div>
+										<div class="modal-footer">
+											<a href="cancel_valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-danger">Oui, Annuler la validation</a>
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End Modal -->	
 						</div>
 					{% else %}
 						<div class="form-group col-md-12 mb-0">
@@ -333,10 +378,55 @@
 						</div>
 						<div class="form-group col-md-2 mb-0">
 							{% if c_s and c_v == False and  c_valid == False %}
-								<a href="valid_tous/{{unite.id}}/1" class="btn btn-outline-success float-right"><span><i class="menu-icon fa fa-check"></i></span> Valider tous </a>
+								<a href="#" data-toggle="modal" data-target="#validtous" class="btn btn-outline-success float-right"><span><i class="menu-icon fa fa-check"></i></span> Valider tous </a>
 							{% else %}	
-								<a href="cancel_valid_tous/{{unite.id}}/1" class="btn btn-outline-danger float-right"> <span><i class="menu-icon fa fa-times-circle"></i></span> Annuler tous</a>
-							{% endif %}		
+								<a href="#" data-toggle="modal" data-target="#canceltous" class="btn btn-outline-danger float-right"> <span><i class="menu-icon fa fa-times-circle"></i></span> Annuler tous</a>
+							{% endif %}	
+							<!-- Modal pour valider tous  -->
+							<div class="modal fade" id="validtous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h3 class="modal-title" id="exampleModalLabel">Confirmer la validation</h3>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<strong>Vous êtes sûre de valider tout les comptes ?</strong><br>
+											<br>
+										</div>
+										<div class="modal-footer">
+											<a href="valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-success">Oui, Valider</a>
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End Modal -->
+							
+							<!-- Modal pour annuler la validation pour tous  -->
+							<div class="modal fade" id="canceltous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<strong>Vous êtes sûre d'annuler la validation pour tout les comptes ?</strong><br>
+											<br>
+										</div>
+										<div class="modal-footer">
+											<a href="cancel_valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-danger">Oui, Annuler la validation</a>
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End Modal -->
 						</div>
 					{% else %}
 						<div class="form-group col-md-12 mb-0">

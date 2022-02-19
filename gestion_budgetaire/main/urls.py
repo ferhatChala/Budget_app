@@ -186,7 +186,6 @@ urlpatterns = [
     path('reunion/unite/offre/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
     path('reunion/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
     path('reunion/unite/offre/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),
-
     path('reunion/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
     path('reunion/unite/offre/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/offre/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
@@ -198,6 +197,9 @@ urlpatterns = [
     path('reunion/unite/traffic/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
     path('reunion/unite/traffic/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
     path('reunion/unite/traffic/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/traffic/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
+    path('reunion/unite/traffic/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),    
+   
     path('reunion/unite/traffic/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/traffic/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
     path('reunion/unite/traffic/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
@@ -208,6 +210,9 @@ urlpatterns = [
     path('reunion/unite/ca_emmission/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
     path('reunion/unite/ca_emmission/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
     path('reunion/unite/ca_emmission/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/ca_emmission/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
+    path('reunion/unite/ca_emmission/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),
+    
     path('reunion/unite/ca_emmission/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/ca_emmission/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
     path('reunion/unite/ca_emmission/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
@@ -218,6 +223,9 @@ urlpatterns = [
     path('reunion/unite/ca_transport/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
     path('reunion/unite/ca_transport/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
     path('reunion/unite/ca_transport/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/ca_transport/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
+    path('reunion/unite/ca_transport/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),
+   
     path('reunion/unite/ca_transport/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/ca_transport/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
     path('reunion/unite/ca_transport/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
@@ -228,6 +236,9 @@ urlpatterns = [
     path('reunion/unite/recettes/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
     path('reunion/unite/recettes/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
     path('reunion/unite/recettes/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/recettes/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
+    path('reunion/unite/recettes/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),
+   
     path('reunion/unite/recettes/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/recettes/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
     path('reunion/unite/recettes/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
@@ -238,6 +249,9 @@ urlpatterns = [
     path('reunion/unite/depense_fonc/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
     path('reunion/unite/depense_fonc/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
     path('reunion/unite/depense_fonc/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/depense_fonc/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
+    path('reunion/unite/depense_fonc/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),
+   
     path('reunion/unite/depense_fonc/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/depense_fonc/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
     path('reunion/unite/depense_fonc/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
@@ -248,6 +262,9 @@ urlpatterns = [
     path('reunion/unite/depense_exp/update_montant/<int:id>', views.update_montant_reunion, name="update_montant_reunion" ),
     path('reunion/unite/depense_exp/valid_montant/<int:id>', views.valid_montant_reunion, name="valid_montant_reunion" ),
     path('reunion/unite/depense_exp/cancel_valid_montant/<int:id>', views.cancel_valid_montant_reunion, name="cancel_valid_montant_reunion" ),
+    path('reunion/unite/depense_exp/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_reunion, name="valid_tous_reunion" ),
+    path('reunion/unite/depense_exp/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_reunion, name="cancel_valid_tous_reunion" ),
+    
     path('reunion/unite/depense_exp/add_new_compte/<int:id>', views.add_new_compte_reunion, name="add_new_compte_reunion" ),
     path('reunion/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
     path('reunion/unite/depense_exp/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
