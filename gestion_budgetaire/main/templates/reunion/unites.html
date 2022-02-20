@@ -11,173 +11,203 @@
 
 {% if budget.lancement and budget.cloture == False %}
 
-<div class="breadcrumbs">
-	<div class="breadcrumbs-inner">
-		<div class="row m-0">
-			<div class="col-sm-4">
-				<div class="page-header float-left">
-					<div class="page-title">
-						<h1>Réunion Budget <strong>{{budget.annee}}</strong></h1>
+	<div class="breadcrumbs">
+		<div class="breadcrumbs-inner">
+			<div class="row m-0">
+				<div class="col-sm-4">
+					<div class="page-header float-left">
+						<div class="page-title">
+							<h1>Réunion Budget <strong>{{budget.annee}}</strong></h1>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-sm-8">
-				<div class="page-header float-right">
-					<div class="page-title">
-						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites_reunion' %}">Unités</a></li>
-						</ol>
+				<div class="col-sm-8">
+					<div class="page-header float-right">
+						<div class="page-title">
+							<ol class="breadcrumb text-right">
+								<li><a href="{% url 'unites_reunion' %}">Unités</a></li>
+							</ol>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>  
+
+	<div class="row content">
+
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					<span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités <span class="float-right"> {{bdg_total}} <b>DZD</b></span></strong>
+				</div>
+				<div class="card-body">
+					<input class="form-control" id="myInput" type="text" placeholder="Search..">
+					<table id="bootstrap-data-table" class="table table-striped">
+						<thead>
+							<tr>
+								<th>Unité</th>
+								<th>Monnaie</th>
+								<th>Etat d'avancement</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody id="myTable">
+							{% if user.user_type == 6 %}
+								{% for u in unites %}
+								<tr>
+									<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
+									<td>{{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}} </td>
+									<td>
+										{% for key, s in state_cadre_dic.items  %}
+											{% if key == u.id %}
+												
+												{% if s == "Terminé" %}
+													<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+												{% elif s == "Validé" %}
+													<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+												{% elif s == "Non saisie" %}
+													<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+												{% elif s == "En cours" %}
+													<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}
+										<span style="margin-left:50px;">
+											{% for key, p in pr_dic.items  %}
+												{% if key == u.id %}
+													{% if p != 0 %}
+														<strong>{{p}} % </strong>
+													{% else %}
+														-	
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										</span>
+									</td>
+									<td><a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+								</tr>
+								{% endfor %}
+							{% elif user.user_type == 5 %}
+								{% for u in dep_unites %}
+								<tr>
+									<td>{{u.lib}} ({{u.code_alpha}})</td>
+									<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
+									<td>
+										{% for key, s in state_chef_dic.items  %}
+											{% if key == u.id %}
+												
+												{% if s == "Terminé" %}
+													<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+												{% elif s == "Validé" %}
+													<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+												{% elif s == "Instance" %}
+													<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+												{% elif s == "Non saisie" %}
+													<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+												{% elif s == "En cours" %}
+													<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}
+										<span style="margin-left:50px;">
+											{% for key, p in pr_dic.items  %}
+												{% if key == u.id %}
+													{% if p != 0 %}
+														<strong>{{p}} % </strong>
+													{% else %}
+														-	
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										</span>
+									</td>
+									
+									<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+								</tr>
+								{% endfor %}
+							{% elif user.user_type == 4 %}
+								{% for u in all_unites %}
+								<tr>
+									<td>{{u.lib}} ({{u.code_alpha}})</td>
+									<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
+									<td>
+										{% for key, s in state_sdir_dic.items  %}
+											{% if key == u.id %}
+												
+												{% if s == "Terminé" %}
+													<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+												{% elif s == "Instance" %}
+													<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+												{% elif s == "Non saisie" %}
+													<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+												{% elif s == "En cours" %}
+													<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}
+										<span style="margin-left:50px;">
+											{% for key, p in pr_dic.items  %}
+												{% if key == u.id %}
+													{% if p != 0 %}
+														<strong>{{p}} % </strong>
+													{% else %}
+														-	
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										</span>
+									</td>
+									
+									<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+								</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
 	</div>
-</div>  
-
-<div class="row content">
-
-    
-	{% if user.user_type == 6 %}
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités</strong>
-            </div>
-            <div class="card-body">
-				<input class="form-control" id="myInput" type="text" placeholder="Search..">
-				<table id="bootstrap-data-table" class="table table-striped">
-					<thead>
-						<tr>
-							<th>Unité</th>
-							<th>Monnaie</th>
-							<th>Budget</th>
-							<th>Etat</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody id="myTable">
-						{% for u in unites %}
-						<tr>
-							<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
-							<td>{{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}} </td>
-							<td>-------</td>
-							<td>En cours</td>
-							<td><a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-            </div>
-        </div>
-    </div>
-	{% endif %}
-
-	{% if user.user_type == 5 %}
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités</strong>
-            </div>
-            <div class="card-body">
-				<input class="form-control" id="myInput" type="text" placeholder="Search..">
-				<table id="bootstrap-data-table" class="table table-striped">
-					<thead>
-						<tr>
-							<th>Unité</th>
-							<th>Monnaie</th>
-							<th>Budget</th>
-							<th>Etat</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody id="myTable">
-						{% for u in dep_unites %}
-						<tr>
-							<td>{{u.lib}} ({{u.code_alpha}})</td>
-							<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
-							<td>-------</td>
-							<td>En cours</td>
-							<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-            </div>
-        </div>
-    </div>
-	{% endif %}
-
-	{% if user.user_type == 4 %}
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités</strong>
-            </div>
-            <div class="card-body">
-				<input class="form-control" id="myInput" type="text" placeholder="Search..">
-				<table id="bootstrap-data-table" class="table table-striped">
-					<thead>
-						<tr>
-							<th>Unité</th>
-							<th>Monnaie</th>
-							<th>Budget</th>
-							<th>Etat</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody id="myTable">
-						{% for u in all_unites %}
-						<tr>
-							<td>{{u.lib}} ({{u.code_alpha}})</td>
-							<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
-							<td>-------</td>
-							<td>En cours</td>
-							<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-            </div>
-        </div>
-    </div>
-	{% endif %}
-
-</div>
 
 {% else %}
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <strong>Note: </strong> Please contact the admin for any additional informations, <strong>admin@air-algerie.dz </strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-<div class="breadcrumbs">
-	<div class="breadcrumbs-inner">
-		<div class="row m-0">
-			<div class="col-sm-4">
-				<div class="page-header float-left">
-					<div class="page-title">
-                        
-                        {% if budget.cloture  %}
-                            <h1>Réunion budget pour l'année {{budget.annee}} est <strong>Cloturé !</strong>.</h1>
-                        {% else %}
-                            <h1>Réunion budget pour l'année {{budget.annee}} pas encore lancé.</h1>
-                        {% endif %}
+	<div class="alert alert-info alert-dismissible fade show" role="alert">
+		<strong>Note: </strong> Please contact the admin for any additional informations, <strong>admin@air-algerie.dz </strong>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="breadcrumbs">
+		<div class="breadcrumbs-inner">
+			<div class="row m-0">
+				<div class="col-sm-4">
+					<div class="page-header float-left">
+						<div class="page-title">
+							
+							{% if budget.cloture  %}
+								<h1>Réunion budget pour l'année {{budget.annee}} est <strong>Cloturé !</strong>.</h1>
+							{% else %}
+								<h1>Réunion budget pour l'année {{budget.annee}} pas encore lancé.</h1>
+							{% endif %}
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-sm-8">
-				<div class="page-header float-right">
-					<div class="page-title">
-						<ol class="breadcrumb text-right">
-							<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les Réunion budgets</a></li>
-						</ol>
+				<div class="col-sm-8">
+					<div class="page-header float-right">
+						<div class="page-title">
+							<ol class="breadcrumb text-right">
+								<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les Réunion budgets</a></li>
+							</ol>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</div> 
+	</div> 
     
 {% endif %}
     

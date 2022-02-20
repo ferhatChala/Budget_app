@@ -11,111 +11,142 @@
 
 {% if budget.lancement and budget.cloture == False %}
 
-<div class="breadcrumbs">
-	<div class="breadcrumbs-inner">
-		<div class="row m-0">
-			<div class="col-sm-4">
-				<div class="page-header float-left">
-					<div class="page-title">
-						<h1>Proposition Budget <strong>{{budget.annee}}</strong></h1>
+	<div class="breadcrumbs">
+		<div class="breadcrumbs-inner">
+			<div class="row m-0">
+				<div class="col-sm-4">
+					<div class="page-header float-left">
+						<div class="page-title">
+							<h1>Proposition Budget <strong>{{budget.annee}}</strong></h1>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-sm-8">
-				<div class="page-header float-right">
-					<div class="page-title">
-						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites' %}">Unités</a></li>
-						</ol>
+				<div class="col-sm-8">
+					<div class="page-header float-right">
+						<div class="page-title">
+							<ol class="breadcrumb text-right">
+								<li><a href="{% url 'unites' %}">Unités</a></li>
+							</ol>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>  
+	<div class="row content">
+
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header">
+					<span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités <span class="float-right"> {{bdg_total}} <b>DZD</b></span> </strong>
+				</div>
+				<div class="card-body">
+					<input class="form-control" id="myInput" type="text" placeholder="Search..">
+					<table id="bootstrap-data-table" class="table table-striped">
+						<thead>
+							<tr>
+								<th>Unité</th>
+								<th>Monnaie</th>
+								<th>Budget</th>
+								<th>Etat</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody id="myTable">
+							{% if user.user_type == 6 %}
+								{% for u in unites %}
+								<tr>
+									<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
+									<td>{{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}} </td>
+									{% for key, t in total_unite_dic.items  %}
+										{% if key == u.id %}
+											{% if t != None %}
+												<td>{{t}}</td>
+											{% else %}
+												<td>-</td>	
+											{% endif %}
+										{% endif %}
+									{% endfor %}
+									<td>En cours</td>
+									<td><a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+								</tr>
+								{% endfor %}
+							{% elif user.user_type == 5  %}
+								{% for u in dep_unites %}
+								<tr>
+									<td>{{u.lib}} ({{u.code_alpha}})</td>
+									<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
+									{% for key, t in total_unite_dic.items  %}
+										{% if key == u.id %}
+											{% if t != None %}
+												<td>{{t}}</td>
+											{% else %}
+												<td>-</td>	
+											{% endif %}
+										{% endif %}
+									{% endfor %}
+									<td>En cours</td>
+									<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+								</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
 	</div>
-</div>  
 
-<div class="row content">
-
-    
-	{% if user.user_type == 6 %}
-	{% for u in unites %}
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  {{u.unite.lib}} <span class="float-right">{{u.unite.code_alpha}}</span></strong>
-            </div>
-            <div class="card-body">
-                <p class="card-text"><span><i class="menu-icon fa fa-money"></i></span> Monnaie: {{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}}</span></p>
-                <p class="card-text"><span><span><i class="menu-icon fa fa-globe"></i></span> Pays: {{u.unite.pays.lib}}</span></p>
-                <p class="card-text"></p>
-                <a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-	{% endif %}
-
-	
-	{% if user.user_type == 5 %}
-	{% for u in dep_unites %}
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  {{u.lib}} <span class="float-right">{{u.code_alpha}}</span></strong>
-            </div>
-            <div class="card-body">
-                <p class="card-text"><span><i class="menu-icon fa fa-money"></i></span> Monnaie: {{u.monnaie.code_alpha}} / {{u.monnaie.code_num}}</span></p>
-                <p class="card-text"><span><span><i class="menu-icon fa fa-globe"></i></span> Pays: {{u.pays.lib}}</span></p>
-                <p class="card-text"></p>
-                <a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-	{% endif %}
-		
-
-
-</div>
 
 {% else %}
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <strong>Note: </strong> Please contact the admin for any additional informations, <strong>admin@air-algerie.dz </strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-<div class="breadcrumbs">
-	<div class="breadcrumbs-inner">
-		<div class="row m-0">
-			<div class="col-sm-4">
-				<div class="page-header float-left">
-					<div class="page-title">
-                        
-                        {% if budget.cloture  %}
-                            <h1>Proposition budget de l'année {{budget.annee}} est <strong>Cloturé !</strong>.</h1>
-                        {% else %}
-                            <h1>Proposition budget de l'année {{budget.annee}} pas encore lancé.</h1>
-                        {% endif %}
+	<div class="alert alert-info alert-dismissible fade show" role="alert">
+		<strong>Note: </strong> Please contact the admin for any additional informations, <strong>admin@air-algerie.dz </strong>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="breadcrumbs">
+		<div class="breadcrumbs-inner">
+			<div class="row m-0">
+				<div class="col-sm-4">
+					<div class="page-header float-left">
+						<div class="page-title">
+							
+							{% if budget.cloture  %}
+								<h1>Proposition budget de l'année {{budget.annee}} est <strong>Cloturé !</strong>.</h1>
+							{% else %}
+								<h1>Proposition budget de l'année {{budget.annee}} pas encore lancé.</h1>
+							{% endif %}
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-sm-8">
-				<div class="page-header float-right">
-					<div class="page-title">
-						<ol class="breadcrumb text-right">
-							<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les proposition budgets</a></li>
-						</ol>
+				<div class="col-sm-8">
+					<div class="page-header float-right">
+						<div class="page-title">
+							<ol class="breadcrumb text-right">
+								<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les proposition budgets</a></li>
+							</ol>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</div> 
-    
+	</div> 
 {% endif %}
     
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+		var value = $(this).val().toLowerCase();
+		$("#myTable tr").filter(function() {
+		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		});
+	  });
+	});
+</script>
 
 {% endblock %}

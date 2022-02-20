@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.db.models import Sum
 from django.shortcuts import  render, redirect, get_object_or_404
 from .forms import (NewUserForm, InterimForm, AnneeBdgForm, UpdateAnneeBdgForm,
 					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
@@ -582,15 +583,26 @@ def unites(request):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 	dep_unites = Unite.objects.filter(departement=request.user.departement)
-	return render(request,"proposition/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'budget':budget})
+	all_unites = Unite.objects.all()
+	# montant total consolidé of unite --------
+	total_unite_dic = {}
+	bdg_total = 0
+	for u in all_unites:
+		total = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire=budget).aggregate(Sum('montant'))
+		total_unite_dic[u.id] = total['montant__sum']
+		if total['montant__sum'] != None:
+			bdg_total = bdg_total + total['montant__sum']
+	#------------------------------------------	
+
+	return render(request,"proposition/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'budget':budget, 'total_unite_dic':total_unite_dic, 'bdg_total':bdg_total})
 
 def unite_detail(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
 	budget = all_budgets[0]
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
-	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS").count()
-	comptes_vld_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True).count()	
+	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget).count()
+	comptes_vld_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True).count()	
 	# porcentage de saiser pour l unite
 	if comptes_nbr == 0:
 		pr_cdr = 0
@@ -611,21 +623,21 @@ def unite_detail(request, id):
 	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=6).count()
 	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=7).count()
 	# nombre de comptes saisie
-	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
-	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=2).count()
-	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=3).count()
-	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=4).count()
-	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=5).count()
-	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=6).count()
-	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=7).count()
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=7).count()
 	# nombre de comptes Validé par chef dep
-	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
-	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
-	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
-	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
-	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
-	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
-	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
 	#Check if chapitre is saisié 
 	offre_s = offre_nbr==offre_done_nbr
 	traffic_s = traffic_nbr==traffic_done_nbr
@@ -677,6 +689,8 @@ def offre_comptes(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
+	chapitre = Chapitre.objects.get(code_num=1)
+
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -688,8 +702,8 @@ def offre_comptes(request, id):
 			cm_dict[c.id] = m[0]	
 
 	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
-	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=1).count()
-	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=1).count()
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
 	
 	offre_s = offre_nbr==offre_done_nbr
 	offre_non_s = offre_done_nbr == 0
@@ -702,6 +716,8 @@ def traffic_comptes(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
+	chapitre = Chapitre.objects.get(code_num=2)
+
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=2)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -713,8 +729,8 @@ def traffic_comptes(request, id):
 			cm_dict[c.id] = m[0]	
 	
 	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
-	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=2).count()
-	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=2).count()
+	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
 
 	traffic_s = traffic_nbr==traffic_done_nbr
 	traffic_non_s = traffic_done_nbr == 0
@@ -727,6 +743,8 @@ def ca_emmission_comptes(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
+	chapitre = Chapitre.objects.get(code_num=3)
+
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=3)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -738,8 +756,8 @@ def ca_emmission_comptes(request, id):
 			cm_dict[c.id] = m[0]	
 	
 	ca_emmission_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=3).count()
-	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=3).count()
-	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=3).count()
+	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
 	
 	ca_emmission_s = ca_emmission_nbr==ca_emmission_done_nbr
 	ca_emmission_non_s = ca_emmission_done_nbr == 0
@@ -752,6 +770,8 @@ def ca_transport_comptes(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
+	chapitre = Chapitre.objects.get(code_num=4)
+
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=4).order_by('-reseau_compte')
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -763,8 +783,8 @@ def ca_transport_comptes(request, id):
 			cm_dict[c.id] = m[0]	
 	
 	ca_transport_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=4).count()
-	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=4).count()
-	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=4).count()
+	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
 
 	ca_transport_s = ca_transport_nbr==ca_transport_done_nbr
 	ca_transport_non_s = ca_transport_done_nbr == 0
@@ -777,6 +797,8 @@ def recettes_comptes(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
 
+	chapitre = Chapitre.objects.get(code_num=5)
+
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=5)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -788,8 +810,8 @@ def recettes_comptes(request, id):
 			cm_dict[c.id] = m[0]	
 	
 	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
-	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=5).count()
-	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=5).count()
+	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
 
 	recettes_s = recettes_nbr==recettes_done_nbr
 	recettes_non_s = recettes_done_nbr == 0
@@ -801,6 +823,8 @@ def depense_fonc_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=6)
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
 	# join comptes with montants in dict
@@ -934,8 +958,8 @@ def depense_fonc_comptes(request, id):
 	#comptes_regle_par_autre = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite compte__chapitre__code_num=6)	
 	
 	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6).count()
-	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=6).count()
-	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=6).count()
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
 
 
 	depense_fonc_s = depense_fonc_nbr==depense_fonc_done_nbr
@@ -952,6 +976,8 @@ def depense_exp_comptes(request, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
 	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=7)
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7)
 	# join comptes with montants in dict
@@ -1082,8 +1108,8 @@ def depense_exp_comptes(request, id):
 
 
 	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7).count()
-	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", unite_compte__compte__chapitre__code_num=7).count()
-	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="PROPOS", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=7).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
 
 	depense_exp_s = depense_exp_nbr==depense_exp_done_nbr
 	depense_exp_non_s = depense_exp_done_nbr == 0
@@ -1342,15 +1368,100 @@ def unites_reunion(request):
 	budget = all_budgets[0]
 	dep_unites = Unite.objects.filter(departement=request.user.departement)
 	all_unites = Unite.objects.all()
-	return render(request,"reunion/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget':budget})
+
+	# montant total consolidé of unite --------
+	total_unite_dic = {}
+	bdg_total = 0
+	state_cadre_dic = {}
+	state_chef_dic = {}
+	state_sdir_dic = {}
+	pr_dic = {}
+	for u in all_unites:
+		# calculer le montant
+		total = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire=budget).aggregate(Sum('montant'))
+		total_unite_dic[u.id] = total['montant__sum']
+		if total['montant__sum'] != None:
+			bdg_total = bdg_total + total['montant__sum']
+
+		# get state of unite (Terminé , En cours, ...)
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=u).count()
+		comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget).count()
+		comptes_done = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget)		
+		comptes_v_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget, vld_chef_dep=True).count()
+		comptes_v_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget, vld_sous_dir=True).count()
+		# valid par tous staus
+		i = 0
+		for cd in comptes_done:
+			if cd.vld_chef_dep or cd.vld_sous_dir : 
+				i = i+1
+		if i == 0:
+			comptes_valid =  False
+		else: 
+			comptes_valid =  comptes_done_nbr == i	
+		
+		# needed status comptes_valid
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		comptes_v_sdir = comptes_nbr == comptes_v_sdir_nbr
+		#comptes_valid	
+
+		# pour le cadre
+		if comptes_s and comptes_valid == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_valid: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic[u.id]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False and comptes_valid == False :
+			state_chef = "Instance"
+		elif comptes_v and comptes_v_sdir == False:
+			state_chef = "Terminé"
+		elif comptes_valid and comptes_s and comptes_v_sdir == False:
+			state_chef = "Terminé"
+		elif comptes_v_sdir:
+			state_chef = "Validé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic[u.id]= state_chef
+
+		# pour sous dir
+		if comptes_non_s:
+			state_sdir = "Non saisie"
+		elif comptes_s and comptes_v_sdir == False:
+			state_sdir = "Instance"
+		elif comptes_v_sdir and comptes_s:
+			state_sdir = "Terminé"
+		else:
+			state_sdir = "En cours"
+		state_sdir_dic[u.id]= state_sdir	
+
+		# porcentage de saiser pour l unite
+		if comptes_nbr == 0:
+			pr = 0
+		else :
+			pr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])						
+		pr_dic[u.id] = pr
+	#------------------------------------------
+
+
+	return render(request,"reunion/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget':budget, 'total_unite_dic':total_unite_dic, 'bdg_total':bdg_total,
+													'state_cadre_dic':state_cadre_dic, 'state_chef_dic':state_chef_dic, 'state_sdir_dic':state_sdir_dic, 'pr_dic':pr_dic})
 
 def unite_detail_reunion(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN", lancement=True, cloture=False).order_by('-annee')
 	budget = all_budgets[0]
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
-	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN").count()
-	comptes_vld_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True).count()	
+	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget,).count()
+	comptes_vld_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True).count()	
 	# porcentage de saiser pour l unite
 	if comptes_nbr == 0:
 		pr_cdr = 0
@@ -1371,29 +1482,29 @@ def unite_detail_reunion(request, id):
 	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=6).count()
 	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=7).count()
 	# nombre de comptes saisie
-	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=1).count()
-	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=2).count()
-	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=3).count()
-	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=4).count()
-	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=5).count()
-	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=6).count()
-	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=7).count()
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=7).count()
 	# nombre de comptes Validé par chef dep
-	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
-	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
-	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
-	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
-	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
-	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
-	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
 	# nombre de comptes Validé par sous dir
-	offre_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=1).count()
-	traffic_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=2).count()
-	ca_emmission_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=3).count()
-	ca_transport_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=4).count()
-	recettes_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=5).count()
-	depense_fonc_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=6).count()
-	depense_exp_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=7).count()
+	offre_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=7).count()
 	
 	#Check if chapitre is saisié 
 	offre_s = offre_nbr==offre_done_nbr
@@ -1450,8 +1561,8 @@ def unite_detail_reunion(request, id):
 
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -1509,14 +1620,14 @@ def offre_comptes_reunion(request, id):
 	#print(cm_dict)
 
 	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
-	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=1).count()
-	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
-	offre_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=1).count()
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=1).count()
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	offre_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=1).count()
 	
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -1555,9 +1666,9 @@ def traffic_comptes_reunion(request, id):
 			cm_dict[c.id] = m[0]	
 
 	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
-	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=2).count()
-	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
-	traffic_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=2).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=2).count()
+	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
+	traffic_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=2).count()
 
 	traffic_s = traffic_nbr==traffic_done_nbr
 	traffic_non_s = traffic_done_nbr == 0
@@ -1566,8 +1677,8 @@ def traffic_comptes_reunion(request, id):
 
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -1602,9 +1713,9 @@ def ca_emmission_comptes_reunion(request, id):
 			cm_dict[c.id] = m[0]	
 	
 	ca_emmission_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=3).count()
-	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=3).count()
-	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
-	ca_emmission_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=3).count()
+	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_emmission_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=3).count()
 	
 	ca_emmission_s = ca_emmission_nbr==ca_emmission_done_nbr
 	ca_emmission_non_s = ca_emmission_done_nbr == 0
@@ -1612,10 +1723,10 @@ def ca_emmission_comptes_reunion(request, id):
 	ca_emmission_v_sdir = ca_emmission_nbr==ca_emmission_valid_sdir_nbr
 
 
-		# valid tout chef or sdir
+	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -1649,9 +1760,9 @@ def ca_transport_comptes_reunion(request, id):
 			cm_dict[c.id] = m[0]	
 
 	ca_transport_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=4).count()
-	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=4).count()
-	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
-	ca_transport_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=4).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=4).count()
+	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
+	ca_transport_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=4).count()
 
 	ca_transport_s = ca_transport_nbr==ca_transport_done_nbr
 	ca_transport_non_s = ca_transport_done_nbr == 0
@@ -1660,8 +1771,8 @@ def ca_transport_comptes_reunion(request, id):
 
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -1695,9 +1806,9 @@ def recettes_comptes_reunion(request, id):
 			cm_dict[c.id] = m[0]	
 
 	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
-	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=5).count()
-	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
-	recettes_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=5).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=5).count()
+	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
+	recettes_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=5).count()
 
 	recettes_s = recettes_nbr==recettes_done_nbr
 	recettes_non_s = recettes_done_nbr == 0
@@ -1706,8 +1817,8 @@ def recettes_comptes_reunion(request, id):
 
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -1745,6 +1856,7 @@ def depense_fonc_comptes_reunion(request, id):
 	for c in comptes:
 		if c.regle_par != unite:
 			comptes_regle_par_autre.append(c)	
+	
 	# pos 2 comptes 
 	all_c2 = SCF_Pos_2.objects.all()
 	c2_par_unite = []
@@ -1762,7 +1874,7 @@ def depense_fonc_comptes_reunion(request, id):
 	c2_par_unite = list(dict.fromkeys(c2_par_unite))
 	c2_par_autre = list(dict.fromkeys(c2_par_autre))
 	
-	# clacule les pos 2 saisier state 
+	# clacule les pos 2 saisier state -----------------------
 	# comptes par unité ------------
 	state_cadre_dic_par_unite = {}
 	state_chef_dic_par_unite = {}
@@ -1830,31 +1942,59 @@ def depense_fonc_comptes_reunion(request, id):
 			state_sdir = "En cours"
 		state_sdir_dic_par_unite[c2.numero]= state_sdir		
 
-	# comptes par  -----------
+	# comptes par autre -----------
 	state_cadre_dic_par_autre = {}
 	state_chef_dic_par_autre = {}
 	state_sdir_dic_par_autre = {}
 	for c2 in c2_par_autre:
+		comptes_unite = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, regle_par=unite, compte__ref__ref__ref=c2)
+		comptes_all = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, compte__ref__ref__ref=c2)
+		comptes_autre = comptes_all.difference(comptes_unite)  
+
 		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, regle_par=unite, compte__ref__ref__ref=c2).count()
 		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, compte__ref__ref__ref=c2).count()
 		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+		
+		done_par_unite = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6)
+		done_all = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6)
+		comptes_done = done_all.difference(done_par_unite)
 
 		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
 		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
 		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
 
+		#check chef dep validation 
 		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
 		comptes_v_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
 		comptes_v_nbr = comptes_v_all_nbr - comptes_v_unite_nbr
+		#check sous dir validation
+		comptes_vsdir_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		comptes_vsdir_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		comptes_vsdir_nbr = comptes_vsdir_all_nbr - comptes_vsdir_unite_nbr
 		
+		#--------------------------
+		i = 0
+		for cd in comptes_done:
+			if cd.vld_chef_dep or cd.vld_sous_dir : 
+				i = i+1
+
+		if i == 0:
+			comptes_valid = False
+		else: 
+			comptes_valid = comptes_done_nbr == i
+		#--------------------------	
+
+		# nedded states 
 		comptes_s = comptes_nbr == comptes_done_nbr
 		comptes_non_s = comptes_done_nbr == 0
 		comptes_v = comptes_nbr == comptes_v_nbr
+		comptes_vsdir = comptes_nbr == comptes_vsdir_nbr
+		#comptes_valid
 		
 		# pour le cadre
-		if comptes_s and comptes_v == False: 
+		if comptes_s and comptes_valid == False: 
 			state_cadre = "Terminé"
-		elif comptes_s and comptes_v: 
+		elif comptes_s and comptes_valid: 
 			state_cadre = "Validé"
 		elif comptes_non_s:
 			state_cadre = "Non saisie"
@@ -1865,17 +2005,29 @@ def depense_fonc_comptes_reunion(request, id):
 		# pour chef dep
 		if comptes_non_s:
 			state_chef = "Non saisie"
-		elif comptes_s and comptes_v == False:
+		elif comptes_s and comptes_v == False and comptes_valid == False :
 			state_chef = "Instance"
-		elif comptes_v and comptes_s:
+		elif comptes_v and comptes_v_sdir == False:
 			state_chef = "Terminé"
+		elif comptes_valid and comptes_s and comptes_v_sdir == False:
+			state_chef = "Terminé"
+		elif comptes_v_sdir:
+			state_chef = "Validé"
 		else:
 			state_chef = "En cours"
 		state_chef_dic_par_autre[c2.numero]= state_chef
-	# ------------------------------------
-	
 
-
+		# pour sous dir
+		if comptes_non_s:
+			state_sdir = "Non saisie"
+		elif comptes_s and comptes_v_sdir == False:
+			state_sdir = "Instance"
+		elif comptes_v_sdir and comptes_s:
+			state_sdir = "Terminé"
+		else:
+			state_sdir = "En cours"
+		state_sdir_dic_par_autre[c2.numero]= state_sdir		
+	# --------------------------------------------------------
 
 	#pos 3 comptes
 	all_c3 = SCF_Pos_3.objects.all()
@@ -1897,9 +2049,9 @@ def depense_fonc_comptes_reunion(request, id):
 	#comptes_regle_par_autre = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite compte__chapitre__code_num=6)	
 	
 	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6).count()
-	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=6).count()
-	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
-	depense_fonc_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=6).count()
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_fonc_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=6).count()
 
 
 	depense_fonc_s = depense_fonc_nbr==depense_fonc_done_nbr
@@ -1909,8 +2061,8 @@ def depense_fonc_comptes_reunion(request, id):
 
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -2038,31 +2190,59 @@ def depense_exp_comptes_reunion(request, id):
 			state_sdir = "En cours"
 		state_sdir_dic_par_unite[c2.numero]= state_sdir		
 
-	# comptes par autre  -----------
+	# comptes par autre -----------
 	state_cadre_dic_par_autre = {}
 	state_chef_dic_par_autre = {}
 	state_sdir_dic_par_autre = {}
 	for c2 in c2_par_autre:
+		comptes_unite = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, regle_par=unite, compte__ref__ref__ref=c2)
+		comptes_all = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, compte__ref__ref__ref=c2)
+		comptes_autre = comptes_all.difference(comptes_unite)  
+
 		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, regle_par=unite, compte__ref__ref__ref=c2).count()
 		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, compte__ref__ref__ref=c2).count()
 		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+		
+		done_par_unite = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7)
+		done_all = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7)
+		comptes_done = done_all.difference(done_par_unite)
 
 		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
 		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
 		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
 
+		#check chef dep validation 
 		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
 		comptes_v_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
 		comptes_v_nbr = comptes_v_all_nbr - comptes_v_unite_nbr
+		#check sous dir validation
+		comptes_vsdir_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		comptes_vsdir_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		comptes_vsdir_nbr = comptes_vsdir_all_nbr - comptes_vsdir_unite_nbr
 		
+		#--------------------------
+		i = 0
+		for cd in comptes_done:
+			if cd.vld_chef_dep or cd.vld_sous_dir : 
+				i = i+1
+
+		if i == 0:
+			comptes_valid = False
+		else: 
+			comptes_valid = comptes_done_nbr == i
+		#--------------------------	
+
+		# nedded states 
 		comptes_s = comptes_nbr == comptes_done_nbr
 		comptes_non_s = comptes_done_nbr == 0
 		comptes_v = comptes_nbr == comptes_v_nbr
+		comptes_vsdir = comptes_nbr == comptes_vsdir_nbr
+		#comptes_valid
 		
 		# pour le cadre
-		if comptes_s and comptes_v == False: 
+		if comptes_s and comptes_valid == False: 
 			state_cadre = "Terminé"
-		elif comptes_s and comptes_v: 
+		elif comptes_s and comptes_valid: 
 			state_cadre = "Validé"
 		elif comptes_non_s:
 			state_cadre = "Non saisie"
@@ -2073,14 +2253,29 @@ def depense_exp_comptes_reunion(request, id):
 		# pour chef dep
 		if comptes_non_s:
 			state_chef = "Non saisie"
-		elif comptes_s and comptes_v == False:
+		elif comptes_s and comptes_v == False and comptes_valid == False :
 			state_chef = "Instance"
-		elif comptes_v and comptes_s:
+		elif comptes_v and comptes_v_sdir == False:
 			state_chef = "Terminé"
+		elif comptes_valid and comptes_s and comptes_v_sdir == False:
+			state_chef = "Terminé"
+		elif comptes_v_sdir:
+			state_chef = "Validé"
 		else:
 			state_chef = "En cours"
 		state_chef_dic_par_autre[c2.numero]= state_chef
-	# ------------------------------------
+
+		# pour sous dir
+		if comptes_non_s:
+			state_sdir = "Non saisie"
+		elif comptes_s and comptes_v_sdir == False:
+			state_sdir = "Instance"
+		elif comptes_v_sdir and comptes_s:
+			state_sdir = "Terminé"
+		else:
+			state_sdir = "En cours"
+		state_sdir_dic_par_autre[c2.numero]= state_sdir		
+	# --------------------------------------------------------
 
 	# pos 3 comptes
 	all_c3 = SCF_Pos_3.objects.all()
@@ -2101,9 +2296,9 @@ def depense_exp_comptes_reunion(request, id):
 
 
 	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7).count()
-	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=7).count()
-	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
-	depense_exp_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", vld_sous_dir=True, unite_compte__compte__chapitre__code_num=7).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=7).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+	depense_exp_valid_sdir_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_sous_dir=True, unite_compte__compte__chapitre__code_num=7).count()
 
 	depense_exp_s = depense_exp_nbr==depense_exp_done_nbr
 	depense_exp_non_s = depense_exp_done_nbr == 0
@@ -2112,8 +2307,8 @@ def depense_exp_comptes_reunion(request, id):
 
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_bdg="REUN", unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
 			if cd.vld_chef_dep or cd.vld_sous_dir : 
@@ -2293,10 +2488,7 @@ def valid_montant_reunion(request, id):
 def valid_tous_reunion(request, id_unite, ch_num):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
 	budget = all_budgets[0]
-	print("unite id is :")
-	print(id_unite)
-	print("chapitre num is :")
-	print(ch_num)
+
 	unite = Unite.objects.get(id=id_unite)
 	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
 	for m in montants: 
