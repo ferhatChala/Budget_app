@@ -88,7 +88,7 @@
 				<!-- Sous Directeur section -->
 				{% if user.user_type == 4 %}
 				<div class="form-row">
-					{% if c_non_s == False %}
+					{% if c_s %}
 						<div class="form-group col-md-10 mb-0">
 							<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
 						</div>
@@ -155,8 +155,10 @@
 				<table id="bootstrap-data-table" class="table table-striped">
 					<thead>
 						<tr>
+							<th>N° SCF</th>
 							<th>Rubrique</th>
-							<th>Réseau</th>
+							<th>Monnaie</th>
+							<th>Reglé par</th>
 							<th>Montant</th>
 							<th>M-Clôture</th>
 							<th>Action</th>
@@ -165,8 +167,10 @@
 					<tbody id="myTable" >
 						{% for c in comptes %}
 						<tr>
+							<td>{{c.compte.numero}}</td>
 							<td>{{c.compte.rubrique}}</td>
-							<td>{{c.reseau_compte}}</td>
+							<td>{{c.monnaie}}</td>
+							<td>{{c.regle_par}}</td>
 							<td>
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
@@ -325,7 +329,7 @@
 											{% endif %}
 
 										{% else %}
-											<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+											<a href="add_montant_recettes/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 										{% endif %}	
 
 										{% if user == c.added_by and m.vld_sous_dir == False %}
@@ -372,7 +376,7 @@
 				<!-- Chef département section -->
 				{% if user.user_type == 5 %}
 				<div class="form-row">
-					{% if c_non_s == False and c_v_sdir == False  %}
+					{% if c_s and c_v_sdir == False  %}
 						<div class="form-group col-md-10 mb-0">
 							<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
 						</div>
@@ -438,8 +442,10 @@
 				<table id="bootstrap-data-table" class="table table-striped">
 					<thead>
 						<tr>
+							<th>N° SCF</th>
 							<th>Rubrique</th>
-							<th>Réseau</th>
+							<th>Monnaie</th>
+							<th>Reglé par</th>
 							<th>Montant</th>
 							<th>M-Clôture</th>
 							<th>Action</th>
@@ -448,8 +454,10 @@
 					<tbody id="myTable" >
 						{% for c in comptes %}
 						<tr>
+							<td>{{c.compte.numero}}</td>
 							<td>{{c.compte.rubrique}}</td>
-							<td>{{c.reseau_compte}}</td>
+							<td>{{c.monnaie}}</td>
+							<td>{{c.regle_par}}</td>
 							<td>
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
@@ -612,7 +620,7 @@
 											{% endif %}
 
 										{% else %}
-											<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+											<a href="add_montant_recettes/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 										{% endif %}
 
 										{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}
@@ -667,8 +675,10 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
+							<th>N° SCF</th>
 							<th>Rubrique</th>
-							<th>Réseau</th>
+							<th>Monnaie</th>
+							<th>Reglé par</th>
 							<th>Montant</th>
 							<th>M-Clôture</th>
 							<th>Action</th>
@@ -677,8 +687,10 @@
 					<tbody id="myTable">
 						{% for c in comptes %}
 						<tr>
+							<td>{{c.compte.numero}}</td>
 							<td>{{c.compte.rubrique}}</td>
-							<td>{{c.reseau_compte}}</td>
+							<td>{{c.monnaie}}</td>
+							<td>{{c.regle_par}}</td>
 							<td>
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
@@ -840,7 +852,7 @@
 													<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 												{% endif %}
 										{% else %}
-											<a href="add_montant_offre/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+											<a href="add_montant_recettes/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 										{% endif %}	
 
 										{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}

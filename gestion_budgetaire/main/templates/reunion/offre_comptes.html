@@ -88,7 +88,7 @@
 				<!-- Sous Directeur section -->
 				{% if user.user_type == 4 %}
 				<div class="form-row">
-					{% if c_non_s == False %}
+					{% if c_s %}
 						<div class="form-group col-md-10 mb-0">
 							<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
 						</div>
@@ -167,6 +167,7 @@
 						<tr>
 							<td>{{c.compte.rubrique}}</td>
 							<td>{{c.reseau_compte}}</td>
+
 							<td>
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
@@ -372,7 +373,7 @@
 				<!-- Chef département section -->
 				{% if user.user_type == 5 %}
 				<div class="form-row">
-					{% if c_non_s == False and c_v_sdir == False  %}
+					{% if c_s and c_v_sdir == False  %}
 						<div class="form-group col-md-10 mb-0">
 							<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
 						</div>
@@ -450,6 +451,7 @@
 						<tr>
 							<td>{{c.compte.rubrique}}</td>
 							<td>{{c.reseau_compte}}</td>
+
 							<td>
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
@@ -679,6 +681,7 @@
 						<tr>
 							<td>{{c.compte.rubrique}}</td>
 							<td>{{c.reseau_compte}}</td>
+							
 							<td>
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
