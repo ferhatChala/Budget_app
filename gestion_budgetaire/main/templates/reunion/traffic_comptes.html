@@ -72,7 +72,7 @@
 					{% elif user.user_type == 4 %}
 						{% if c_v_sdir and c_s %}	
 							<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-						{% elif c_s and c_v_sdir == False  %}
+						{% elif c_s and c_v_sdir == False and c_valid %}
 							<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
 						{% elif c_non_s %}
 							<span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span>

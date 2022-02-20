@@ -187,8 +187,18 @@
                         </ul>
                     </li>
 
+                    {% block notif_active %}
+                    <li class="menu-item-has-children dropdown">
+                    {% endblock %}
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bell"></i>Notification Budget</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-gears"></i><a href="#">Conception</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="#">Consultation</a></li>
+                        </ul>
+                    </li>
+
                     <li>
-                        <a href="#"><i class="menu-icon fa fa-bell"></i>Notification Budget </a>
+                        <a href="#"><i class="menu-icon fa fa-magic"></i>Actu & Réajustement </a>
                     </li>
                     <li>
                         <a href="#"><i class="menu-icon fa fa-tasks"></i>Controle Budgetaire </a>
@@ -197,10 +207,10 @@
                         <a href="#"><i class="menu-icon fa fa-euro"></i>Réalisation Budget </a>
                     </li>
                     <li>
-                        <a href="#"><i class="menu-icon fa fa-archive"></i> Archive </a>
+                        <a href="#"><i class="menu-icon fa fa-history"></i> Historique </a>
                     </li>
                     <li>
-                        <a href="#"><i class="menu-icon fa fa-history"></i> Historique </a>
+                        <a href="#"><i class="menu-icon fa fa-info-circle"></i> Aide </a>
                     </li>
                     {% endif %}
 

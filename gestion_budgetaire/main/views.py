@@ -1852,10 +1852,10 @@ def depense_fonc_comptes_reunion(request, id):
 			cm_dict[c.id] = m[0]	
 
 	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=6)
-	comptes_regle_par_autre = []
-	for c in comptes:
-		if c.regle_par != unite:
-			comptes_regle_par_autre.append(c)	
+	comptes_regle_par_autre = comptes.difference(comptes_regle_par_unite)
+	#for c in comptes:
+	#	if c.regle_par != unite:
+	#		comptes_regle_par_autre.append(c)	
 	
 	# pos 2 comptes 
 	all_c2 = SCF_Pos_2.objects.all()
@@ -1934,7 +1934,7 @@ def depense_fonc_comptes_reunion(request, id):
 		# pour sous dir
 		if comptes_non_s:
 			state_sdir = "Non saisie"
-		elif comptes_s and comptes_v_sdir == False:
+		elif comptes_s and comptes_v_sdir == False and comptes_valid:
 			state_sdir = "Instance"
 		elif comptes_v_sdir and comptes_s:
 			state_sdir = "Terminé"
@@ -1953,15 +1953,20 @@ def depense_fonc_comptes_reunion(request, id):
 
 		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, regle_par=unite, compte__ref__ref__ref=c2).count()
 		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, compte__ref__ref__ref=c2).count()
-		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
-		
+		#comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+		comptes_nbr = comptes_all.difference(comptes_unite).count()
+
+
 		done_par_unite = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6)
 		done_all = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6)
 		comptes_done = done_all.difference(done_par_unite)
+		
 
 		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
 		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
-		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+		#comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+		comptes_done_nbr = comptes_done.count()
+
 
 		#check chef dep validation 
 		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
@@ -1970,7 +1975,7 @@ def depense_fonc_comptes_reunion(request, id):
 		#check sous dir validation
 		comptes_vsdir_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
 		comptes_vsdir_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
-		comptes_vsdir_nbr = comptes_vsdir_all_nbr - comptes_vsdir_unite_nbr
+		comptes_v_sdir_nbr = comptes_vsdir_all_nbr - comptes_vsdir_unite_nbr
 		
 		#--------------------------
 		i = 0
@@ -1988,7 +1993,7 @@ def depense_fonc_comptes_reunion(request, id):
 		comptes_s = comptes_nbr == comptes_done_nbr
 		comptes_non_s = comptes_done_nbr == 0
 		comptes_v = comptes_nbr == comptes_v_nbr
-		comptes_vsdir = comptes_nbr == comptes_vsdir_nbr
+		comptes_v_sdir = comptes_nbr == comptes_v_sdir_nbr
 		#comptes_valid
 		
 		# pour le cadre
@@ -2020,13 +2025,14 @@ def depense_fonc_comptes_reunion(request, id):
 		# pour sous dir
 		if comptes_non_s:
 			state_sdir = "Non saisie"
-		elif comptes_s and comptes_v_sdir == False:
+		elif comptes_s and comptes_v_sdir == False and comptes_valid:
 			state_sdir = "Instance"
 		elif comptes_v_sdir and comptes_s:
 			state_sdir = "Terminé"
 		else:
 			state_sdir = "En cours"
-		state_sdir_dic_par_autre[c2.numero]= state_sdir		
+		state_sdir_dic_par_autre[c2.numero]= state_sdir	
+
 	# --------------------------------------------------------
 
 	#pos 3 comptes
@@ -2101,10 +2107,11 @@ def depense_exp_comptes_reunion(request, id):
 			cm_dict[c.id] = m[0]	
 
 	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=7)
-	comptes_regle_par_autre = []
-	for c in comptes:
-		if c.regle_par != unite:
-			comptes_regle_par_autre.append(c)	
+	comptes_regle_par_autre = comptes.difference(comptes_regle_par_unite)
+
+	#for c in comptes:
+	#	if c.regle_par != unite:
+	#		comptes_regle_par_autre.append(c)	
 
 	all_c2 = SCF_Pos_2.objects.all()
 	c2_par_unite = []
@@ -2122,7 +2129,7 @@ def depense_exp_comptes_reunion(request, id):
 	c2_par_unite = list(dict.fromkeys(c2_par_unite))
 	c2_par_autre = list(dict.fromkeys(c2_par_autre))
 
-	# clacule les pos 2 saisier state 
+	# clacule les pos 2 saisier state--------------------- 
 	# comptes par unité ------------
 	state_cadre_dic_par_unite = {}
 	state_chef_dic_par_unite = {}
@@ -2201,15 +2208,20 @@ def depense_exp_comptes_reunion(request, id):
 
 		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, regle_par=unite, compte__ref__ref__ref=c2).count()
 		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, compte__ref__ref__ref=c2).count()
-		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
-		
+		#comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+		comptes_nbr = comptes_all.difference(comptes_unite).count()
+
+
 		done_par_unite = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7)
 		done_all = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7)
 		comptes_done = done_all.difference(done_par_unite)
+		
 
 		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
 		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
-		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+		#comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+		comptes_done_nbr = comptes_done.count()
+
 
 		#check chef dep validation 
 		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
@@ -2218,7 +2230,7 @@ def depense_exp_comptes_reunion(request, id):
 		#check sous dir validation
 		comptes_vsdir_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
 		comptes_vsdir_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_sous_dir=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
-		comptes_vsdir_nbr = comptes_vsdir_all_nbr - comptes_vsdir_unite_nbr
+		comptes_v_sdir_nbr = comptes_vsdir_all_nbr - comptes_vsdir_unite_nbr
 		
 		#--------------------------
 		i = 0
@@ -2236,7 +2248,7 @@ def depense_exp_comptes_reunion(request, id):
 		comptes_s = comptes_nbr == comptes_done_nbr
 		comptes_non_s = comptes_done_nbr == 0
 		comptes_v = comptes_nbr == comptes_v_nbr
-		comptes_vsdir = comptes_nbr == comptes_vsdir_nbr
+		comptes_v_sdir = comptes_nbr == comptes_v_sdir_nbr
 		#comptes_valid
 		
 		# pour le cadre
@@ -2268,13 +2280,14 @@ def depense_exp_comptes_reunion(request, id):
 		# pour sous dir
 		if comptes_non_s:
 			state_sdir = "Non saisie"
-		elif comptes_s and comptes_v_sdir == False:
+		elif comptes_s and comptes_v_sdir == False and comptes_valid:
 			state_sdir = "Instance"
 		elif comptes_v_sdir and comptes_s:
 			state_sdir = "Terminé"
 		else:
 			state_sdir = "En cours"
-		state_sdir_dic_par_autre[c2.numero]= state_sdir		
+		state_sdir_dic_par_autre[c2.numero]= state_sdir	
+
 	# --------------------------------------------------------
 
 	# pos 3 comptes

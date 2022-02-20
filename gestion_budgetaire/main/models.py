@@ -249,13 +249,18 @@ class Compte_has_Montant(models.Model):
     ('SOUSD', 'Sous Directeur'),
     ('SOUSDPI', 'Sous Directeur P/I'),
     ]
+
+    TYPMAJ_CHOICES = [
+    ('A', 'Actualisation'),
+    ('R', 'Réajustement'),
+    ]
     # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par  (unique)
     code = models.CharField(max_length=100, unique=True)
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
     annee_budgetaire = models.ForeignKey("Annee_Budgetaire", related_name="montants", on_delete=models.CASCADE) # annee n+1
     montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
-    montant_cloture = models.FloatField(default=0) # anne N 
+    montant_cloture = models.FloatField(default=0) # anne N  null true , blank true
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
     # les montant menseuiles
     janvier = models.FloatField(null=True, blank=True) 
@@ -274,6 +279,9 @@ class Compte_has_Montant(models.Model):
     # decoupage type
     type_decoupage = models.CharField( max_length=50, null=True, blank=True, choices=TYPDCPG_CHOICES, default="MS")
     
+    # Actualisation et réajustement
+    #edition = models.PositiveIntegerField(default=0)
+    #type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES) 
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
     commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
