@@ -253,6 +253,7 @@ class Compte_has_Montant(models.Model):
     TYPMAJ_CHOICES = [
     ('A', 'Actualisation'),
     ('R', 'Réajustement'),
+    ('N', 'Initial'),
     ]
     # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par  (unique)
     code = models.CharField(max_length=100, unique=True)
@@ -281,7 +282,7 @@ class Compte_has_Montant(models.Model):
     
     # Actualisation et réajustement
     #edition = models.PositiveIntegerField(default=0)
-    #type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES) 
+    #type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES, default="N") 
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
     commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)

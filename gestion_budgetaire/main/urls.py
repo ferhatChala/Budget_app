@@ -372,7 +372,22 @@ urlpatterns = [
     path('notif/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
     path('notif/unite/depense_exp/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
     path('notif/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
-    # consultation bdg 
+    # budget menseulle ---------------------
+    path('notif_mens/unite/<int:id>', views.unite_detail_notif_m, name="unite_notif_m"),    
+    #Offre
+    path('notif_mens/unite/offre/<int:id>', views.offre_comptes_notif_m, name="offre_notif_m"),
+    path('notif_mens/unite/offre/add_montant/<int:id>', views.add_montant_notif_m, name="add_montant_offre_notif_m"),
+    path('notif_mens/unite/offre/update_montant/<int:id>', views.update_montant_notif_m, name="update_montant_notif_m" ),
+    path('notif_mens/unite/offre/valid_montant/<int:id>', views.valid_montant_notif_m, name="valid_montant_notif_m" ),
+    path('notif_mens/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif_m, name="valid_tous_notif_m" ),
+    path('notif_mens/unite/offre/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif_m, name="cancel_valid_tous_notif_m" ),
+    path('notif_mens/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif_m, name="cancel_valid_montant_notif_m" ),
+    path('notif_mens/unite/offre/add_new_compte/<int:id>', views.add_new_compte_notif_m, name="add_new_compte_notif_m" ),
+    path('notif_mens/unite/offre/delete_added_compte/<int:id>', views.delete_added_compte_notif_m, name="delete_added_compte_notif_m" ),
+    path('notif_mens/unite/offre/update_comment/<int:id>', views.update_comment_notif_m, name="update_comment_notif_m"),
+    path('notif_mens/unite/offre/delete_comment/<int:id>', views.delete_comment_notif_m, name="delete_comment_notifm"),
+    
+    # consultation bdg --------------------
     path('notif/annees', views.annees_bdg_notif, name="annees_notif"),
     
     #--------------------------------------------------------------------------------------------------------------------------------
