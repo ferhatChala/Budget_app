@@ -3,6 +3,7 @@ from main import views
 
 urlpatterns = [
     path('',views.home,name='home'), 
+# Administration     
     #users ---------------------------------------------------
     #ajouter 
     path('ajouter_cadre', views.ajouter_cadre, name="ajouter_cadre"),
@@ -95,7 +96,7 @@ urlpatterns = [
     path('show_comptes/add_compte_to_unite/<int:id>', views.add_compte_to_unite, name="add_compte_to_unite"),
     path('show_comptes/delete_compte_of_unite/<int:id>', views.delete_compte_of_unite, name="delete_compte_of_unite"),
 
-    # proposition budget ----------------------------------------------------------------------------------------------------------
+# proposition budget ----------------------------------------------------------------------------------------------------------
     path('proposition/unites', views.unites, name="unites"),
     path('proposition/unite/<int:id>', views.unite_detail, name="unite"),
 
@@ -175,7 +176,7 @@ urlpatterns = [
     
     #--------------------------------------------------------------------------------------------------------------------------------
 
-    # Reunion budget ----------------------------------------------------------------------------------------------------------
+# Reunion budget ----------------------------------------------------------------------------------------------------------
     path('reunion/unites', views.unites_reunion, name="unites_reunion"),
     path('reunion/unite/<int:id>', views.unite_detail_reunion, name="unite_reunion"),
 
@@ -275,9 +276,107 @@ urlpatterns = [
     #--------------------------------------------------------------------------------------------------------------------------------
 
 
+    #----------------------------------------------------------------------------------------------------------
 
+# Notification budget budget ----------------------------------------------------------------------------------------------------------
+    path('notif/unites', views.unites_notif, name="unites_notif"),
+    path('notif/unite/<int:id>', views.unite_detail_notif, name="unite_notif"),
 
+    #Offre
+    path('notif/unite/offre/<int:id>', views.offre_comptes_notif, name="offre_notif"),
+    path('notif/unite/offre/add_montant_offre/<int:id>', views.add_montant_notif, name="add_montant_offre_notif"),
+    path('notif/unite/offre/update_montant/<int:id>', views.update_montant_notif, name="update_montant_notif" ),
+    path('notif/unite/offre/valid_montant/<int:id>', views.valid_montant_notif, name="valid_montant_notif" ),
+    path('notif/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif, name="valid_tous_notif" ),
+    path('notif/unite/offre/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif, name="cancel_valid_tous_notif" ),
+    path('notif/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif, name="cancel_valid_montant_notif" ),
+    path('notif/unite/offre/add_new_compte/<int:id>', views.add_new_compte_notif, name="add_new_compte_notif" ),
+    path('notif/unite/offre/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
+    path('notif/unite/offre/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
+    path('notif/unite/offre/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
+    #Traffic
+    path('notif/unite/traffic/<int:id>', views.traffic_comptes_notif, name="traffic_notif"),
+    path('notif/unite/traffic/add_montant_traffic/<int:id>', views.add_montant_notif, name="add_montant_traffic_notif"),
+    path('notif/unite/traffic/update_montant/<int:id>', views.update_montant_notif, name="update_montant_notif" ),
+    path('notif/unite/traffic/valid_montant/<int:id>', views.valid_montant_notif, name="valid_montant_notif" ),
+    path('notif/unite/traffic/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif, name="cancel_valid_montant_notif" ),
+    path('notif/unite/traffic/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif, name="valid_tous_notif" ),
+    path('notif/unite/traffic/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif, name="cancel_valid_tous_notif" ),    
    
+    path('notif/unite/traffic/add_new_compte/<int:id>', views.add_new_compte_notif, name="add_new_compte_notif" ),
+    path('notif/unite/traffic/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
+    path('notif/unite/traffic/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
+    path('notif/unite/traffic/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
+    #ca emmission
+    path('notif/unite/ca_emmission/<int:id>', views.ca_emmission_comptes_notif, name="ca_emmission_notif"),
+    path('notif/unite/ca_emmission/add_montant_ca_emmission/<int:id>', views.add_montant_notif, name="add_montant_ca_emmission_notif"),
+    path('notif/unite/ca_emmission/update_montant/<int:id>', views.update_montant_notif, name="update_montant_notif" ),
+    path('notif/unite/ca_emmission/valid_montant/<int:id>', views.valid_montant_notif, name="valid_montant_notif" ),
+    path('notif/unite/ca_emmission/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif, name="cancel_valid_montant_notif" ),
+    path('notif/unite/ca_emmission/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif, name="valid_tous_notif" ),
+    path('notif/unite/ca_emmission/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif, name="cancel_valid_tous_notif" ),
+    
+    path('notif/unite/ca_emmission/add_new_compte/<int:id>', views.add_new_compte_notif, name="add_new_compte_notif" ),
+    path('notif/unite/ca_emmission/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
+    path('notif/unite/ca_emmission/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
+    path('notif/unite/ca_emmission/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
+    #ca transport
+    path('notif/unite/ca_transport/<int:id>', views.ca_transport_comptes_notif, name="ca_transport_notif"),
+    path('notif/unite/ca_transport/add_montant_ca_transport/<int:id>', views.add_montant_notif, name="add_montant_ca_transport_notif"),
+    path('notif/unite/ca_transport/update_montant/<int:id>', views.update_montant_notif, name="update_montant_notif" ),
+    path('notif/unite/ca_transport/valid_montant/<int:id>', views.valid_montant_notif, name="valid_montant_notif" ),
+    path('notif/unite/ca_transport/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif, name="cancel_valid_montant_notif" ),
+    path('notif/unite/ca_transport/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif, name="valid_tous_notif" ),
+    path('notif/unite/ca_transport/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif, name="cancel_valid_tous_notif" ),
+   
+    path('notif/unite/ca_transport/add_new_compte/<int:id>', views.add_new_compte_notif, name="add_new_compte_notif" ),
+    path('notif/unite/ca_transport/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
+    path('notif/unite/ca_transport/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
+    path('notif/unite/ca_transport/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
+    #autre reccettes
+    path('notif/unite/recettes/<int:id>', views.recettes_comptes_notif, name="recettes_notif"),
+    path('notif/unite/recettes/add_montant_recettes/<int:id>', views.add_montant_notif, name="add_montant_recettes_notif"),
+    path('notif/unite/recettes/update_montant/<int:id>', views.update_montant_notif, name="update_montant_notif" ),
+    path('notif/unite/recettes/valid_montant/<int:id>', views.valid_montant_notif, name="valid_montant_notif" ),
+    path('notif/unite/recettes/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif, name="cancel_valid_montant_notif" ),
+    path('notif/unite/recettes/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif, name="valid_tous_notif" ),
+    path('notif/unite/recettes/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif, name="cancel_valid_tous_notif" ),
+   
+    path('notif/unite/recettes/add_new_compte/<int:id>', views.add_new_compte_notif, name="add_new_compte_notif" ),
+    path('notif/unite/recettes/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
+    path('notif/unite/recettes/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
+    path('notif/unite/recettes/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
+    #depense foncionement
+    path('notif/unite/depense_fonc/<int:id>', views.depense_fonc_comptes_notif, name="depense_fonc_notif"),
+    path('notif/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant_notif, name="add_montant_depense_fonc_notif"),
+    path('notif/unite/depense_fonc/update_montant/<int:id>', views.update_montant_notif, name="update_montant_notif" ),
+    path('notif/unite/depense_fonc/valid_montant/<int:id>', views.valid_montant_notif, name="valid_montant_notif" ),
+    path('notif/unite/depense_fonc/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif, name="cancel_valid_montant_notif" ),
+    path('notif/unite/depense_fonc/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif, name="valid_tous_notif" ),
+    path('notif/unite/depense_fonc/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif, name="cancel_valid_tous_notif" ),
+   
+    path('notif/unite/depense_fonc/add_new_compte/<int:id>', views.add_new_compte_notif, name="add_new_compte_notif" ),
+    path('notif/unite/depense_fonc/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
+    path('notif/unite/depense_fonc/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
+    path('notif/unite/depense_fonc/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
+    #depense exploitation
+    path('notif/unite/depense_exp/<int:id>', views.depense_exp_comptes_notif, name="depense_exp_notif"),
+    path('notif/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant_notif, name="add_montant_depense_exp_notif"),
+    path('notif/unite/depense_exp/update_montant/<int:id>', views.update_montant_notif, name="update_montant_notif" ),
+    path('notif/unite/depense_exp/valid_montant/<int:id>', views.valid_montant_notif, name="valid_montant_notif" ),
+    path('notif/unite/depense_exp/cancel_valid_montant/<int:id>', views.cancel_valid_montant_notif, name="cancel_valid_montant_notif" ),
+    path('notif/unite/depense_exp/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_notif, name="valid_tous_notif" ),
+    path('notif/unite/depense_exp/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_notif, name="cancel_valid_tous_notif" ),
+    
+    path('notif/unite/depense_exp/add_new_compte/<int:id>', views.add_new_compte_notif, name="add_new_compte_notif" ),
+    path('notif/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte_notif, name="delete_added_compte_notif" ),
+    path('notif/unite/depense_exp/update_comment/<int:id>', views.update_comment_notif, name="update_comment_notif"),
+    path('notif/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_notif, name="delete_comment_notif"),
+    # consultation bdg 
+    path('notif/annees', views.annees_bdg_notif, name="annees_notif"),
+    
+    #--------------------------------------------------------------------------------------------------------------------------------
+
 
 
 ]

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block reu_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Réunion Budget <strong> {{budget.annee}}</strong></h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites' %}">Unités</a></li>
+                            <li><a href="/reunion/unite/{{unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
+							<li><a href="#">{{unite_compte.compte.chapitre.lib}}</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<div class="form-row">
+								<div class="form-group col-md-6 mb-0">
+									<strong class="card-title">{{unite_compte.compte}}</strong>
+								</div>
+								<div class="form-group col-md-4 mb-0">
+									<strong class="card-title">Reglé par :{{unite_compte.regle_par}}</strong>
+								</div>
+								<div class="form-group col-md-2 mb-0">
+									<strong class="card-title"> <span class="float-right"> {{unite_compte.monnaie.code_alpha}}</span></strong>
+								</div>
+								<br>
+							</div>
+						</div>
+						<div class="card-body">
+
+                            <form method="post">
+                                {% csrf_token %}
+
+								<!-- Réalisation N-1 .... -->
+								<div class="alert alert-light border" role="alert">
+									<strong>Réalisations Comptable </strong>
+									<table id="bootstrap-data-table" class="table table-striped">
+										<thead>
+											<tr>
+												<th>2019</th>
+												<th>2020</th>
+												<th>2021</th>
+											</tr>
+										</thead>
+										<tbody>
+											<td>12000</td>
+											<td>13000</td>
+											<td>14000</td>
+										</tbody>
+									</table>									
+								</div>
+								<!-- Année N (Notif ,control , cloture , mois) .... -->
+								<div class="alert alert-light border" role="alert">
+									<strong>Année 2022</strong>
+									<table id="bootstrap-data-table" class="table table-striped">
+										<thead>
+											<tr>
+												<th>Notifé</th>
+												<th>Controle budgétaire</th>
+												<th>Mois courant</th>
+												<th>Propos de cloture </th>
+											</tr>
+										</thead>
+										<tbody>
+											<td>12000</td>
+											<td>13000</td>
+											<td>Septembre</td>
+											<td>14000</td>
+										</tbody>
+									</table>								
+									<div class="alert alert-secondary" role="alert">
+										<strong>Clôture exercice </strong> 
+										{{ montant_form.montant_cloture|as_crispy_field }}
+									</div>
+								</div>
+								<!-- Proposition N+1.... -->
+								<div class="alert alert-light border" role="alert">
+									<strong>Année {{budget.annee}} <br></strong>
+									<table id="bootstrap-data-table" class="table table-striped">
+										<thead>
+											<tr>
+												<th>Proposition Budget</th>
+											</tr>
+										</thead>
+										<tbody>
+											<td>12000</td>
+										</tbody>
+									</table> <br>
+
+									<div class="alert alert-info" role="alert">
+										<strong>Budget Réunion </strong>
+										<div class="form-row">
+											<div class="form-group col-md-12 mb-0">
+												{{ montant_form.montant|as_crispy_field }}
+											</div>
+											<br>
+										</div>
+									</div>
+								</div>
+
+
+								<div class="alert alert-light border" role="alert">
+									<strong>Ajouter commentaire</strong>
+									<div class="form-row">
+										<div class="form-group col-md-9 mb-0">
+											{{ comment_form.text|as_crispy_field }}
+										</div>
+										<div class="form-group col-md-3 mb-0">
+											{{ comment_form.importance|as_crispy_field }}
+										</div>
+									</div>
+								</div>
+        				
+                                <button type="submit" class="btn btn-primary">Valider</button>
+                                <a href="{% url 'unites_reunion' %}" class="btn btn-secondary">Annuler</a>
+                            </form>
+						</div>
+					</div>
+				</div>
+
+
+
+</div>
+
+{% endblock %}
