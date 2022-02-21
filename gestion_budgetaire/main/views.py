@@ -5,7 +5,7 @@ from django.shortcuts import  render, redirect, get_object_or_404
 from .forms import (NewUserForm, InterimForm, AnneeBdgForm, UpdateAnneeBdgForm,
 					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
 					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm, 
-					AffectCadreForm, AddCompteUniteForm, MontantCompteForm,UpdateMontantCompteForm,CommentaireForm
+					AffectCadreForm, AddCompteUniteForm, MontantCompteForm,UpdateMontantCompteForm,CommentaireForm,MontantOnlyForm
 					)
 from .models import (User, Interim,Commentaire,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
@@ -2670,6 +2670,9 @@ def unites_notif(request):
 	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
 	budget = all_budgets[0]
+	print("----------------------------------------------")
+	print(all_budgets)
+	print(budget)
 	dep_unites = Unite.objects.filter(departement=request.user.departement)
 	all_unites = Unite.objects.all()
 
@@ -3672,12 +3675,12 @@ def add_montant_notif(request, id):
 	#bdg_propos = Compte_has_Montant.objects.filter(annee_budgetaire=all_propos_budgets[0], unite_compte=unite_compte)
 	
 	comment_form = CommentaireForm(request.POST or None)
-	montant_form = MontantCompteForm(request.POST or None)
+	montant_form = MontantOnlyForm(request.POST or None)
 	if request.method == "POST":
 		if  montant_form.is_valid():
 			montant_compte = montant_form.save(commit=False)
 			montant_compte.unite_compte = unite_compte
-			montant_compte.type_bdg = "REUN"
+			montant_compte.type_bdg = "NOTIF"
 			montant_compte.annee_budgetaire = budget
 			montant_compte.code = str(montant_compte.unite_compte.id) + montant_compte.annee_budgetaire.code + montant_compte.unite_compte.monnaie.code_alpha + montant_compte.unite_compte.regle_par.code_alpha
 			if comment_form.is_valid():
@@ -3704,25 +3707,25 @@ def add_montant_notif(request, id):
 			
 			montant_compte.save()
 			messages.success(request, "compte saisié successfuly." )
-			# Redirecter vers chaque chapitre
+		# Redirecter vers chaque chapitre
 			if unite_compte.compte.chapitre.code_num== 1:
-				return redirect("/reunion/unite/offre/"+ str(unite_compte.unite.id)+"")
+				return redirect("/notif/unite/offre/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 2:
-				return redirect("/reunion/unite/traffic/"+ str(unite_compte.unite.id)+"")
+				return redirect("/notif/unite/traffic/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 3:
-				return redirect("/reunion/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+				return redirect("/notif/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 4:
-				return redirect("/reunion/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+				return redirect("/notif/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 5:
-				return redirect("/reunion/unite/recettes/"+ str(unite_compte.unite.id)+"")
+				return redirect("/notif/unite/recettes/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 6:
-				return redirect("/reunion/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+				return redirect("/notif/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 7:
-				return redirect("/reunion/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+				return redirect("/notif/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 			else:
-				return redirect("/reunion/unites")
+				return redirect("/notif/unites")
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="reunion/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte, "budget":budget})
+	return render (request=request, template_name="notif/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte, "budget":budget})
 
 def update_montant_notif(request, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)

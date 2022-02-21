@@ -122,6 +122,11 @@ class MontantCompteForm(forms.ModelForm):
 		model = Compte_has_Montant
 		fields = ("montant","montant_cloture")
 
+class MontantOnlyForm(forms.ModelForm):
+	class Meta:
+		model = Compte_has_Montant
+		fields = ("montant",)
+
 class CommentaireForm(forms.ModelForm):
 	class Meta:
 		model = Commentaire

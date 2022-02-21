@@ -293,6 +293,8 @@ class Compte_has_Montant(models.Model):
     vld_chef_dep = models.BooleanField(default=False) # auto
     vld_sous_dir = models.BooleanField(default=False)  # auto
 
+    #created_date = models.DateTimeField(auto_now_add=True)
+
 class Cadre_has_Unite(models.Model):
     # code = cadre.id + unite.code
     code = models.CharField(max_length=50, unique=True)

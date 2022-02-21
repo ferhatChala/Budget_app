@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block reu_active %}
+{% block notif_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Réunion Budget <strong> {{budget.annee}}</strong></h1>
+						<h1>Budget Notifié <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -22,8 +22,8 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites_reunion' %}">Unités</a></li>
-                            <li><a href="/reunion/unite/{{unite.id}}">{{unite.code_alpha}}</a></li>
+							<li><a href="{% url 'unites_notif' %}">Unités</a></li>
+                            <li><a href="/notif/unite/{{unite.id}}">{{unite.code_alpha}}</a></li>
 							<li><a href="#">{{chapitre.lib}}</a></li>
 						</ol>
 					</div>
@@ -198,7 +198,6 @@
 																	<th>Rubrique</th>
 																	<th>Monnaie</th>
 																	<th>Montant</th>
-																	<th>M-Clôture</th>
 																	<th>Action</th>
 																</tr>
 															</thead>
@@ -319,17 +318,7 @@
 																						{% endif %}		
 																					{% endfor %}
 																				</td>
-																				<td>
-																					{% for key, m in cm_dict.items  %}
-																						{% if key == c.id %}
-																							{% if m != "null" %}
-																								<span>{{m.montant_cloture}}</span>																	
-																							{% else %}
-																								--------
-																							{% endif %}	
-																						{% endif %}	
-																					{% endfor %}
-																				</td>
+																				
 																				<td>
 																					{% for key, m in cm_dict.items  %}
 																						{% if key == c.id %}
@@ -370,7 +359,7 @@
 																								{% endif %}
 													
 																							{% else %}
-																								<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																								<a href="add_montant/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																							{% endif %}	
 													
 																							{% if user == c.added_by and m.vld_sous_dir == False %}
@@ -476,7 +465,6 @@
 																	<th>Monnaie</th>
 																	<th>Reglé par</th>
 																	<th>Montant</th>
-																	<th>M-Clôture</th>
 																	<th>Action</th>
 																</tr>
 															</thead>
@@ -598,17 +586,7 @@
 																						{% endif %}		
 																					{% endfor %}
 																				</td>
-																				<td>
-																					{% for key, m in cm_dict.items  %}
-																						{% if key == c.id %}
-																							{% if m != "null" %}
-																								<span>{{m.montant_cloture}}</span>																	
-																							{% else %}
-																								--------
-																							{% endif %}	
-																						{% endif %}	
-																					{% endfor %}
-																				</td>
+																				
 																				<td>
 																					{% for key, m in cm_dict.items  %}
 																						{% if key == c.id %}
@@ -649,7 +627,7 @@
 																								{% endif %}
 													
 																							{% else %}
-																								<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																								<a href="add_montant/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																							{% endif %}	
 													
 																							{% if user == c.added_by and m.vld_sous_dir == False %}
@@ -823,7 +801,6 @@
 																	<th>Rubrique</th>
 																	<th>Monnaie</th>
 																	<th>Montant</th>
-																	<th>M-Clôture</th>
 																	<th>Action</th>
 																</tr>
 															</thead>
@@ -944,17 +921,7 @@
 																						{% endif %}		
 																					{% endfor %}
 																				</td>
-																				<td>
-																					{% for key, m in cm_dict.items  %}
-																						{% if key == c.id %}
-																							{% if m != "null" %}
-																								<span>{{m.montant_cloture}}</span>																	
-																							{% else %}
-																								--------
-																							{% endif %}	
-																						{% endif %}	
-																					{% endfor %}
-																				</td>
+																				
 																				<td>
 																					{% for key, m in cm_dict.items  %}
 																						{% if key == c.id %}
@@ -999,7 +966,7 @@
 																								{% endif %}
 													
 																							{% else %}
-																								<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																								<a href="add_montant/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																							{% endif %}
 													
 																							{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}
@@ -1109,7 +1076,6 @@
 																	<th>Monnaie</th>
 																	<th>Reglé par</th>
 																	<th>Montant</th>
-																	<th>M-Clôture</th>
 																	<th>Action</th>
 																</tr>
 															</thead>
@@ -1231,17 +1197,7 @@
 																						{% endif %}		
 																					{% endfor %}
 																				</td>
-																				<td>
-																					{% for key, m in cm_dict.items  %}
-																						{% if key == c.id %}
-																							{% if m != "null" %}
-																								<span>{{m.montant_cloture}}</span>																	
-																							{% else %}
-																								--------
-																							{% endif %}	
-																						{% endif %}	
-																					{% endfor %}
-																				</td>
+																				
 																				<td>
 																					{% for key, m in cm_dict.items  %}
 																						{% if key == c.id %}
@@ -1286,7 +1242,7 @@
 																								{% endif %}
 													
 																							{% else %}
-																								<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																								<a href="add_montant/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																							{% endif %}
 													
 																							{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}
@@ -1401,7 +1357,6 @@
 																	<th>Rubrique</th>
 																	<th>Monnaie</th>
 																	<th>Montant</th>
-																	<th>M-Clôture</th>
 																	<th>Action</th>
 																</tr>
 															</thead>
@@ -1554,17 +1509,7 @@
 																							{% endif %}		
 																						{% endfor %}
 																					</td>
-																					<td>
-																						{% for key, m in cm_dict.items %} 
-																							{% if key == c.id %}
-																								{% if m != "null" %}
-																									<span>{{m.montant_cloture}}</span>
-																								{% else %}
-																									--------
-																								{% endif %}
-																							{% endif %}	
-																						{% endfor %}	
-																					</td>
+																			
 																					<td>
 																						{% for key, m in cm_dict.items  %}
 																							{% if key == c.id %}
@@ -1575,7 +1520,7 @@
 																											<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																										{% endif %}
 																								{% else %}
-																									<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																									<a href="add_montant/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																								{% endif %}	
 														
 																								{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}
@@ -1683,7 +1628,6 @@
 																	<th>Monnaie</th>
 																	<th>Reglé par</th>
 																	<th>Montant</th>
-																	<th>M-Clôture</th>
 																	<th>Action</th>
 																</tr>
 															</thead>
@@ -1838,17 +1782,7 @@
 																					{% endif %}		
 																				{% endfor %}
 																			</td>
-																			<td>
-																				{% for key, m in cm_dict.items %} 
-																					{% if key == c.id %}
-																						{% if m != "null" %}
-																							<span>{{m.montant_cloture}}</span>
-																						{% else %}
-																							--------
-																						{% endif %}
-																					{% endif %}	
-																				{% endfor %}	
-																			</td>
+																			
 																			<td>
 																				{% for key, m in cm_dict.items  %}
 																					{% if key == c.id %}
@@ -1859,7 +1793,7 @@
 																									<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																								{% endif %}
 																						{% else %}
-																							<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+																							<a href="add_montant/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																						{% endif %}	
 												
 																						{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}
