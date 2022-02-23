@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Réunion Budget <strong> {{budget.annee}}</strong></h1>
+						<h1>Budget Notifié <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -23,7 +23,7 @@
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
 							<li><a href="{% url 'unites_notif' %}">Unités</a></li>
-                            <li><a href="/notif/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
+                            <li><a href="/notif/mens/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
 							<li><a href="#">{{unite_compte.compte.chapitre.lib}}</a></li>
 						</ol>
 					</div>
@@ -55,7 +55,7 @@
                             <form method="post">
                                 {% csrf_token %}
 
-								
+								<!-- Button trigger modal 
 								<div class="alert alert-light border" role="alert">
 									<strong>Année {{budget.annee}} </strong>
 									<table id="bootstrap-data-table" class="table table-striped">
@@ -82,32 +82,20 @@
 											</td>
 										</tbody>
 									</table>									
-								</div>
+								</div> -->
 							
 
 								<div class="alert alert-info" role="alert">
-									<strong>Budget Notifié </strong> <br>
+									<strong>Découpage de montant pour chaque mois :  </strong> <br>
 									<div class="form-row">
 										<div class="form-group col-md-12 mb-0">
-											{{ montant_form.montant|as_crispy_field }}
+											{{ form.type_decoupage|as_crispy_field }}
 										</div>
 										<br>
 									</div>
 								</div>
-
-								<div class="alert alert-light border" role="alert">
-									<strong>Ajouter commentaire</strong>
-									<div class="form-row">
-										<div class="form-group col-md-9 mb-0">
-											{{ comment_form.text|as_crispy_field }}
-										</div>
-										<div class="form-group col-md-3 mb-0">
-											{{ comment_form.importance|as_crispy_field }}
-										</div>
-									</div>
-								</div>
         				
-                                <button type="submit" class="btn btn-primary">Valider</button>
+                                <button type="submit" class="btn btn-primary">Suivant</button>
                                 <a href="{% url 'unites_reunion' %}" class="btn btn-secondary">Annuler</a>
                             </form>
 						</div>

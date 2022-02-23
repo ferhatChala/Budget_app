@@ -137,6 +137,18 @@ class UpdateMontantCompteForm(forms.ModelForm):
 		model = Compte_has_Montant
 		fields = ("montant","montant_cloture")
 
+# choisi la config de découpage de bdg notifié 
+class TypeDecoupeMontantForm(forms.ModelForm):
+	class Meta:
+		model = Compte_has_Montant
+		fields = ("type_decoupage",)
+
+class UpdateMontantNotifForm(forms.ModelForm):
+	class Meta:
+		model = Compte_has_Montant
+		fields = ("janvier","fevrier","mars","avril","mai",
+				"juin","juillet","aout","septemre","octobre","novembre","decembre")
+
 
 class InterimForm(forms.ModelForm):
 	class Meta:

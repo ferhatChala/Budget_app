@@ -260,9 +260,7 @@ class Compte_has_Montant(models.Model):
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
     annee_budgetaire = models.ForeignKey("Annee_Budgetaire", related_name="montants", on_delete=models.CASCADE) # annee n+1
-    montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
-    montant_cloture = models.FloatField(default=0) # anne N  null true , blank true
-    validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
+
     # les montant menseuiles
     janvier = models.FloatField(null=True, blank=True) 
     fevrier = models.FloatField(null=True, blank=True) 
@@ -276,25 +274,35 @@ class Compte_has_Montant(models.Model):
     octobre = models.FloatField(null=True, blank=True) 
     novembre = models.FloatField(null=True, blank=True) 
     decembre = models.FloatField(null=True, blank=True) 
-
-    # decoupage type
     type_decoupage = models.CharField( max_length=50, null=True, blank=True, choices=TYPDCPG_CHOICES, default="MS")
     
     # Actualisation et réajustement
-    #edition = models.PositiveIntegerField(default=0)
-    #type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES, default="N") 
+    edition = models.PositiveIntegerField(default=0)
+    type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES, default="N") 
+    created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True,)
+
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # saiser cadre
-    commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
-    commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
+    montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
+    montant_cloture = models.FloatField(default=0) # anne N  null true , blank true    
     montant_chef_dep = models.FloatField(default=0) # saiser chef dep
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
+    # commentaire 
+    commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
+    commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL) # comment mens
     #la validation de chaque acteur
     vld_cadre = models.BooleanField(default=False)   # auto    
     vld_chef_dep = models.BooleanField(default=False) # auto
-    vld_sous_dir = models.BooleanField(default=False)  # auto
+    vld_sous_dir = models.BooleanField(default=False)  
+    validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
+    # valid menseulle
+    mens_done = models.BooleanField(default=False) 
+    vld_mens_cadre = models.BooleanField(default=False)   # auto    
+    vld_mens_chef_dep = models.BooleanField(default=False) # auto
+    vld_mens_sous_dir = models.BooleanField(default=False) 
+    validation_mens = models.CharField(max_length=50,choices=VALID_CHOICES, null=True, blank=True) # auto depend de user
 
-    #created_date = models.DateTimeField(auto_now_add=True)
+
 
 class Cadre_has_Unite(models.Model):
     # code = cadre.id + unite.code
