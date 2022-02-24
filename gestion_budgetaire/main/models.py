@@ -226,8 +226,8 @@ class Unite_has_Compte(models.Model):
 class Compte_has_Montant(models.Model):
     #decoupage choices 
     TYPDCPG_CHOICES = [
-    ('MS', 'Mensuelles'), # chaque mois
-    ('BM', 'Bimestriel'), # chaque 2 mois start with janvier
+    ('MS', 'Mensuel'), # chaque mois
+    ('BM', 'Bimensuel'), # chaque 2 mois start with janvier
     ('TR', 'Trimestriel'), # Janvier , Avrile, Juillet, Octobre
     ('SM', 'Semestriel'), # Janvier , Juillet
     ('AU', 'Autre'), # mannuelle 
@@ -289,7 +289,7 @@ class Compte_has_Montant(models.Model):
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
     # commentaire 
     commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
-    commentaire_cloture = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL) # comment mens
+    commentaire_mens = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL) # comment mens
     #la validation de chaque acteur
     vld_cadre = models.BooleanField(default=False)   # auto    
     vld_chef_dep = models.BooleanField(default=False) # auto
