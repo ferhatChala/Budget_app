@@ -40,7 +40,7 @@
 				<strong class="card-title">{{chapitre.lib}}
 					<!-- Header status Chef dep  -->
 					{% if user.user_type == 5 %}
-						{% if c_v and c_v_sdir == False %}	
+						{% if c_v and c_v_sdir == False and c_non_s == False %}	
 							<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
 						{% elif c_valid  and c_s and c_v_sdir == False%}
 							<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
@@ -60,7 +60,7 @@
 						{% if c_s and c_valid == False %}	
 							<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
 						{% elif c_non_s  %}
-							<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Non saisie</span>
+							<span class="float-right" style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
 						{% elif c_non_s == False and c_s == False %}
 							<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
 						{% elif c_valid and c_s %}

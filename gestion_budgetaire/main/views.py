@@ -4569,7 +4569,7 @@ def depense_fonc_comptes_notif_m(request, id):
 		#--------------------------
 		i = 0
 		for cd in comptes_done:
-			if cd.vld_chef_dep or cd.vld_sous_dir : 
+			if cd.vld_mens_chef_dep or cd.vld_mens_sous_dir : 
 				i = i+1
 
 		if i == 0:
@@ -4660,7 +4660,7 @@ def depense_fonc_comptes_notif_m(request, id):
 		#--------------------------
 		i = 0
 		for cd in comptes_done:
-			if cd.vld_chef_dep or cd.vld_sous_dir : 
+			if cd.vld_mens_chef_dep or cd.vld_mens_sous_dir : 
 				i = i+1
 
 		if i == 0:
@@ -4823,7 +4823,7 @@ def depense_exp_comptes_notif_m(request, id):
 		#--------------------------
 		i = 0
 		for cd in comptes_done:
-			if cd.vld_chef_dep or cd.vld_sous_dir : 
+			if cd.vld_mens_chef_dep or cd.vld_mens_sous_dir : 
 				i = i+1
 
 		if i == 0:
@@ -4914,7 +4914,7 @@ def depense_exp_comptes_notif_m(request, id):
 		#--------------------------
 		i = 0
 		for cd in comptes_done:
-			if cd.vld_chef_dep or cd.vld_sous_dir : 
+			if cd.vld_mens_chef_dep or cd.vld_mens_sous_dir : 
 				i = i+1
 
 		if i == 0:
@@ -5174,19 +5174,19 @@ def valid_montant_notif_m(request, id):
 	if unite_compte.compte.chapitre.code_num== 1:
 		return HttpResponseRedirect("/notif/mens/unite/offre/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 2:
-		return HttpResponseRedirect("/notif/mens//unite/traffic/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/notif/mens/unite/traffic/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 3:
-		return HttpResponseRedirect("/notif/mens//unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/notif/mens/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 4:
-		return HttpResponseRedirect("/notif/mens//unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/notif/mens/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 5:
 		return HttpResponseRedirect("/notif/mens/unite/recettes/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 6:
-		return HttpResponseRedirect("/notif/mens//unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/notif/mens/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 7:
-		return HttpResponseRedirect("/notif/mens//unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/notif/mens/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 	else:
-		return HttpResponseRedirect("/notif/mens//unites")
+		return HttpResponseRedirect("/notif/mens/unites")
 
 #valider tous 
 def valid_tous_notif_m(request, id_unite, ch_num):

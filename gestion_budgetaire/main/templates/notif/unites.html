@@ -216,37 +216,50 @@
 									<tr>
 										<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
 										<td>{{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}} </td>
-										<td>
-											{% for key, s in state_cadre_dic.items  %}
-												{% if key == u.id %}
-													
-													{% if s == "Terminé" %}
-														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-													{% elif s == "Validé" %}
-														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-													{% elif s == "Non saisie" %}
-														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
-													{% elif s == "En cours" %}
-														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-													{% endif %}
-														
+									
+										{% for key, s in unite_mens_dispo.items  %}
+											{% if key == u.id %}
+												
+												{% if s %}
+													<td>
+														{% for key, s in state_cadre_dic_mens.items  %}
+															{% if key == u.id %}
+																
+																{% if s == "Terminé" %}
+																	<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																{% elif s == "Validé" %}
+																	<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																{% elif s == "Instance" %}
+																	<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+																{% elif s == "Non saisie" %}
+																	<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+																{% elif s == "En cours" %}
+																	<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																{% endif %}
+																	
+															{% endif %}
+														{% endfor %}
+														<span style="margin-left:50px;">
+															{% for key, p in pr_dic_mens.items  %}
+																{% if key == u.id %}
+																	{% if p != 0 %}
+																		<strong>{{p}} % </strong>
+																	{% else %}
+																		-	
+																	{% endif %}
+																{% endif %}
+															{% endfor %}
+														</span>
+													</td>
+													<td><a href="mens/unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+												{% else %}
+													<td>-</td>
+													<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Indisponible</span></td>
 												{% endif %}
-											{% endfor %}
-											<span style="margin-left:50px;">
-												{% for key, p in pr_dic.items  %}
-													{% if key == u.id %}
-														{% if p != 0 %}
-															<strong>{{p}} % </strong>
-														{% else %}
-															-	
-														{% endif %}
-													{% endif %}
-												{% endfor %}
-											</span>
-										</td>
-										<td>
-											<a href="notif_mens/unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
-										</td>
+													
+											{% endif %}
+										{% endfor %}
+
 									</tr>
 									{% endfor %}
 								{% elif user.user_type == 5 %}
@@ -305,38 +318,50 @@
 									<tr>
 										<td>{{u.lib}} ({{u.code_alpha}})</td>
 										<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
-										<td>
-											{% for key, s in state_sdir_dic.items  %}
-												{% if key == u.id %}
-													
-													{% if s == "Terminé" %}
-														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-													{% elif s == "Instance" %}
-														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
-													{% elif s == "Non saisie" %}
-														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
-													{% elif s == "En cours" %}
-														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-													{% endif %}
-														
-												{% endif %}
-											{% endfor %}
-											<span style="margin-left:50px;">
-												{% for key, p in pr_dic.items  %}
-													{% if key == u.id %}
-														{% if p != 0 %}
-															<strong>{{p}} % </strong>
-														{% else %}
-															-	
-														{% endif %}
-													{% endif %}
-												{% endfor %}
-											</span>
-										</td>
 										
-										<td>
-											<a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
-										</td>
+										{% for key, s in unite_mens_dispo.items %}
+											{% if key == u.id %}
+												
+												{% if s %}
+													<td>
+														{% for key, s in state_sdir_dic_mens.items  %}
+															{% if key == u.id %}
+																
+																{% if s == "Terminé" %}
+																	<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																{% elif s == "Validé" %}
+																	<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																{% elif s == "Instance" %}
+																	<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+																{% elif s == "Non saisie" %}
+																	<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+																{% elif s == "En cours" %}
+																	<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																{% endif %}
+																	
+															{% endif %}
+														{% endfor %}
+														<span style="margin-left:50px;">
+															{% for key, p in pr_dic_mens.items  %}
+																{% if key == u.id %}
+																	{% if p != 0 %}
+																		<strong>{{p}} % </strong>
+																	{% else %}
+																		-	
+																	{% endif %}
+																{% endif %}
+															{% endfor %}
+														</span>
+													</td>
+													<td><a href="mens/unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+												{% else %}
+													<td>-</td>
+													<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Indisponible</span></td>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}
+
 									</tr>
 									{% endfor %}
 								{% endif %}
