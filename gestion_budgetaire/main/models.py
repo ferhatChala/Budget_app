@@ -289,7 +289,7 @@ class Compte_has_Montant(models.Model):
     montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
     # commentaire 
     commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
-    commentaire_mens = models.ForeignKey("Commentaire", related_name="cloture_comm",  null=True, blank=True,  on_delete=models.SET_NULL) # comment mens
+    commentaire_mens = models.ForeignKey("Commentaire", related_name="mens_comm",  null=True, blank=True,  on_delete=models.SET_NULL) # comment mens
     #la validation de chaque acteur
     vld_cadre = models.BooleanField(default=False)   # auto    
     vld_chef_dep = models.BooleanField(default=False) # auto

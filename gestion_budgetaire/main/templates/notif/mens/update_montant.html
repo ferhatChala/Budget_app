@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block reu_active %}
+{% block notif_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -54,7 +54,7 @@
 							
 							{% if montant.commentaire_montant.importance == "F" %}
 								<div class="alert border alert-light" role="alert">
-									<strong>Commentaire</strong> <br>
+									<strong>Commentaire Montant Annuel</strong> <br>
 									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
@@ -70,6 +70,7 @@
 									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
+
 								
 							<div class="alert border alert-light" role="alert">
 								Total Annuel:  <strong>{{montant.montant}}</strong> <br>
@@ -122,7 +123,35 @@
 												{{ form.decembre|as_crispy_field }}
 											</div>
 										</div>
+										<br>
+
 									</div>
+
+									{% if montant.commentaire_mens == None %}
+										<div class="alert alert-light border" role="alert">
+											<strong>Ajouter commentaire</strong>
+											<div class="form-row">
+												<div class="form-group col-md-9 mb-0">
+													{{ comment_form.text|as_crispy_field }}
+												</div>
+												<div class="form-group col-md-3 mb-0">
+													{{ comment_form.importance|as_crispy_field }}
+												</div>
+											</div>
+										</div>
+									{% else %}	
+										<div class="alert alert-light border" role="alert">
+											<strong>Modifier commentaire</strong>
+											<div class="form-row">
+												<div class="form-group col-md-9 mb-0">
+													{{ update_comment_form.text|as_crispy_field }}
+												</div>
+												<div class="form-group col-md-3 mb-0">
+													{{ update_comment_form.importance|as_crispy_field }}
+												</div>
+											</div>
+										</div>
+									{% endif %}	
 								
                                 <button type="submit" class="btn btn-primary">Valider</button>
                                 <a href="{% url 'unites_notif' %}" class="btn btn-secondary">Annuler</a>

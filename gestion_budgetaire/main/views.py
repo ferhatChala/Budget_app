@@ -3875,7 +3875,8 @@ def update_montant_notif(request, id):
 	unite_compte = montant.unite_compte
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
 	budget = all_budgets[0]	
-	form = UpdateMontantCompteForm(request.POST or None, instance = montant)
+
+	form = MontantOnlyForm(request.POST or None, instance = montant)
 	if form.is_valid():
 		form.save()
 		messages.success(request, "Montant updated successfuly." )
@@ -5008,7 +5009,8 @@ def add_montant_notif_m(request, id):
 		m_annul = new_montant.montant
 		if new_montant.type_decoupage == "MS":
 			m = int(m_annul/12 ) 
-			new_montant.janvier = m
+			rest = m_annul - (m*12)
+			new_montant.janvier = m + rest
 			new_montant.fevrier = m
 			new_montant.mars = m
 			new_montant.avril = m
@@ -5022,7 +5024,8 @@ def add_montant_notif_m(request, id):
 			new_montant.decembre = m
 		elif new_montant.type_decoupage == "BM": 
 			m = int(m_annul/6 ) 
-			new_montant.janvier = m
+			rest = m_annul - (m*6)
+			new_montant.janvier = m + rest
 			new_montant.fevrier = 0
 			new_montant.mars = m
 			new_montant.avril = 0
@@ -5035,8 +5038,9 @@ def add_montant_notif_m(request, id):
 			new_montant.novembre = m
 			new_montant.decembre = 0			
 		elif new_montant.type_decoupage == "TR": 
-			m = int(m_annul/4 ) 
-			new_montant.janvier = m
+			m = int(m_annul/4 )
+			rest = m_annul - (m*4) 
+			new_montant.janvier = m + rest
 			new_montant.fevrier = 0
 			new_montant.mars = 0
 			new_montant.avril = m
@@ -5050,7 +5054,8 @@ def add_montant_notif_m(request, id):
 			new_montant.decembre = 0			
 		elif new_montant.type_decoupage == "SM": 
 			m = int(m_annul/2 ) 
-			new_montant.janvier = m
+			rest = m_annul - (m*2)
+			new_montant.janvier = m + rest
 			new_montant.fevrier = 0
 			new_montant.mars = 0
 			new_montant.avril = 0
@@ -5119,41 +5124,66 @@ def update_montant_notif_m(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
 	budget = all_budgets[0]	
 
+	comment_form = CommentaireForm(request.POST or None)
+	update_comment_form = CommentaireForm(request.POST or None, instance = montant.commentaire_mens)
 	form = UpdateMontantNotifForm(request.POST or None, instance = montant)
 	if form.is_valid():
-		form.save()
-		messages.success(request, "Montant updated successfuly." )
-		new_montant = get_object_or_404(Compte_has_Montant, id = id)
-		if request.user.user_type==6:
-			new_montant.vld_mens_cadre = True
+		mm = form.save(commit=False)
+		mens_accu = mm.janvier+mm.fevrier+mm.mars+mm.avril+mm.mai+mm.juin+mm.juillet+mm.aout+mm.septemre+mm.octobre+mm.novembre+mm.decembre
+		diff = mm.montant - mens_accu
+		if mm.montant == mens_accu:
+			mm.save()
+			messages.success(request, "Done successfuly." )
+			new_montant = get_object_or_404(Compte_has_Montant, id = id)
+			if request.user.user_type==6:
+				new_montant.vld_mens_cadre = True
+			if request.user.user_type==5:
+				new_montant.vld_mens_chef_dep = True
+				new_montant.validation_mens = "CHEFD"
+			if request.user.user_type==4:
+				new_montant.vld_mens_sous_dir = True
+				new_montant.validation_mens = "SOUSD"		
+			# add mens comment 
+			if comment_form.is_valid():
+				comment = comment_form.save(commit=False)
+				comment.comment_type = "M"
+				comment.user = request.user
+				comment.save()
+				new_montant.commentaire_mens = comment
+			
+			# update existed comment 
+			if update_comment_form.is_valid():
+				updated_comm = update_comment_form.save(commit=False)
+				updated_comm.comment_type = "M"
+				updated_comm.user = request.user
+				updated_comm.save()
+				new_montant.commentaire_mens = updated_comm
+
 			new_montant.save()
-		if request.user.user_type==5:
-			new_montant.vld_mens_chef_dep = True
-			new_montant.validation_mens = "CHEFD"
-			new_montant.save()
-		if request.user.user_type==4:
-			new_montant.vld_mens_sous_dir = True
-			new_montant.validation_mens = "SOUSD"
-			new_montant.save()
-		
-		# Redirecter vers chaque chapitre
-		if unite_compte.compte.chapitre.code_num== 1:
-			return redirect("/notif/mens/unite/offre/"+ str(unite_compte.unite.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 2:
-			return redirect("/notif/mens/unite/traffic/"+ str(unite_compte.unite.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 3:
-			return redirect("/notif/mens/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 4:
-			return redirect("/notif/mens/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 5:
-			return redirect("/notif/mens/unite/recettes/"+ str(unite_compte.unite.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 6:
-			return redirect("/notif/mens/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 7:
-			return redirect("/notif/mens/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+			# Redirecter vers chaque chapitre
+			if unite_compte.compte.chapitre.code_num== 1:
+				return redirect("/notif/mens/unite/offre/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 2:
+				return redirect("/notif/mens/unite/traffic/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 3:
+				return redirect("/notif/mens/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 4:
+				return redirect("/notif/mens/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 5:
+				return redirect("/notif/mens/unite/recettes/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 6:
+				return redirect("/notif/mens/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 7:
+				return redirect("/notif/mens/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+			else:
+				return redirect("/notif/unites")
 		else:
-			return redirect("/notif/unites")
-	return render (request=request, template_name="notif/mens/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
+			messages.error(request, "Invalid: les montants mensuel ne correspondant pas au montant Annuel (différence : " + str(diff) + " )" )
+
+
+
+
+	return render (request=request, template_name="notif/mens/update_montant.html", context={"form":form, "comment_form":comment_form, "update_comment_form":update_comment_form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
 
 def valid_montant_notif_m(request, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
