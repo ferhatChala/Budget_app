@@ -600,6 +600,7 @@ def unites(request):
 def unite_detail(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')
 	budget = all_budgets[0]
+
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
 	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget).count()
@@ -706,11 +707,12 @@ def offre_comptes(request, id):
 	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=1).count()
 	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
 	
-	offre_s = offre_nbr==offre_done_nbr
-	offre_non_s = offre_done_nbr == 0
-	offre_v = offre_nbr==offre_valid_nbr
+	c_s = offre_nbr==offre_done_nbr
+	c_non_s = offre_done_nbr == 0
+	c_v = offre_nbr==offre_valid_nbr
 
-	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes, "offre_s":offre_s, "offre_non_s":offre_non_s, "offre_v":offre_v, 'budget':budget, 'cm_dict':cm_dict})
+	return render(request,"proposition/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict,
+															"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre })
 
 def traffic_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -733,11 +735,12 @@ def traffic_comptes(request, id):
 	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=2).count()
 	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
 
-	traffic_s = traffic_nbr==traffic_done_nbr
-	traffic_non_s = traffic_done_nbr == 0
-	traffic_v = traffic_nbr==traffic_valid_nbr
+	c_s = traffic_nbr==traffic_done_nbr
+	c_non_s = traffic_done_nbr == 0
+	c_v = traffic_nbr==traffic_valid_nbr
 
-	return render(request,"proposition/traffic_comptes.html", {'unite':unite, 'comptes':comptes,  "traffic_s":traffic_s, "traffic_non_s":traffic_non_s, "traffic_v":traffic_v, 'budget':budget, 'cm_dict':cm_dict })
+	return render(request,"proposition/traffic_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict,
+																"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre  })
 
 def ca_emmission_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -760,11 +763,12 @@ def ca_emmission_comptes(request, id):
 	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=3).count()
 	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
 	
-	ca_emmission_s = ca_emmission_nbr==ca_emmission_done_nbr
-	ca_emmission_non_s = ca_emmission_done_nbr == 0
-	ca_emmission_v = ca_emmission_nbr==ca_emmission_valid_nbr
+	c_s = ca_emmission_nbr==ca_emmission_done_nbr
+	c_non_s = ca_emmission_done_nbr == 0
+	c_v = ca_emmission_nbr==ca_emmission_valid_nbr
 
-	return render(request,"proposition/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, "ca_emmission_s":ca_emmission_s, "ca_emmission_non_s":ca_emmission_non_s, "ca_emmission_v":ca_emmission_v, 'budget':budget, 'cm_dict':cm_dict})
+	return render(request,"proposition/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict,
+																	"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre  })
 
 def ca_transport_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -787,11 +791,12 @@ def ca_transport_comptes(request, id):
 	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=4).count()
 	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
 
-	ca_transport_s = ca_transport_nbr==ca_transport_done_nbr
-	ca_transport_non_s = ca_transport_done_nbr == 0
-	ca_transport_v = ca_transport_nbr==ca_transport_valid_nbr
+	c_s = ca_transport_nbr==ca_transport_done_nbr
+	c_non_s = ca_transport_done_nbr == 0
+	c_v = ca_transport_nbr==ca_transport_valid_nbr
 
-	return render(request,"proposition/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, "ca_transport_s":ca_transport_s, "ca_transport_non_s":ca_transport_non_s, "ca_transport_v":ca_transport_v, 'budget':budget, 'cm_dict':cm_dict})
+	return render(request,"proposition/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 
+																	"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre })
 
 def recettes_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -814,11 +819,12 @@ def recettes_comptes(request, id):
 	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=5).count()
 	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
 
-	recettes_s = recettes_nbr==recettes_done_nbr
-	recettes_non_s = recettes_done_nbr == 0
-	recettes_v = recettes_nbr==recettes_valid_nbr
+	c_s = recettes_nbr==recettes_done_nbr
+	c_non_s = recettes_done_nbr == 0
+	c_v = recettes_nbr==recettes_valid_nbr
 
-	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes, "recettes_s":recettes_s, "recettes_non_s":recettes_non_s, "recettes_v":recettes_v, 'budget':budget, 'cm_dict':cm_dict})
+	return render(request,"proposition/recettes_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 
+																"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre })
 
 def depense_fonc_comptes(request, id):
 	unite = Unite.objects.get(id=id)
@@ -963,12 +969,12 @@ def depense_fonc_comptes(request, id):
 	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
 
 
-	depense_fonc_s = depense_fonc_nbr==depense_fonc_done_nbr
-	depense_fonc_non_s = depense_fonc_done_nbr == 0
-	depense_fonc_v = depense_fonc_nbr==depense_fonc_valid_nbr
+	c_s = depense_fonc_nbr==depense_fonc_done_nbr
+	c_non_s = depense_fonc_done_nbr == 0
+	c_v = depense_fonc_nbr==depense_fonc_valid_nbr
 
 	return render(request,"proposition/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
-																  "depense_fonc_s":depense_fonc_s, "depense_fonc_non_s":depense_fonc_non_s, "depense_fonc_v":depense_fonc_v, 'budget':budget,
+																  "c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre, 'budget':budget,
 																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
 																  'state_cadre_dic_par_unite':state_cadre_dic_par_unite, 'state_chef_dic_par_unite':state_chef_dic_par_unite,
 																  'state_cadre_dic_par_autre':state_cadre_dic_par_autre, 'state_chef_dic_par_autre':state_chef_dic_par_autre })
@@ -1112,12 +1118,12 @@ def depense_exp_comptes(request, id):
 	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=7).count()
 	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
 
-	depense_exp_s = depense_exp_nbr==depense_exp_done_nbr
-	depense_exp_non_s = depense_exp_done_nbr == 0
-	depense_exp_v = depense_exp_nbr==depense_exp_valid_nbr
+	c_s = depense_exp_nbr==depense_exp_done_nbr
+	c_non_s = depense_exp_done_nbr == 0
+	c_v = depense_exp_nbr==depense_exp_valid_nbr
 
 	return render(request,"proposition/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
-																	"depense_exp_s":depense_exp_s, "depense_exp_non_s":depense_exp_non_s, "depense_exp_v":depense_exp_v, 'budget':budget,
+																	"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre, 'budget':budget,
 																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
 																	'state_cadre_dic_par_unite':state_cadre_dic_par_unite, 'state_chef_dic_par_unite':state_chef_dic_par_unite,
 																	'state_cadre_dic_par_autre':state_cadre_dic_par_autre, 'state_chef_dic_par_autre':state_chef_dic_par_autre})
@@ -1326,6 +1332,73 @@ def delete_added_compte(request,id):
 		return HttpResponseRedirect("/proposition/unite/depense_fonc/"+ str(unite.id)+"")
 	elif compte.chapitre.code_num== 7:
 		return HttpResponseRedirect("/proposition/unite/depense_exp/"+ str(unite.id)+"")
+	else:
+		return HttpResponseRedirect("/proposition/unites")	
+
+#valider tous 
+def valid_tous(request, id_unite, ch_num):
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
+	budget = all_budgets[0]
+
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_chef_dep = True
+			m.validation = "CHEFD"
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_sous_dir = True
+			m.validation = "SOUSD"
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/proposition/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/proposition/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/proposition/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/proposition/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/proposition/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/proposition/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/proposition/unite/depense_exp/"+ str(id_unite)+"")
+	else:
+		return HttpResponseRedirect("/proposition/unites")
+
+def cancel_valid_tous(request, id_unite, ch_num):
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
+	budget = all_budgets[0]
+
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_chef_dep = False
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_sous_dir = False
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/proposition/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/proposition/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/proposition/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/proposition/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/proposition/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/proposition/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/proposition/unite/depense_exp/"+ str(id_unite)+"")
 	else:
 		return HttpResponseRedirect("/proposition/unites")	
 
@@ -2751,7 +2824,7 @@ def unites_notif(request):
 		# pour sous dir
 		if comptes_non_s:
 			state_sdir = "Non saisie"
-		elif comptes_s and comptes_v_sdir == False:
+		elif comptes_s and comptes_v and comptes_v_sdir == False:
 			state_sdir = "Instance"
 		elif comptes_v_sdir and comptes_s:
 			state_sdir = "Terminé"
@@ -2765,7 +2838,6 @@ def unites_notif(request):
 		else :
 			pr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])						
 		pr_dic[u.id] = pr
-
 
 	# get state of unite Mensulle (Terminé , En cours, ...)
 		#comptes_nbr = Unite_has_Compte.objects.filter(unite=u).count()
@@ -2819,7 +2891,7 @@ def unites_notif(request):
 		# pour sous dir
 		if comptes_non_s_mens:
 			state_sdir_mens = "Non saisie"
-		elif comptes_s_mens and comptes_v_sdir_mens == False:
+		elif comptes_s_mens and comptes_v_mens and comptes_v_sdir_mens == False:
 			state_sdir_mens = "Instance"
 		elif comptes_v_sdir_mens and comptes_s_mens:
 			state_sdir_mens = "Terminé"
