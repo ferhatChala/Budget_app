@@ -23,8 +23,8 @@
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
 							<li><a href="{% url 'unites' %}">Unités</a></li>
-                            <li><a href="#">{{unite.code_alpha}}</a></li>
-							<li><a href="#">Dépenses de fonctionnement</a></li>
+                            <li><a href="/proposition/unite/{{unite.id}}">{{unite.code_alpha}}</a></li>
+							<li><a href="#">{{chapitre.lib}}</a></li>
 						</ol>
 					</div>
 				</div>
@@ -37,43 +37,104 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
+							<strong class="card-title"> {{chapitre.lib}}
 							<!-- Header status Chef dep  -->
 							{% if user.user_type == 5 %}
-								{% if depense_fonc_v and depense_fonc_s %}	
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif depense_fonc_s and depense_fonc_v == False  %}
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></strong>
-								{% elif depense_fonc_non_s %}
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
-								{% elif depense_fonc_non_s == False and depense_fonc_s == False%}
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
+								{% if c_v and c_s %}	
+									<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+								{% elif c_s and c_v == False  %}
+									<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+								{% elif c_non_s %}
+									<span class="float-right" ><i class="menu-icon fa fa-times"></i> Non saisie</span>
+								{% elif c_non_s == False and c_s == False%}
+									<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
 								{% endif %}
 							<!-- End status Chef dep  -->
 
 							<!-- Header status Cadre  -->
 							{% elif user.user_type == 6 %}
 
-								{% if depense_fonc_s and depense_fonc_v == False %}	
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></strong>
-								{% elif depense_fonc_non_s  %}
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
-								{% elif depense_fonc_non_s == False and depense_fonc_s == False %}
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></strong>
-								{% elif depense_fonc_s and depense_fonc_v %}
-									<strong class="card-title">Dépenses de fonctionnement <span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></strong>
+								{% if c_s and c_v == False %}	
+									<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+								{% elif c_non_s  %}
+									<span class="float-right" style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+								{% elif c_non_s == False and c_s == False %}
+									<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+								{% elif c_s and c_v %}
+									<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
 								{% endif %}
 							
-							{% else %}
-								<strong class="card-title">Dépenses de fonctionnement </strong>
 							{% endif %}
 							<!-- End Header status Cadre  -->
-							
+							</strong>
 						</div>
+
 						<div class="card-body">
 							<!-- Chef département section -->
 							{% if user.user_type == 5 %}
-								<input class="form-control" id="myInput" type="text" placeholder="Search..">
-								<br>
+								<div class="form-row">
+									{% if c_s %}
+										<div class="form-group col-md-10 mb-0">
+											<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
+										</div>
+										<div class="form-group col-md-2 mb-0">
+											{% if c_s and c_v == False %}
+												<a href="#" data-toggle="modal" data-target="#validtous" class="btn btn-outline-success float-right"><span><i class="menu-icon fa fa-check"></i></span> Valider tous </a>
+											{% else %}	
+												<a href="#" data-toggle="modal" data-target="#canceltous" class="btn btn-outline-danger float-right"> <span><i class="menu-icon fa fa-times-circle"></i></span> Annuler tous</a>
+											{% endif %}	
+											<!-- Modal pour valider tous  -->
+											<div class="modal fade" id="validtous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h3 class="modal-title" id="exampleModalLabel">Confirmer la validation</h3>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body">
+															<strong>Vous êtes sûre de valider tout les comptes ?</strong><br>
+															<br>
+														</div>
+														<div class="modal-footer">
+															<a href="valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-success">Oui, Valider</a>
+															<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- End Modal -->
+											
+											<!-- Modal pour annuler la validation pour tous  -->
+											<div class="modal fade" id="canceltous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body">
+															<strong>Vous êtes sûre d'annuler la validation pour tout les comptes ?</strong><br>
+															<br>
+														</div>
+														<div class="modal-footer">
+															<a href="cancel_valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-danger">Oui, Annuler la validation</a>
+															<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- End Modal -->
+										</div>
+									{% else %}
+										<div class="form-group col-md-12 mb-0">
+											<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
+										</div>
+									{% endif %}
+								</div> <br>	
 								<!-- Reglé par unité  -->
 								<strong>Reglé par unité:</strong> 
 								<br>
@@ -112,7 +173,7 @@
 																
 															</div>
 														
-															<div id="cu{{c3.numero}}" class="collapse container show " aria-labelledby="hu{{c3.numero}}" data-parent="#accordionExample1">								
+															<div id="cu{{c3.numero}}" class="collapse container show " aria-labelledby="hu{{c3.numero}}" data-parent="#accordionExample1">
 																<table id="bootstrap-data-table" class="table table-striped">
 																	<thead>
 																		<tr>
@@ -257,73 +318,75 @@
 																								{% if key == c.id %}
 																									{% if m != "null" %}
 																									
-																											{% if m.vld_chef_dep %}
-																												<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-																												<!-- Button trigger modal -->
-																												<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}">
-																													<span><i class="menu-icon fa fa-times-circle"></i></span>
-																												</button>
-																												<!-- Modal -->
-																												<div class="modal fade" id="valid{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-																													<div class="modal-dialog">
-																													<div class="modal-content">
-																														<div class="modal-header">
-																														<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
-																														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																															<span aria-hidden="true">&times;</span>
-																														</button>
-																														</div>
-																														<div class="modal-body">
-																															Vous êtes sûre d'annuler la validation pour ce compte ? <br>
-																															Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
-																															Montant : <span style="color: red;"> {{m.montant}}</span>
-																														</div>
-																														<div class="modal-footer">
-																														<a href="cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
-																														<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
-																														</div>
+																										{% if m.vld_chef_dep %}
+																											<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																											<!-- Button trigger modal -->
+																											<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}">
+																												<span><i class="menu-icon fa fa-times-circle"></i></span>
+																											</button>
+																											<!-- Modal -->
+																											<div class="modal fade" id="valid{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																												<div class="modal-dialog">
+																												<div class="modal-content">
+																													<div class="modal-header">
+																													<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																														<span aria-hidden="true">&times;</span>
+																													</button>
 																													</div>
+																													<div class="modal-body">
+																														Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																														Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																														Montant : <span style="color: red;"> {{m.montant}}</span>
+																													</div>
+																													<div class="modal-footer">
+																													<a href="cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																													<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
 																													</div>
 																												</div>
-									
-																											{% else %}
-																												<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
-																												<a href="valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>		
-																											{% endif %}
+																												</div>
+																											</div>
+								
+																										{% else %}
+																											<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																											<a href="valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>		
+																										{% endif %}
 																									{% else %}
 																										<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																									{% endif %}	
+
+																									{% if user == c.added_by and m.vld_chef_dep == False %}
+																										<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
+																										<!-- Modal -->
+																										<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																											<div class="modal-dialog">
+																												<div class="modal-content">
+																													<div class="modal-header">
+																														<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
+																														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																															<span aria-hidden="true">&times;</span>
+																														</button>
+																													</div>
+																													<div class="modal-body">
+																														Vous êtes sûre de supprimer ce compte ?<br>
+																														Numéro : <strong> {{c.compte.numero}} </strong> <br>
+																														Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
+																														Réseau : <strong> {{c.reseau_compte}}</strong>
+																														<br>
+																													</div>
+																													<div class="modal-footer">
+																														<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+																														<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
+																													</div>
+																												</div>
+																											</div>
+																										</div>
+																										<!-- End Modal -->
+																									{% endif %}
+
 																								{% endif %}
 																							{% endfor %}
 
-																							{% if user == c.added_by %}
-																							<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
-																							<!-- Modal -->
-																							<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-																								<div class="modal-dialog">
-																									<div class="modal-content">
-																										<div class="modal-header">
-																											<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression </h3>
-																											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																												<span aria-hidden="true">&times;</span>
-																											</button>
-																										</div>
-																										<div class="modal-body">
-																											Vous êtes sûre de supprimer ce compte ?<br>
-																											Numéro : <strong> {{c.compte.numero}} </strong> <br>
-																											Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
-																											Réseau : <strong> {{c.reseau_compte}}</strong>
-																											<br>
-																										</div>
-																										<div class="modal-footer">
-																											<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-																											<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
-																										</div>
-																									</div>
-																								</div>
-																							</div>
-																							<!-- End Modal -->
-																							{% endif %}
 																						</td>
 																					</tr>
 																				{% endif %}
@@ -386,7 +449,7 @@
 																
 															</div>
 														
-															<div id="c{{c3.numero}}" class="collapse container show" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">								
+															<div id="c{{c3.numero}}" class="collapse container show" aria-labelledby="h{{c3.numero}}" data-parent="#accordionExample12">
 																<table id="bootstrap-data-table" class="table table-striped">
 																	<thead>
 																		<tr>
@@ -569,37 +632,39 @@
 																									{% else %}
 																										<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																									{% endif %}	
+
+																									{% if user == c.added_by and m.vld_chef_dep == False %}
+																										<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
+																										<!-- Modal -->
+																										<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																											<div class="modal-dialog">
+																												<div class="modal-content">
+																													<div class="modal-header">
+																														<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
+																														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																															<span aria-hidden="true">&times;</span>
+																														</button>
+																													</div>
+																													<div class="modal-body">
+																														Vous êtes sûre de supprimer ce compte ?<br>
+																														Numéro : <strong> {{c.compte.numero}} </strong> <br>
+																														Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
+																														Réseau : <strong> {{c.reseau_compte}}</strong>
+																														<br>
+																													</div>
+																													<div class="modal-footer">
+																														<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+																														<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
+																													</div>
+																												</div>
+																											</div>
+																										</div>
+																										<!-- End Modal -->
+																									{% endif %}
+
 																								{% endif %}
 																							{% endfor %}
 
-																							{% if user == c.added_by %}
-																							<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
-																							<!-- Modal -->
-																							<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-																								<div class="modal-dialog">
-																									<div class="modal-content">
-																										<div class="modal-header">
-																											<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression </h3>
-																											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																												<span aria-hidden="true">&times;</span>
-																											</button>
-																										</div>
-																										<div class="modal-body">
-																											Vous êtes sûre de supprimer ce compte ?<br>
-																											Numéro : <strong> {{c.compte.numero}} </strong> <br>
-																											Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
-																											Réseau : <strong> {{c.reseau_compte}}</strong>
-																											<br>
-																										</div>
-																										<div class="modal-footer">
-																											<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-																											<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
-																										</div>
-																									</div>
-																								</div>
-																							</div>
-																							<!-- End Modal -->
-																							{% endif %}
 																						</td>
 																					</tr>
 																				{% endif %}
@@ -853,37 +918,39 @@
 																										{% else %}
 																											<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																										{% endif %}
+
+																										{% if user == c.added_by and m.vld_chef_dep == False %}
+																											<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
+																											<!-- Modal -->
+																											<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																												<div class="modal-dialog">
+																													<div class="modal-content">
+																														<div class="modal-header">
+																															<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
+																															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																																<span aria-hidden="true">&times;</span>
+																															</button>
+																														</div>
+																														<div class="modal-body">
+																															Vous êtes sûre de supprimer ce compte ?<br>
+																															Numéro : <strong> {{c.compte.numero}} </strong> <br>
+																															Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
+																															Réseau : <strong> {{c.reseau_compte}}</strong>
+																															<br>
+																														</div>
+																														<div class="modal-footer">
+																															<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+																															<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
+																														</div>
+																													</div>
+																												</div>
+																											</div>
+																											<!-- End Modal -->
+																										{% endif %}
+
 																									{% endif %}	
 																								{% endfor %}
 
-																								{% if user == c.added_by %}
-																								<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
-																								<!-- Modal -->
-																								<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-																									<div class="modal-dialog">
-																										<div class="modal-content">
-																											<div class="modal-header">
-																												<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression </h3>
-																												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																													<span aria-hidden="true">&times;</span>
-																												</button>
-																											</div>
-																											<div class="modal-body">
-																												Vous êtes sûre de supprimer ce compte ?<br>
-																												Numéro : <strong> {{c.compte.numero}} </strong> <br>
-																												Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
-																												Réseau : <strong> {{c.reseau_compte}}</strong>
-																												<br>
-																											</div>
-																											<div class="modal-footer">
-																												<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-																												<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
-																											</div>
-																										</div>
-																									</div>
-																								</div>
-																								<!-- End Modal -->
-																								{% endif %}
 																							</td>
 																						</tr>
 																					{% endif %}
@@ -1133,37 +1200,38 @@
 																								{% else %}
 																									<a href="add_montant_depense_fonc/{{c.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																								{% endif %}
+
+																								{% if user == c.added_by and m.vld_chef_dep == False %}
+																									<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
+																									<!-- Modal -->
+																									<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																										<div class="modal-dialog">
+																											<div class="modal-content">
+																												<div class="modal-header">
+																													<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
+																													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																														<span aria-hidden="true">&times;</span>
+																													</button>
+																												</div>
+																												<div class="modal-body">
+																													Vous êtes sûre de supprimer ce compte ?<br>
+																													Numéro : <strong> {{c.compte.numero}} </strong> <br>
+																													Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
+																													Réseau : <strong> {{c.reseau_compte}}</strong>
+																													<br>
+																												</div>
+																												<div class="modal-footer">
+																													<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+																													<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
+																												</div>
+																											</div>
+																										</div>
+																									</div>
+																									<!-- End Modal -->
+																								{% endif %}
+
 																							{% endif %}	
 																						{% endfor %}
-
-																						{% if user == c.added_by %}
-																						<a href="#" data-toggle="modal" data-target="#delc{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
-																						<!-- Modal -->
-																						<div class="modal fade" id="delc{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-																							<div class="modal-dialog">
-																								<div class="modal-content">
-																									<div class="modal-header">
-																										<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
-																										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																											<span aria-hidden="true">&times;</span>
-																										</button>
-																									</div>
-																									<div class="modal-body">
-																										Vous êtes sûre de supprimer ce compte ?<br>
-																										Numéro : <strong> {{c.compte.numero}} </strong> <br>
-																										Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
-																										Réseau : <strong> {{c.reseau_compte}}</strong>
-																										<br>
-																									</div>
-																									<div class="modal-footer">
-																										<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-																										<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
-																									</div>
-																								</div>
-																							</div>
-																						</div>
-																						<!-- End Modal -->
-																						{% endif %}
 
 																					</td>
 																				</tr>

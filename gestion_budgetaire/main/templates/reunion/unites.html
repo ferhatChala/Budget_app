@@ -39,7 +39,7 @@
 		<div class="col-md-12">
 			<div class="card">
 				<div class="card-header">
-					<span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités <span class="float-right"> {{bdg_total}} <b>DZD</b></span></strong>
+					<span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités</strong>
 				</div>
 				<div class="card-body">
 					<input class="form-control" id="myInput" type="text" placeholder="Search..">
@@ -67,7 +67,7 @@
 												{% elif s == "Validé" %}
 													<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
 												{% elif s == "Non saisie" %}
-													<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													<span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
 												{% elif s == "En cours" %}
 													<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
 												{% endif %}

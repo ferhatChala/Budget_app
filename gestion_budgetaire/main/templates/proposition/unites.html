@@ -38,7 +38,7 @@
 		<div class="col-md-12">
 			<div class="card">
 				<div class="card-header">
-					<span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités <span class="float-right"> {{bdg_total}} <b>DZD</b></span> </strong>
+					<span><i class="menu-icon fa fa-building-o"></i></span> <strong class="card-title">  Unités  </strong>
 				</div>
 				<div class="card-body">
 					<input class="form-control" id="myInput" type="text" placeholder="Search..">
@@ -47,47 +47,85 @@
 							<tr>
 								<th>Unité</th>
 								<th>Monnaie</th>
-								<th>Budget</th>
-								<th>Etat</th>
+								<th>Etat d'avancement</th>
 								<th>Action</th>
 							</tr>
 						</thead>
 						<tbody id="myTable">
 							{% if user.user_type == 6 %}
 								{% for u in unites %}
-								<tr>
-									<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
-									<td>{{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}} </td>
-									{% for key, t in total_unite_dic.items  %}
-										{% if key == u.id %}
-											{% if t != None %}
-												<td>{{t}}</td>
-											{% else %}
-												<td>-</td>	
-											{% endif %}
-										{% endif %}
-									{% endfor %}
-									<td>En cours</td>
-									<td><a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-								</tr>
+									<tr>
+										<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
+										<td>{{u.unite.monnaie.code_alpha}} / {{u.unite.monnaie.code_num}} </td>
+										<td>
+											{% for key, s in state_cadre_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+													{% elif s == "Non saisie" %}
+														<span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											<span style="margin-left:50px;">
+												{% for key, p in pr_dic.items  %}
+													{% if key == u.id %}
+														{% if p != 0 %}
+															<strong>{{p}} % </strong>
+														{% else %}
+															-	
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</span>
+										</td>
+										<td><a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+									</tr>
 								{% endfor %}
 							{% elif user.user_type == 5  %}
 								{% for u in dep_unites %}
-								<tr>
-									<td>{{u.lib}} ({{u.code_alpha}})</td>
-									<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
-									{% for key, t in total_unite_dic.items  %}
-										{% if key == u.id %}
-											{% if t != None %}
-												<td>{{t}}</td>
-											{% else %}
-												<td>-</td>	
-											{% endif %}
-										{% endif %}
-									{% endfor %}
-									<td>En cours</td>
-									<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-								</tr>
+									<tr>
+										<td>{{u.lib}} ({{u.code_alpha}})</td>
+										<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
+										<td>
+											{% for key, s in state_chef_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+													{% elif s == "Instance" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+													{% elif s == "Non saisie" %}
+														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											<span style="margin-left:50px;">
+												{% for key, p in pr_dic.items  %}
+													{% if key == u.id %}
+														{% if p != 0 %}
+															<strong>{{p}} % </strong>
+														{% else %}
+															-	
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</span>
+										</td>
+										
+										<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+									</tr>
 								{% endfor %}
 							{% endif %}
 						</tbody>

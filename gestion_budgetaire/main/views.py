@@ -585,17 +585,63 @@ def unites(request):
 	budget = all_budgets[0]
 	dep_unites = Unite.objects.filter(departement=request.user.departement)
 	all_unites = Unite.objects.all()
+
 	# montant total consolidé of unite --------
 	total_unite_dic = {}
 	bdg_total = 0
+	state_cadre_dic = {}
+	state_chef_dic = {}
+	pr_dic = {}
 	for u in all_unites:
+		# calculer le montant
 		total = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire=budget).aggregate(Sum('montant'))
 		total_unite_dic[u.id] = total['montant__sum']
 		if total['montant__sum'] != None:
 			bdg_total = bdg_total + total['montant__sum']
-	#------------------------------------------	
 
-	return render(request,"proposition/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'budget':budget, 'total_unite_dic':total_unite_dic, 'bdg_total':bdg_total})
+		# get state of unite (Terminé , En cours, ...)
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=u).count()
+		comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget).count()
+		comptes_done = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget)		
+		comptes_v_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget, vld_chef_dep=True).count()
+		
+		# needed status comptes_valid
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic[u.id]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False :
+			state_chef = "Instance"
+		elif comptes_v and comptes_s :
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic[u.id]= state_chef
+
+		# porcentage de saiser pour l unite
+		if comptes_nbr == 0:
+			pr = 0
+		else :
+			pr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])						
+		pr_dic[u.id] = pr
+	#------------------------------------------
+
+	return render(request,"proposition/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'budget':budget, 'total_unite_dic':total_unite_dic, 'bdg_total':bdg_total,
+														'state_cadre_dic':state_cadre_dic, 'state_chef_dic':state_chef_dic, 'pr_dic':pr_dic })
 
 def unite_detail(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS", lancement=True, cloture=False).order_by('-annee')

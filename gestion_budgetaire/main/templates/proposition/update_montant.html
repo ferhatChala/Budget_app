@@ -23,8 +23,8 @@
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
 							<li><a href="{% url 'unites' %}">Unités</a></li>
-                            <li><a href="#">{{unite_compte.unite.code_alpha}}</a></li>
-							<li><a href="#">Offre</a></li>
+                            <li><a href="/proposition/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
+							<li><a href="#">{{unite_compte.compte.chapitre.lib}}</a></li>
 						</ol>
 					</div>
 				</div>
