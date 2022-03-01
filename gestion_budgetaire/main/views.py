@@ -5505,9 +5505,907 @@ def annees_bdg_notif(request):
 
 
 
-# méme view que proposition 
-# add montant et modifier monatnt on le modifier 
-# pour les url meme que proposition 
+# Réalisation budget  (Balance Comptable) --------------------------------------------------------------------
+
+# affichage des unites et leur comptes par chapitre
+
+def unites_realisation(request):
+	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+	dep_unites = Unite.objects.filter(departement=request.user.departement)
+	all_unites = Unite.objects.all()
+
+	# montant total consolidé of unite --------
+	total_unite_dic = {}
+	bdg_total = 0
+	state_cadre_dic = {}
+	state_chef_dic = {}
+	pr_dic = {}
+	for u in all_unites:
+		# calculer le montant
+		total = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire=budget).aggregate(Sum('montant'))
+		total_unite_dic[u.id] = total['montant__sum']
+		if total['montant__sum'] != None:
+			bdg_total = bdg_total + total['montant__sum']
+
+		# get state of unite (Terminé , En cours, ...)
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=u).count()
+		comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget).count()
+		comptes_done = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget)		
+		comptes_v_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=u, annee_budgetaire = budget, vld_chef_dep=True).count()
+		
+		# needed status comptes_valid
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic[u.id]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False :
+			state_chef = "Instance"
+		elif comptes_v and comptes_s :
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic[u.id]= state_chef
+
+		# porcentage de saiser pour l unite
+		if comptes_nbr == 0:
+			pr = 0
+		else :
+			pr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])						
+		pr_dic[u.id] = pr
+	#------------------------------------------
+
+	return render(request,"realisation/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'budget':budget, 'total_unite_dic':total_unite_dic, 'bdg_total':bdg_total,
+														'state_cadre_dic':state_cadre_dic, 'state_chef_dic':state_chef_dic, 'pr_dic':pr_dic })
+
+def unite_detail_realisation(request, id):
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]
+
+	unite = Unite.objects.get(id=id)
+	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
+	comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget).count()
+	comptes_vld_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True).count()	
+	# porcentage de saiser pour l unite
+	if comptes_nbr == 0:
+		pr_cdr = 0
+	else :
+		pr_cdr = int(math.modf((comptes_done_nbr / comptes_nbr)*100)[1])
+
+	if comptes_nbr == 0:
+		pr_vcd = 0
+	else :
+		pr_vcd = int(math.modf((comptes_vld_nbr / comptes_nbr)*100)[1])
+
+	#nombre de comptes pour chaque chapitre
+	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
+	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
+	ca_emmission_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=3).count()
+	ca_transport_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=4).count()
+	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
+	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=6).count()
+	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=7).count()
+	# nombre de comptes saisie
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=7).count()
+	# nombre de comptes Validé par chef dep
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
+	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
+	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
+	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+	#Check if chapitre is saisié 
+	offre_s = offre_nbr==offre_done_nbr
+	traffic_s = traffic_nbr==traffic_done_nbr
+	ca_emmission_s = ca_emmission_nbr==ca_emmission_done_nbr
+	ca_transport_s = ca_transport_nbr==ca_transport_done_nbr
+	recettes_s = recettes_nbr==recettes_done_nbr
+	depense_fonc_s = depense_fonc_nbr==depense_fonc_done_nbr
+	depense_exp_s = depense_exp_nbr==depense_exp_done_nbr
+	#Check if chapitre is  non saisié
+	offre_non_s = offre_done_nbr == 0
+	traffic_non_s = traffic_done_nbr == 0
+	ca_emmission_non_s = ca_emmission_done_nbr == 0
+	ca_transport_non_s = ca_transport_done_nbr == 0
+	recettes_non_s = recettes_done_nbr == 0
+	depense_fonc_non_s = depense_fonc_done_nbr == 0
+	depense_exp_non_s = depense_exp_done_nbr == 0
+
+	#Check if chapitre is validé par chef dep
+	offre_v = offre_nbr==offre_valid_nbr
+	traffic_v = traffic_nbr==traffic_valid_nbr
+	ca_emmission_v = ca_emmission_nbr==ca_emmission_valid_nbr
+	ca_transport_v = ca_transport_nbr==ca_transport_valid_nbr
+	recettes_v = recettes_nbr==recettes_valid_nbr
+	depense_fonc_v = depense_fonc_nbr==depense_fonc_valid_nbr
+	depense_exp_v = depense_exp_nbr==depense_exp_valid_nbr
+
+	#Check if chapitre is not validé par chef dep ( = compte validé)
+	offre_non_v = offre_valid_nbr == 0
+	traffic_non_v = traffic_valid_nbr == 0
+	ca_emmission_non_v = ca_emmission_valid_nbr == 0
+	ca_transport_non_v = ca_transport_valid_nbr == 0
+	recettes_non_v = recettes_valid_nbr == 0
+	depense_fonc_non_v = depense_fonc_valid_nbr == 0
+	depense_exp_non_v = depense_exp_valid_nbr == 0
+
+	return render(request,"realisation/unite_detail.html", {'unite':unite, 'comptes_nbr':comptes_nbr, 'comptes_done_nbr':comptes_done_nbr, 'pr_cdr':pr_cdr, 'pr_vcd':pr_vcd, 'budget':budget,
+															'offre_s':offre_s, 'traffic_s':traffic_s, 'ca_emmission_s':ca_emmission_s, 'ca_transport_s':ca_transport_s,
+															'recettes_s':recettes_s, 'depense_fonc_s':depense_fonc_s, 'depense_exp_s':depense_exp_s,
+															'offre_v':offre_v, 'traffic_v':traffic_v, 'ca_emmission_v':ca_emmission_v, 'ca_transport_v':ca_transport_v,
+															'recettes_v':recettes_v, 'depense_fonc_v':depense_fonc_v, 'depense_exp_v':depense_exp_v,
+															'offre_non_s':offre_non_s, 'traffic_non_s':traffic_non_s, 'ca_emmission_non_s':ca_emmission_non_s, 'ca_transport_non_s':ca_transport_non_s,
+															'recettes_non_s':recettes_non_s, 'depense_fonc_non_s':depense_fonc_non_s, 'depense_exp_non_s':depense_exp_non_s,
+															'offre_non_v':offre_non_v, 'traffic_non_v':traffic_non_v, 'ca_emmission_non_v':ca_emmission_non_v, 'ca_transport_non_v':ca_transport_non_v,
+															'recettes_non_v':recettes_non_v, 'depense_fonc_non_v':depense_fonc_non_v, 'depense_exp_non_v':depense_exp_non_v
+															})
+
+def offre_comptes_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=1)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=1)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+
+	offre_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=1).count()
+	offre_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=1).count()
+	offre_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=1).count()
+	
+	c_s = offre_nbr==offre_done_nbr
+	c_non_s = offre_done_nbr == 0
+	c_v = offre_nbr==offre_valid_nbr
+
+	return render(request,"realisation/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict,
+															"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre })
+
+def traffic_comptes_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=2)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=2)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
+	traffic_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=2).count()
+	traffic_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=2).count()
+	traffic_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=2).count()
+
+	c_s = traffic_nbr==traffic_done_nbr
+	c_non_s = traffic_done_nbr == 0
+	c_v = traffic_nbr==traffic_valid_nbr
+
+	return render(request,"realisation/traffic_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict,
+																"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre  })
+
+def ca_emmission_comptes_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=3)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=3)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
+	ca_emmission_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=3).count()
+	ca_emmission_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=3).count()
+	ca_emmission_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=3).count()
+	
+	c_s = ca_emmission_nbr==ca_emmission_done_nbr
+	c_non_s = ca_emmission_done_nbr == 0
+	c_v = ca_emmission_nbr==ca_emmission_valid_nbr
+
+	return render(request,"realisation/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict,
+																	"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre  })
+
+def ca_transport_comptes_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=4)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=4).order_by('-reseau_compte')
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
+	ca_transport_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=4).count()
+	ca_transport_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=4).count()
+	ca_transport_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=4).count()
+
+	c_s = ca_transport_nbr==ca_transport_done_nbr
+	c_non_s = ca_transport_done_nbr == 0
+	c_v = ca_transport_nbr==ca_transport_valid_nbr
+
+	return render(request,"realisation/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 
+																	"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre })
+
+def recettes_comptes_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=5)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=5)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+	
+	recettes_nbr = Unite_has_Compte.objects.filter(unite=unite,compte__chapitre__code_num=5).count()
+	recettes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=5).count()
+	recettes_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=5).count()
+
+	c_s = recettes_nbr==recettes_done_nbr
+	c_non_s = recettes_done_nbr == 0
+	c_v = recettes_nbr==recettes_valid_nbr
+
+	return render(request,"realisation/recettes_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 
+																"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre })
+
+def depense_fonc_comptes_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=6)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+		
+	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=6)
+	comptes_regle_par_autre = []
+	for c in comptes:
+		if c.regle_par != unite:
+			comptes_regle_par_autre.append(c)	
+	# pos 2 comptes 
+	all_c2 = SCF_Pos_2.objects.all()
+	c2_par_unite = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_unite:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_unite.append(c2)
+
+	c2_par_autre = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_autre:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_autre.append(c2)
+	
+	c2_par_unite = list(dict.fromkeys(c2_par_unite))
+	c2_par_autre = list(dict.fromkeys(c2_par_autre))
+	
+	# clacule les pos 2 saisier state 
+	# comptes par unité ------------
+	state_cadre_dic_par_unite = {}
+	state_chef_dic_par_unite = {}
+	for c2 in c2_par_unite:
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
+		comptes_v_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_unite[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_unite[c2.numero]= state_chef
+
+	# comptes par autre -----------
+	state_cadre_dic_par_autre = {}
+	state_chef_dic_par_autre = {}
+	for c2 in c2_par_autre:
+		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6, compte__ref__ref__ref=c2).count()
+		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+
+		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
+		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()
+		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+
+		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		comptes_v_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=6).count()	
+		comptes_v_nbr = comptes_v_all_nbr - comptes_v_unite_nbr
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_autre[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_autre[c2.numero]= state_chef
+	# ------------------------------------
+
+
+
+	#pos 3 comptes
+	all_c3 = SCF_Pos_3.objects.all()
+	c3_par_unite = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_unite:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_unite.append(c3)
+
+	c3_par_autre = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_autre:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_autre.append(c3)
+	
+	c3_par_unite = list(dict.fromkeys(c3_par_unite))
+	c3_par_autre = list(dict.fromkeys(c3_par_autre))
+
+	#comptes_regle_par_autre = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite compte__chapitre__code_num=6)	
+	
+	depense_fonc_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6).count()
+	depense_fonc_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=6).count()
+	depense_fonc_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=6).count()
+
+
+	c_s = depense_fonc_nbr==depense_fonc_done_nbr
+	c_non_s = depense_fonc_done_nbr == 0
+	c_v = depense_fonc_nbr==depense_fonc_valid_nbr
+
+	return render(request,"realisation/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
+																  "c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre, 'budget':budget,
+																  "c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
+																  'state_cadre_dic_par_unite':state_cadre_dic_par_unite, 'state_chef_dic_par_unite':state_chef_dic_par_unite,
+																  'state_cadre_dic_par_autre':state_cadre_dic_par_autre, 'state_chef_dic_par_autre':state_chef_dic_par_autre })
+
+def depense_exp_comptes_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	chapitre = Chapitre.objects.get(code_num=7)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]	
+		
+	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=7)
+	comptes_regle_par_autre = []
+	for c in comptes:
+		if c.regle_par != unite:
+			comptes_regle_par_autre.append(c)	
+
+	all_c2 = SCF_Pos_2.objects.all()
+	c2_par_unite = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_unite:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_unite.append(c2)
+
+	c2_par_autre = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_autre:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_autre.append(c2)
+	
+	c2_par_unite = list(dict.fromkeys(c2_par_unite))
+	c2_par_autre = list(dict.fromkeys(c2_par_autre))
+
+	# clacule les pos 2 saisier state 
+	# comptes par unité ------------
+	state_cadre_dic_par_unite = {}
+	state_chef_dic_par_unite = {}
+	for c2 in c2_par_unite:
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
+		comptes_v_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_unite[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_unite[c2.numero]= state_chef
+
+	# comptes par unité -----------
+	state_cadre_dic_par_autre = {}
+	state_chef_dic_par_autre = {}
+	for c2 in c2_par_autre:
+		comptes_unite_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, regle_par=unite, compte__ref__ref__ref=c2).count()
+		comptes_all_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7, compte__ref__ref__ref=c2).count()
+		comptes_nbr = comptes_all_nbr - comptes_unite_nbr
+
+		done_par_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
+		done_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite,  annee_budgetaire=budget, unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()
+		comptes_done_nbr = done_all_nbr - done_par_unite_nbr
+
+		comptes_v_unite_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, unite_compte__regle_par=unite,  vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		comptes_v_all_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, vld_chef_dep=True,  annee_budgetaire=budget , unite_compte__compte__ref__ref__ref=c2 , unite_compte__compte__chapitre__code_num=7).count()	
+		comptes_v_nbr = comptes_v_all_nbr - comptes_v_unite_nbr
+		
+		comptes_s = comptes_nbr == comptes_done_nbr
+		comptes_non_s = comptes_done_nbr == 0
+		comptes_v = comptes_nbr == comptes_v_nbr
+		
+		# pour le cadre
+		if comptes_s and comptes_v == False: 
+			state_cadre = "Terminé"
+		elif comptes_s and comptes_v: 
+			state_cadre = "Validé"
+		elif comptes_non_s:
+			state_cadre = "Non saisie"
+		else:
+			state_cadre = "En cours"
+		state_cadre_dic_par_autre[c2.numero]= state_cadre
+
+		# pour chef dep
+		if comptes_non_s:
+			state_chef = "Non saisie"
+		elif comptes_s and comptes_v == False:
+			state_chef = "Instance"
+		elif comptes_v and comptes_s:
+			state_chef = "Terminé"
+		else:
+			state_chef = "En cours"
+		state_chef_dic_par_autre[c2.numero]= state_chef
+	# ------------------------------------
+
+	# pos 3 comptes
+	all_c3 = SCF_Pos_3.objects.all()
+	c3_par_unite = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_unite:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_unite.append(c3)
+
+	c3_par_autre = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_autre:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_autre.append(c3)
+	
+	c3_par_unite = list(dict.fromkeys(c3_par_unite))
+	c3_par_autre = list(dict.fromkeys(c3_par_autre))	
+
+
+	depense_exp_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7).count()
+	depense_exp_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=7).count()
+	depense_exp_valid_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, annee_budgetaire = budget, vld_chef_dep=True, unite_compte__compte__chapitre__code_num=7).count()
+
+	c_s = depense_exp_nbr==depense_exp_done_nbr
+	c_non_s = depense_exp_done_nbr == 0
+	c_v = depense_exp_nbr==depense_exp_valid_nbr
+
+	return render(request,"realisation/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
+																	"c_s":c_s, "c_non_s":c_non_s, "c_v":c_v, "chapitre":chapitre, 'budget':budget,
+																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
+																	'state_cadre_dic_par_unite':state_cadre_dic_par_unite, 'state_chef_dic_par_unite':state_chef_dic_par_unite,
+																	'state_cadre_dic_par_autre':state_cadre_dic_par_autre, 'state_chef_dic_par_autre':state_chef_dic_par_autre})
+
+# add montant to compte 
+def add_montant_realisation(request, id):
+	unite_compte = Unite_has_Compte.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]
+
+	comment_form = CommentaireForm(request.POST or None)
+	montant_form = MontantOnlyForm(request.POST or None)
+	if request.method == "POST":
+		if  montant_form.is_valid():
+			montant_compte = montant_form.save(commit=False)
+			montant_compte.unite_compte = unite_compte
+			montant_compte.type_bdg = "RELS"
+			montant_compte.annee_budgetaire = budget
+			montant_compte.code = str(montant_compte.unite_compte.id) + montant_compte.annee_budgetaire.code + montant_compte.unite_compte.monnaie.code_alpha + montant_compte.unite_compte.regle_par.code_alpha
+			if comment_form.is_valid():
+				comment = comment_form.save(commit=False)
+				comment.comment_type = "M"
+				comment.user = request.user
+				comment.save()
+				montant_compte.commentaire_montant = comment
+			
+			if request.user.user_type==6:
+				montant_compte.montant_cadre = montant_compte.montant
+				montant_compte.vld_cadre = True
+				montant_compte.validation = "CADRE"
+
+			if request.user.user_type==5:
+				montant_compte.montant_chef_dep = montant_compte.montant
+				montant_compte.vld_chef_dep = True
+				montant_compte.validation = "CHEFD"
+			
+			if request.user.user_type==4:
+				montant_compte.montant_sous_dir = montant_compte.montant
+				montant_compte.vld_sous_dir = True
+				montant_compte.validation = "SOUSD"				
+			
+			montant_compte.save()
+			messages.success(request, "compte added successfuly to unite." )
+			# Redirecter vers chaque chapitre
+			if unite_compte.compte.chapitre.code_num== 1:
+				return redirect("/realisation/unite/offre/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 2:
+				return redirect("/realisation/unite/traffic/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 3:
+				return redirect("/realisation/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 4:
+				return redirect("/realisation/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 5:
+				return redirect("/realisation/unite/recettes/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 6:
+				return redirect("/realisation/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 7:
+				return redirect("/realisation/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+			else:
+				return redirect("/realisation/unites")
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="realisation/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte, "budget":budget})
+
+def update_montant_realisation(request, id): 
+	montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = montant.unite_compte
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]	
+	form = MontantOnlyForm(request.POST or None, instance = montant)
+	if form.is_valid():
+		form.save()
+		messages.success(request, "Montant updated successfuly." )
+		new_montant = get_object_or_404(Compte_has_Montant, id = id)
+		if request.user.user_type==6:
+			new_montant.montant_cadre = new_montant.montant
+			new_montant.vld_cadre = True
+			new_montant.save()
+		if request.user.user_type==5:
+			new_montant.montant_chef_dep = new_montant.montant
+			new_montant.vld_chef_dep = True
+			new_montant.validation = "CHEFD"
+			new_montant.save()
+		if request.user.user_type==4:
+			new_montant.montant_sous_dir = new_montant.montant
+			new_montant.vld_sous_dir = True
+			new_montant.validation = "SOUSD"
+			new_montant.save()
+		
+		# Redirecter vers chaque chapitre
+		if unite_compte.compte.chapitre.code_num== 1:
+			return redirect("/realisation/unite/offre/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 2:
+			return redirect("/realisation/unite/traffic/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 3:
+			return redirect("/realisation/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 4:
+			return redirect("/realisation/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 5:
+			return redirect("/realisation/unite/recettes/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 6:
+			return redirect("/realisation/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 7:
+			return redirect("/realisation/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+		else:
+			return redirect("/realisation/unites")
+	return render (request=request, template_name="realisation/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
+
+def valid_montant_realisation(request, id):
+	new_montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = new_montant.unite_compte
+	if request.user.user_type==6:
+		new_montant.vld_cadre = True
+		new_montant.save()
+	if request.user.user_type==5:
+		new_montant.vld_chef_dep = True
+		new_montant.validation = "CHEFD"
+		new_montant.save()
+	if request.user.user_type==4:
+		new_montant.vld_sous_dir = True
+		new_montant.validation = "SOUSD"
+		new_montant.save()
+
+	# Redirecter vers chaque chapitre
+	if unite_compte.compte.chapitre.code_num== 1:
+		return HttpResponseRedirect("/realisation/unite/offre/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/realisation/unite/traffic/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/realisation/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/realisation/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/realisation/unite/recettes/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/realisation/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/realisation/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+	else:
+		return HttpResponseRedirect("/realisation/unites")
+
+def cancel_valid_montant_realisation(request, id):
+	new_montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = new_montant.unite_compte
+	if request.user.user_type==6:
+		new_montant.vld_cadre = False
+		new_montant.save()
+	if request.user.user_type==5:
+		new_montant.vld_chef_dep = False
+		new_montant.validation = "CHEFD"
+		new_montant.save()
+	if request.user.user_type==4:
+		new_montant.vld_sous_dir = False
+		new_montant.validation = "SOUSD"
+		new_montant.save()
+	# Redirecter vers chaque chapitre
+	if unite_compte.compte.chapitre.code_num== 1:
+		return HttpResponseRedirect("/realisation/unite/offre/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/realisation/unite/traffic/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/realisation/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/realisation/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/realisation/unite/recettes/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/realisation/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/realisation/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+	else:
+		return HttpResponseRedirect("/realisation/unites")
+
+def add_new_compte_realisation(request, id):
+	unite = Unite.objects.get(id=id)
+	form = AddCompteUniteForm(request.POST or None)
+	if request.method == "POST":
+		if  form.is_valid():
+			compte_unite = form.save(commit=False)
+			compte_unite.unite = unite
+			compte_unite.added_by = request.user
+			compte_unite.code = compte_unite.unite.code_alpha + str(compte_unite.compte.numero) + compte_unite.regle_par.code_alpha + compte_unite.reseau_compte
+			compte_unite.save()
+			messages.success(request, "compte added successfuly." )
+			return HttpResponseRedirect("/realisation/unite/"+ str(unite.id)+"")
+			
+		messages.error(request, "Unsuccessful . Invalid information.")
+	return render (request=request, template_name="realisation/add_new_compte.html", context={"form":form})
+
+def delete_added_compte_realisation(request,id):
+	form = Unite_has_Compte.objects.get(id=id)
+	unite = form.unite
+	compte = form.compte
+	form.delete()
+	# Redirecter vers chaque chapitre
+	if compte.chapitre.code_num== 1:
+		return HttpResponseRedirect("/realisation/unite/offre/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/realisation/unite/traffic/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/realisation/unite/ca_emmission/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/realisation/unite/ca_transport/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/realisation/unite/recettes/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/realisation/unite/depense_fonc/"+ str(unite.id)+"")
+	elif compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/realisation/unite/depense_exp/"+ str(unite.id)+"")
+	else:
+		return HttpResponseRedirect("/realisation/unites")	
+
+#valider tous 
+def valid_tous_realisation(request, id_unite, ch_num):
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_chef_dep = True
+			m.validation = "CHEFD"
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_sous_dir = True
+			m.validation = "SOUSD"
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/realisation/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/realisation/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/realisation/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/realisation/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/realisation/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/realisation/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/realisation/unite/depense_exp/"+ str(id_unite)+"")
+	else:
+		return HttpResponseRedirect("/realisation/unites")
+
+def cancel_valid_tous_realisation(request, id_unite, ch_num):
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
+
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_chef_dep = False
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_sous_dir = False
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/realisation/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/realisation/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/realisation/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/realisation/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/realisation/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/realisation/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/realisation/unite/depense_exp/"+ str(id_unite)+"")
+	else:
+		return HttpResponseRedirect("/realisation/unites")	
+
+# comments
+def update_comment_realisation(request, id): 
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS", lancement=True, cloture=False).order_by('-annee')
+	budget = all_budgets[0]
+	comment = get_object_or_404(Commentaire, id = id)
+	form = CommentaireForm(request.POST or None, instance = comment)
+	if form.is_valid():
+		form.save()
+		messages.success(request, "Commentaire updated successfuly." )
+		return redirect("/realisation/unites")
+
+	return render (request=request, template_name="realisation/update_comment.html", context={"form":form, "comment":comment, "budget":budget})
+
+def delete_comment_realisation(request, id):
+    form = Commentaire.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/realisation/unites")
+
+# consultation proposition budget 
+def annees_bdg_prop_realisation(request):
+	budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
+	dep_unites = Unite.objects.filter(departement=request.user.departement)
+	all_unites = Unite.objects.all()
+	return render(request,"realisation/consultation/annees.html", {'budgets':budgets, 'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites})
+
+# -------------------------------------- Fin Réalisation budget --------------------------------------------------------
+
 
 
 

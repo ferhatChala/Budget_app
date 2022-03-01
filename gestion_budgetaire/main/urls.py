@@ -3,6 +3,7 @@ from main import views
 
 urlpatterns = [
     path('',views.home,name='home'), 
+    
 # Administration     
     #users ---------------------------------------------------
     #ajouter 
@@ -298,7 +299,7 @@ urlpatterns = [
 
     #----------------------------------------------------------------------------------------------------------
 
-# Notification budget budget ----------------------------------------------------------------------------------------------------------
+# Notification budget ----------------------------------------------------------------------------------------------------------
     path('notif/unites', views.unites_notif, name="unites_notif"),
     path('notif/unite/<int:id>', views.unite_detail_notif, name="unite_notif"),
 
@@ -484,6 +485,106 @@ urlpatterns = [
     
     #--------------------------------------------------------------------------------------------------------------------------------
 
+# Réalisation budget ----------------------------------------------------------------------------------------------------------
+    path('realisation/unites', views.unites_realisation, name="unites_realisation"),
+    path('realisation/unite/<int:id>', views.unite_detail_realisation, name="unite_realisation"),
+
+
+    #Offre
+    path('realisation/unite/offre/<int:id>', views.offre_comptes_realisation, name="offre_realisation"),
+    path('realisation/unite/offre/add_montant_offre/<int:id>', views.add_montant_realisation, name="add_montant_offre_realisation"),
+
+    path('realisation/unite/offre/update_montant/<int:id>', views.update_montant_realisation, name="update_montant_realisation" ),
+    path('realisation/unite/offre/valid_montant/<int:id>', views.valid_montant_realisation, name="valid_montant_realisation" ),
+    path('realisation/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_realisation, name="valid_tous_realisation" ),
+    path('realisation/unite/offre/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_realisation, name="cancel_valid_tous_realisation" ),    
+    path('realisation/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant_realisation, name="cancel_valid_montant_realisation" ),
+    path('realisation/unite/offre/add_new_compte/<int:id>', views.add_new_compte_realisation, name="add_new_compte_realisation" ),
+    path('realisation/unite/offre/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
+    path('realisation/unite/offre/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
+    path('realisation/unite/offre/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
+    #Traffic
+    path('realisation/unite/traffic/<int:id>', views.traffic_comptes_realisation, name="traffic_realisation"),
+    path('realisation/unite/traffic/add_montant_traffic/<int:id>', views.add_montant_realisation, name="add_montant_traffic_realisation"),
+
+    path('realisation/unite/traffic/update_montant/<int:id>', views.update_montant_realisation, name="update_montant_realisation" ),
+    path('realisation/unite/traffic/valid_montant/<int:id>', views.valid_montant_realisation, name="valid_montant_realisation" ),
+    path('realisation/unite/traffic/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_realisation, name="valid_tous_realisation" ),
+    path('realisation/unite/traffic/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_realisation, name="cancel_valid_tous_realisation" ),    
+    path('realisation/unite/traffic/cancel_valid_montant/<int:id>', views.cancel_valid_montant_realisation, name="cancel_valid_montant_realisation" ),
+    path('realisation/unite/traffic/add_new_compte/<int:id>', views.add_new_compte_realisation, name="add_new_compte_realisation" ),
+    path('realisation/unite/traffic/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
+    path('realisation/unite/traffic/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
+    path('realisation/unite/traffic/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
+    #ca emmission
+    path('realisation/unite/ca_emmission/<int:id>', views.ca_emmission_comptes_realisation, name="ca_emmission_realisation"),
+    path('realisation/unite/ca_emmission/add_montant_ca_emmission/<int:id>', views.add_montant_realisation, name="add_montant_ca_emmission_realisation"),
+  
+    path('realisation/unite/ca_emmission/update_montant/<int:id>', views.update_montant_realisation, name="update_montant_realisation" ),
+    path('realisation/unite/ca_emmission/valid_montant/<int:id>', views.valid_montant_realisation, name="valid_montant_realisation" ),
+    path('realisation/unite/ca_emmission/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_realisation, name="valid_tous_realisation" ),
+    path('realisation/unite/ca_emmission/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_realisation, name="cancel_valid_tous_realisation" ),    
+    path('realisation/unite/ca_emmission/cancel_valid_montant/<int:id>', views.cancel_valid_montant_realisation, name="cancel_valid_montant_realisation" ),
+    path('realisation/unite/ca_emmission/add_new_compte/<int:id>', views.add_new_compte_realisation, name="add_new_compte_realisation" ),
+    path('realisation/unite/ca_emmission/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
+    path('realisation/unite/ca_emmission/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
+    path('realisation/unite/ca_emmission/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
+    #ca transport
+    path('realisation/unite/ca_transport/<int:id>', views.ca_transport_comptes_realisation, name="ca_transport_realisation"),
+    path('realisation/unite/ca_transport/add_montant_ca_transport/<int:id>', views.add_montant_realisation, name="add_montant_ca_transport_realisation"),
+   
+    path('realisation/unite/ca_transport/update_montant/<int:id>', views.update_montant_realisation, name="update_montant_realisation" ),
+    path('realisation/unite/ca_transport/valid_montant/<int:id>', views.valid_montant_realisation, name="valid_montant_realisation" ),
+    path('realisation/unite/ca_transport/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_realisation, name="valid_tous_realisation" ),
+    path('realisation/unite/ca_transport/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_realisation, name="cancel_valid_tous_realisation" ),    
+    path('realisation/unite/ca_transport/cancel_valid_montant/<int:id>', views.cancel_valid_montant_realisation, name="cancel_valid_montant_realisation" ),
+    path('realisation/unite/ca_transport/add_new_compte/<int:id>', views.add_new_compte_realisation, name="add_new_compte_realisation" ),
+    path('realisation/unite/ca_transport/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
+    path('realisation/unite/ca_transport/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
+    path('realisation/unite/ca_transport/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
+    #autre reccettes
+    path('realisation/unite/recettes/<int:id>', views.recettes_comptes_realisation, name="recettes_realisation"),
+    path('realisation/unite/recettes/add_montant_recettes/<int:id>', views.add_montant_realisation, name="add_montant_recettes_realisation"),
+   
+    path('realisation/unite/recettes/update_montant/<int:id>', views.update_montant_realisation, name="update_montant_realisation" ),
+    path('realisation/unite/recettes/valid_montant/<int:id>', views.valid_montant_realisation, name="valid_montant_realisation" ),
+    path('realisation/unite/recettes/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_realisation, name="valid_tous_realisation" ),
+    path('realisation/unite/recettes/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_realisation, name="cancel_valid_tous_realisation" ),    
+    path('realisation/unite/recettes/cancel_valid_montant/<int:id>', views.cancel_valid_montant_realisation, name="cancel_valid_montant_realisation" ),
+    path('realisation/unite/recettes/add_new_compte/<int:id>', views.add_new_compte_realisation, name="add_new_compte_realisation" ),
+    path('realisation/unite/recettes/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
+    path('realisation/unite/recettes/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
+    path('realisation/unite/recettes/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
+    #depense foncionement
+    path('realisation/unite/depense_fonc/<int:id>', views.depense_fonc_comptes_realisation, name="depense_fonc_realisation"),
+    path('realisation/unite/depense_fonc/add_montant_depense_fonc/<int:id>', views.add_montant_realisation, name="add_montant_depense_fonc_realisation"),
+   
+    path('realisation/unite/depense_fonc/update_montant/<int:id>', views.update_montant_realisation, name="update_montant_realisation" ),
+    path('realisation/unite/depense_fonc/valid_montant/<int:id>', views.valid_montant_realisation, name="valid_montant_realisation" ),
+    path('realisation/unite/depense_fonc/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_realisation, name="valid_tous_realisation" ),
+    path('realisation/unite/depense_fonc/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_realisation, name="cancel_valid_tous_realisation" ),    
+    path('realisation/unite/depense_fonc/cancel_valid_montant/<int:id>', views.cancel_valid_montant_realisation, name="cancel_valid_montant_realisation" ),
+    path('realisation/unite/depense_fonc/add_new_compte/<int:id>', views.add_new_compte_realisation, name="add_new_compte_realisation" ),
+    path('realisation/unite/depense_fonc/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
+    path('realisation/unite/depense_fonc/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
+    path('realisation/unite/depense_fonc/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
+    #depense exploitation
+    path('realisation/unite/depense_exp/<int:id>', views.depense_exp_comptes_realisation, name="depense_exp_realisation"),
+    path('realisation/unite/depense_exp/add_montant_depense_exp/<int:id>', views.add_montant_realisation, name="add_montant_depense_exp_realisation"),
+   
+    path('realisation/unite/depense_exp/update_montant/<int:id>', views.update_montant_realisation, name="update_montant_realisation" ),
+    path('realisation/unite/depense_exp/valid_montant/<int:id>', views.valid_montant_realisation, name="valid_montant_realisation" ),
+    path('realisation/unite/depense_exp/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_realisation, name="valid_tous_realisation" ),
+    path('realisation/unite/depense_exp/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_realisation, name="cancel_valid_tous_realisation" ),    
+    path('realisation/unite/depense_exp/cancel_valid_montant/<int:id>', views.cancel_valid_montant_realisation, name="cancel_valid_montant_realisation" ),
+    path('realisation/unite/depense_exp/add_new_compte/<int:id>', views.add_new_compte_realisation, name="add_new_compte_realisation" ),
+    path('realisation/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
+    path('realisation/unite/depense_exp/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
+    path('realisation/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
+    # consultation bdg 
+    path('realisation/annees', views.annees_bdg_prop_realisation, name="annees_realisation"),
+    
+    #--------------------------------------------------------------------------------------------------------------------------------
 
 
 ]
