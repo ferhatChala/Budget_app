@@ -197,10 +197,13 @@
                             <li><i class="fa fa-folder-open"></i><a href="#">Consultation</a></li>
                         </ul>
                     </li>
-
+                    
+                    {% block actu_active %}
                     <li>
-                        <a href="#"><i class="menu-icon fa fa-magic"></i>Actu & Réajustement </a>
+                    {% endblock %}
+                        <a href="{% url 'unites_actualis' %}"><i class="menu-icon fa fa-magic"></i>Actu & Réajustements </a>
                     </li>
+
                     <li>
                         <a href="#"><i class="menu-icon fa fa-tasks"></i>Controle Budgetaire </a>
                     </li>
