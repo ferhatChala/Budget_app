@@ -149,6 +149,12 @@ class UpdateMontantNotifForm(forms.ModelForm):
 		fields = ("janvier","fevrier","mars","avril","mai",
 				"juin","juillet","aout","septemre","octobre","novembre","decembre")
 
+class ActualisMontantNotifForm(forms.ModelForm):
+	class Meta:
+		model = Compte_has_Montant
+		fields = ("montant","type_maj","janvier","fevrier","mars","avril","mai",
+				"juin","juillet","aout","septemre","octobre","novembre","decembre")
+
 
 class InterimForm(forms.ModelForm):
 	class Meta:

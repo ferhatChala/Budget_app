@@ -8,20 +8,17 @@
 
 {% load crispy_forms_tags %}  
 
-
-{% if budget.lancement and budget.cloture == False %}
-
 	<div class="breadcrumbs">
 		<div class="breadcrumbs-inner">
 			<div class="row m-0">
-				<div class="col-sm-6">
+				<div class="col-sm-8">
 					<div class="page-header float-left">
 						<div class="page-title">
-							<h1>Actualisations & Réajustements (<strong> {{budget.annee}}</strong>)</h1>
+							<h1>Actualisations & Réajustements (<strong> Budget notifié</strong>)</h1>
 						</div>
 					</div>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					<div class="page-header float-right">
 						<div class="page-title">
 							<ol class="breadcrumb text-right">
@@ -37,148 +34,220 @@
 	<div class="row content">
 
 		<div class="col-md-12">
+			<div class="accordion" id="accordionExample">
+				<!-- Budget Notifié N+1 (Budget_1) -->
+				<div class="card">
+					<div class="card-header" id="hua" role="tab" data-toggle="collapse" data-target="#cua" aria-expanded="true" aria-controls="cua">
+						<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span>Budget notifié <b> {{budget_1.annee}}</b> </strong>
+					</div>
+					<div class="card-body collapse show" id="cua" aria-labelledby="hua" data-parent="#accordionExample">		
+						<input class="form-control" id="myInput" type="text" placeholder="Search..">
+						<table id="bootstrap-data-table" class="table table-striped">
+							<thead>
+								<tr>
+									<th>Unité</th>
+									<th>Status</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody id="myTable">
+								{% if user.user_type == 6 %}
+									{% for u in unites %}
+									<tr>
+										<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
+										<td>
+											{% for key, s in state_cadre_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+													{% elif s == "Non saisie" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											-
+										</td>
+										<td><a href="{{budget_1.id}}/unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+									</tr>
+									{% endfor %}
+								{% elif user.user_type == 5 %}
+									{% for u in dep_unites %}
+									<tr>
+										<td>{{u.lib}} ({{u.code_alpha}})</td>
+										<td>
+											{% for key, s in state_chef_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+													{% elif s == "Instance" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+													{% elif s == "Non saisie" %}
+														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											-
+										</td>
+										
+										<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+									</tr>
+									{% endfor %}
+								{% elif user.user_type == 4 %}
+									{% for u in all_unites %}
+									<tr>
+										<td>{{u.lib}} ({{u.code_alpha}})</td>
+										<td>
+											{% for key, s in state_sdir_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Instance" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+													{% elif s == "Non saisie" %}
+														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											-
+										</td>
+										
+										<td>
+											<a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+										</td>
+									</tr>
+									{% endfor %}
+								{% endif %}
+							</tbody>
+						</table>
+					</div>	
+				</div>
+				<!------------------------ -->
 
-			<div class="card">
-				<div class="card-header">
-					<strong class="card-title"> <span><i class="menu-icon fa fa-building-o" style="margin-right: 10px;"></i></span> Unités</strong>
+				<!-- Budget Notifié (Budget_2) -->
+				<div class="card">
+					<div class="card-header" id="hua2" role="tab" data-toggle="collapse" data-target="#cua2" aria-expanded="true" aria-controls="cua2">
+						<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span>Budget notifié <b> {{budget_2.annee}}</b> </strong>
+					</div>
+					<div class="card-body collapse" id="cua2" aria-labelledby="hua2" data-parent="#accordionExample">		
+						<input class="form-control" id="myInput" type="text" placeholder="Search..">
+						<table id="bootstrap-data-table" class="table table-striped">
+							<thead>
+								<tr>
+									<th>Unité</th>
+									<th>Status</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody id="myTable">
+								{% if user.user_type == 6 %}
+									{% for u in unites %}
+									<tr>
+										<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
+										<td>
+											{% for key, s in state_cadre_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+													{% elif s == "Non saisie" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											-
+										</td>
+										<td><a href="{{budget_2.id}}/unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+									</tr>
+									{% endfor %}
+								{% elif user.user_type == 5 %}
+									{% for u in dep_unites %}
+									<tr>
+										<td>{{u.lib}} ({{u.code_alpha}})</td>
+										<td>
+											{% for key, s in state_chef_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+													{% elif s == "Instance" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+													{% elif s == "Non saisie" %}
+														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											-
+										</td>
+										
+										<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+									</tr>
+									{% endfor %}
+								{% elif user.user_type == 4 %}
+									{% for u in all_unites %}
+									<tr>
+										<td>{{u.lib}} ({{u.code_alpha}})</td>
+										<td>
+											{% for key, s in state_sdir_dic.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Instance" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+													{% elif s == "Non saisie" %}
+														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
+											-
+										</td>
+										
+										<td>
+											<a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+										</td>
+									</tr>
+									{% endfor %}
+								{% endif %}
+							</tbody>
+						</table>
+					</div>	
 				</div>
-				<div class="card-body">		
-					<input class="form-control" id="myInput" type="text" placeholder="Search..">
-					<table id="bootstrap-data-table" class="table table-striped">
-						<thead>
-							<tr>
-								<th>Unité</th>
-								<th>Status</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody id="myTable">
-							{% if user.user_type == 6 %}
-								{% for u in unites %}
-								<tr>
-									<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
-									<td>
-										{% for key, s in state_cadre_dic.items  %}
-											{% if key == u.id %}
-												
-												{% if s == "Terminé" %}
-													<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-												{% elif s == "Validé" %}
-													<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-												{% elif s == "Non saisie" %}
-													<span  style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
-												{% elif s == "En cours" %}
-													<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-												{% endif %}
-													
-											{% endif %}
-										{% endfor %}
-										-
-									</td>
-									<td><a href="unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-								</tr>
-								{% endfor %}
-							{% elif user.user_type == 5 %}
-								{% for u in dep_unites %}
-								<tr>
-									<td>{{u.lib}} ({{u.code_alpha}})</td>
-									<td>
-										{% for key, s in state_chef_dic.items  %}
-											{% if key == u.id %}
-												
-												{% if s == "Terminé" %}
-													<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-												{% elif s == "Validé" %}
-													<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-												{% elif s == "Instance" %}
-													<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
-												{% elif s == "Non saisie" %}
-													<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
-												{% elif s == "En cours" %}
-													<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-												{% endif %}
-													
-											{% endif %}
-										{% endfor %}
-										-
-									</td>
-									
-									<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-								</tr>
-								{% endfor %}
-							{% elif user.user_type == 4 %}
-								{% for u in all_unites %}
-								<tr>
-									<td>{{u.lib}} ({{u.code_alpha}})</td>
-									<td>
-										{% for key, s in state_sdir_dic.items  %}
-											{% if key == u.id %}
-												
-												{% if s == "Terminé" %}
-													<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-												{% elif s == "Instance" %}
-													<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
-												{% elif s == "Non saisie" %}
-													<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
-												{% elif s == "En cours" %}
-													<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-												{% endif %}
-													
-											{% endif %}
-										{% endfor %}
-										-
-									</td>
-									
-									<td>
-										<a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
-									</td>
-								</tr>
-								{% endfor %}
-							{% endif %}
-						</tbody>
-					</table>
-				</div>
+				<!------------------------ -->
 			</div>
 		</div>
 
 	</div>
 
-{% else %}
-	<div class="alert alert-info alert-dismissible fade show" role="alert">
-		<strong>Note: </strong> Please contact the admin for any additional informations, <strong>admin@air-algerie.dz </strong>
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-	<div class="breadcrumbs">
-		<div class="breadcrumbs-inner">
-			<div class="row m-0">
-				<div class="col-sm-4">
-					<div class="page-header float-left">
-						<div class="page-title">
-							
-							{% if budget.cloture  %}
-								<h1>Réunion budget pour l'année {{budget.annee}} est <strong>Cloturé !</strong>.</h1>
-							{% else %}
-								<h1>Réunion budget pour l'année {{budget.annee}} pas encore lancé.</h1>
-							{% endif %}
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-8">
-					<div class="page-header float-right">
-						<div class="page-title">
-							<ol class="breadcrumb text-right">
-								<li><a class="btn btn-sm btn-outline-info" href="#"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les Réunion budgets</a></li>
-							</ol>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> 
-    
-{% endif %}
+
     
 
 

@@ -11,19 +11,19 @@
 <div class="breadcrumbs">
 	<div class="breadcrumbs-inner">
 		<div class="row m-0">
-			<div class="col-sm-4">
+			<div class="col-sm-6">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Budget notifié Mensuel<strong>{{budget.annee}}</strong> </h1>
+						<h1>Actualisations & Réajustements (<strong> {{budget.annee}}</strong>)</h1>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-8">
+			<div class="col-sm-6">
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites_notif' %}">Unités</a></li>
-                            <li><a href="/notif/mens/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
+							<li><a href="{% url 'unites_actualis' %}">Unités</a></li>
+                            <li><a href="/actualis/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
 							<li><a href="#">{{unite_compte.compte.chapitre.lib}}</a></li>
 						</ol>
 					</div>
@@ -70,13 +70,27 @@
 									{{montant.commentaire_montant.text}}
 								</div>	
 							{% endif %}
-
-								
 							<div class="alert border alert-light" role="alert">
-								Total Annuel:  <strong>{{montant.montant}}</strong> <br>
+								<strong> Edition: {{montant.edition}} </strong>
 							</div>
+								
+							
                             <form method="post">
                                 {% csrf_token %}
+								
+
+								<div class="alert border alert-light" role="alert">
+									<div class="form-row">
+										<div class="form-group col-md-4 mb-0">
+											<strong> Total Annuel</strong>
+											{{ form.montant|as_crispy_field }}
+										</div>
+										<div class="form-group col-md-8 mb-0">
+											<strong> Type de mise à jour</strong>
+											{{ form.type_maj|as_crispy_field }}
+										</div>
+									</div>
+								</div>
 
 								<!-- bdg mensulle.... -->								
 

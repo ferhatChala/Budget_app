@@ -6,7 +6,7 @@ from .forms import (NewUserForm, InterimForm, AnneeBdgForm, UpdateAnneeBdgForm,
 					AddUniteForm,AddDepForm,AddPos1Form,AddPos2Form,AddPos3Form,AddPos6Form,AddPos7Form,CompteScfForm,
 					AddMonnaieForm, AddTauxChngForm, AddChapitreForm, AddPaysForm, 
 					AffectCadreForm, AddCompteUniteForm, MontantCompteForm,UpdateMontantCompteForm,CommentaireForm,MontantOnlyForm,
-					UpdateMontantNotifForm,TypeDecoupeMontantForm
+					UpdateMontantNotifForm,TypeDecoupeMontantForm, ActualisMontantNotifForm
 					)
 from .models import (User, Interim,Commentaire,
                     Departement, Unite, Pays, Monnaie, Taux_de_change, Chapitre,
@@ -6412,17 +6412,19 @@ def annees_bdg_prop_realisation(request):
 def unites_actualis(request):
 	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget_1 = all_budgets[0]
+	budget_2 = all_budgets[1]
 
 	dep_unites = Unite.objects.filter(departement=request.user.departement)
 	all_unites = Unite.objects.all()
 
 
-	return render(request,"actualis/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget':budget })
+	return render(request,"actualis/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget_1':budget_1, 'budget_2':budget_2 })
 
-def unite_detail_actualis(request, id):
+def unite_detail_actualis(request, id_ann, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF", lancement=True, cloture=False).order_by('-annee')
-	budget = all_budgets[0]
+	#budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	unite = Unite.objects.get(id=id)
 	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite).count()
@@ -6558,10 +6560,10 @@ def unite_detail_actualis(request, id):
 															'depense_fonc_valid':depense_fonc_valid, 'depense_exp_valid':depense_exp_valid
 															})
 
-def offre_comptes_actualis(request, id):
+def offre_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	# chapitre (offre)
 	chapitre = Chapitre.objects.get(code_num=1)
@@ -6570,7 +6572,7 @@ def offre_comptes_actualis(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -6605,10 +6607,10 @@ def offre_comptes_actualis(request, id):
 	return render(request,"actualis/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
 														 'c_valid':c_valid, 'c_v_sdir':c_v_sdir, "c_s":c_s, "c_non_s":c_non_s, "c_v":c_non_s})
 
-def traffic_comptes_actualis(request, id):
+def traffic_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	chapitre = Chapitre.objects.get(code_num=2)
 
@@ -6652,10 +6654,10 @@ def traffic_comptes_actualis(request, id):
 	return render(request,"actualis/traffic_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
 														 'c_valid':c_valid, 'c_v_sdir':c_v_sdir, "c_s":c_s, "c_non_s":c_non_s, "c_v":c_non_s })
 
-def ca_emmission_comptes_actualis(request, id):
+def ca_emmission_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	chapitre = Chapitre.objects.get(code_num=3)
 
@@ -6698,10 +6700,10 @@ def ca_emmission_comptes_actualis(request, id):
 	return render(request,"actualis/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
 														 'c_valid':c_valid, 'c_v_sdir':c_v_sdir, "c_s":c_s, "c_non_s":c_non_s, "c_v":c_non_s })
 
-def ca_transport_comptes_actualis(request, id):
+def ca_transport_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	chapitre = Chapitre.objects.get(code_num=4)
 
@@ -6744,10 +6746,11 @@ def ca_transport_comptes_actualis(request, id):
 	return render(request,"actualis/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
 														 'c_valid':c_valid, 'c_v_sdir':c_v_sdir, "c_s":c_s, "c_non_s":c_non_s, "c_v":c_non_s })
 
-def recettes_comptes_actualis(request, id):
+def recettes_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
 	chapitre = Chapitre.objects.get(code_num=5)
 
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
@@ -6789,10 +6792,10 @@ def recettes_comptes_actualis(request, id):
 	return render(request,"actualis/recettes_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 'chapitre':chapitre,
 															'c_valid':c_valid, 'c_v_sdir':c_v_sdir, "c_s":c_s, "c_non_s":c_non_s, "c_v":c_non_s })
 
-def depense_fonc_comptes_actualis(request, id):
+def depense_fonc_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	chapitre = Chapitre.objects.get(code_num=6)
 
@@ -7043,10 +7046,10 @@ def depense_fonc_comptes_actualis(request, id):
 																'state_cadre_dic_par_autre':state_cadre_dic_par_autre, 'state_chef_dic_par_autre':state_chef_dic_par_autre,
 																'state_sdir_dic_par_unite':state_sdir_dic_par_unite, 'state_sdir_dic_par_autre':state_sdir_dic_par_autre })
 
-def depense_exp_comptes_actualis(request, id):
+def depense_exp_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	chapitre = Chapitre.objects.get(code_num=7)
 
@@ -7296,145 +7299,101 @@ def depense_exp_comptes_actualis(request, id):
 																	'state_sdir_dic_par_unite':state_sdir_dic_par_unite, 'state_sdir_dic_par_autre':state_sdir_dic_par_autre })
 
 # add montant to compte 
-def add_montant_actualis(request, id):
+def add_montant_actualis(request, id_ann, id):
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
+
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
-	form = TypeDecoupeMontantForm(request.POST or None, instance = montant)
-	if  form.is_valid():
-		form.save()
-		# ajouter le montant mensuelle selon la dévision 
-		new_montant = get_object_or_404(Compte_has_Montant, id = id)
-		m_annul = new_montant.montant
-		if new_montant.type_decoupage == "MS":
-			m = int(m_annul/12 ) 
-			rest = m_annul - (m*12)
-			new_montant.janvier = m + rest
-			new_montant.fevrier = m
-			new_montant.mars = m
-			new_montant.avril = m
-			new_montant.mai = m
-			new_montant.juin = m
-			new_montant.juillet = m
-			new_montant.aout = m
-			new_montant.septemre = m
-			new_montant.octobre = m
-			new_montant.novembre = m
-			new_montant.decembre = m
-		elif new_montant.type_decoupage == "BM": 
-			m = int(m_annul/6 ) 
-			rest = m_annul - (m*6)
-			new_montant.janvier = m + rest
-			new_montant.fevrier = 0
-			new_montant.mars = m
-			new_montant.avril = 0
-			new_montant.mai = m
-			new_montant.juin = 0
-			new_montant.juillet = m
-			new_montant.aout = 0
-			new_montant.septemre = m
-			new_montant.octobre = 0
-			new_montant.novembre = m
-			new_montant.decembre = 0			
-		elif new_montant.type_decoupage == "TR": 
-			m = int(m_annul/4 )
-			rest = m_annul - (m*4) 
-			new_montant.janvier = m + rest
-			new_montant.fevrier = 0
-			new_montant.mars = 0
-			new_montant.avril = m
-			new_montant.mai =0 
-			new_montant.juin = 0
-			new_montant.juillet = m
-			new_montant.aout = 0
-			new_montant.septemre = 0
-			new_montant.octobre = m
-			new_montant.novembre = 0
-			new_montant.decembre = 0			
-		elif new_montant.type_decoupage == "SM": 
-			m = int(m_annul/2 ) 
-			rest = m_annul - (m*2)
-			new_montant.janvier = m + rest
-			new_montant.fevrier = 0
-			new_montant.mars = 0
-			new_montant.avril = 0
-			new_montant.mai = 0
-			new_montant.juin = 0
-			new_montant.juillet = m
-			new_montant.aout = 0
-			new_montant.septemre = 0
-			new_montant.octobre = 0
-			new_montant.novembre = 0
-			new_montant.decembre = 0
-		elif new_montant.type_decoupage == "AU": 
-			new_montant.janvier = 0
-			new_montant.fevrier = 0
-			new_montant.mars = 0
-			new_montant.avril = 0
-			new_montant.mai = 0
-			new_montant.juin = 0
-			new_montant.juillet = 0
-			new_montant.aout = 0
-			new_montant.septemre = 0
-			new_montant.octobre = 0
-			new_montant.novembre = 0
-			new_montant.decembre = 0
+	new_edition = montant.edition + 1
 
-		if request.user.user_type==6:
-			new_montant.vld_mens_cadre = True
-			new_montant.validation_mens = "CADRE"
+	# create a new edition of same compte
+	actualised_montant = Compte_has_Montant(
+		code = montant.code + str(new_edition) ,
+		unite_compte = montant.unite_compte ,
+		type_bdg = montant.type_bdg ,
+		annee_budgetaire = montant.annee_budgetaire ,
+		janvier = montant.janvier ,
+		fevrier = montant.fevrier ,
+		mars = montant.mars ,
+		avril = montant.avril ,
+		mai = montant.mai ,
+		juin = montant.juin ,
+		juillet = montant.juillet ,
+		aout = montant.aout ,
+		septemre = montant.septemre ,
+		octobre = montant.octobre ,
+		novembre = montant.novembre ,
+		decembre = montant.decembre ,
+		type_decoupage = montant.type_decoupage,
+		edition= new_edition ,
+		type_maj = "A",
+		montant_cadre = montant.montant_cadre,
+		montant = montant.montant ,
+		montant_chef_dep = montant.montant_chef_dep ,
+		montant_sous_dir = montant.montant_sous_dir ,
+		vld_cadre = montant.vld_cadre ,
+		vld_chef_dep = montant.vld_chef_dep ,
+		vld_sous_dir = montant.vld_sous_dir , 
+		validation = montant.validation ,
+		mens_done = montant.mens_done ,
+	)
 
-		if request.user.user_type==5:
-			new_montant.vld_mens_chef_dep = True
-			new_montant.validation_mens = "CHEFD"
+	actualised_montant.save()
 
-		if request.user.user_type==4:
-			new_montant.vld_mens_sous_dir = True
-			new_montant.validation_mens = "SOUSD"				
-		
-		new_montant.mens_done = True
-		new_montant.save()
-		messages.success(request, "done successfuly." )
+	if request.user.user_type==6:
+		actualised_montant.vld_mens_cadre = True
+		actualised_montant.validation_mens = "CADRE"
+
+	if request.user.user_type==5:
+		actualised_montant.vld_mens_chef_dep = True
+		actualised_montant.validation_mens = "CHEFD"
+
+	if request.user.user_type==4:
+		actualised_montant.vld_mens_sous_dir = True
+		actualised_montant.validation_mens = "SOUSD"
+
+	actualised_montant.save()
+
 	# Redirecter vers chaque chapitre
-		if unite_compte.compte.chapitre.code_num== 1:
-			return redirect("/actualis/unite/offre/update_montant/"+ str(new_montant.id)+"")
-			# /notif/mens/unite/recettes/update_montant/1
-		elif unite_compte.compte.chapitre.code_num== 2:
-			return redirect("/actualis/unite/traffic/update_montant/"+ str(new_montant.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 3:
-			return redirect("/actualis/unite/ca_emmission/update_montant/"+ str(new_montant.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 4:
-			return redirect("/actualis/unite/ca_transport/update_montant/"+ str(new_montant.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 5:
-			return redirect("/actualis/unite/recettes/update_montant/"+ str(new_montant.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 6:
-			return redirect("/actualis/unite/depense_fonc/update_montant/"+ str(new_montant.id)+"")
-		elif unite_compte.compte.chapitre.code_num== 7:
-			return redirect("/actualis/unite/depense_exp/update_montant/"+ str(new_montant.id)+"")
-		else:
-			return redirect("/actualis/unites")
+	if unite_compte.compte.chapitre.code_num == 1:
+		return HttpResponseRedirect("/actualis/unite/offre/update_montant/"+ str(actualised_montant.id)+"")
+		# /notif/mens/unite/recettes/update_montant/1
+	elif unite_compte.compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/actualis/unite/traffic/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/actualis/unite/ca_emmission/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/actualis/unite/ca_transport/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/actualis/unite/recettes/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/actualis/unite/depense_fonc/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/actualis/unite/depense_exp/update_montant/"+ str(actualised_montant.id)+"")
+	else:
+		return HttpResponseRedirect("/actualis/unites")
 	
 	#messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="actualis/add_montant.html", context={"form":form, "unite_compte":unite_compte, "budget":budget })
+	#return render (request=request, template_name="actualis/add_montant.html", context={"unite_compte":unite_compte, "budget":budget })
 
-def update_montant_actualis(request, id): 
+def update_montant_actualis(request, id_ann, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]	
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	comment_form = CommentaireForm(request.POST or None)
 	update_comment_form = CommentaireForm(request.POST or None, instance = montant.commentaire_mens)
-	form = UpdateMontantNotifForm(request.POST or None, instance = montant)
+	form = ActualisMontantNotifForm(request.POST or None, instance = montant)
 	if form.is_valid():
 		mm = form.save(commit=False)
 		mens_accu = mm.janvier+mm.fevrier+mm.mars+mm.avril+mm.mai+mm.juin+mm.juillet+mm.aout+mm.septemre+mm.octobre+mm.novembre+mm.decembre
 		diff = mm.montant - mens_accu
 		if mm.montant == mens_accu:
 			mm.save()
-			messages.success(request, "Done successfuly." )
+			messages.success(request, "Mis à jour avec succés." )
 			new_montant = get_object_or_404(Compte_has_Montant, id = id)
 			if request.user.user_type==6:
 				new_montant.vld_mens_cadre = True
@@ -7461,6 +7420,7 @@ def update_montant_actualis(request, id):
 				new_montant.commentaire_mens = updated_comm
 
 			new_montant.save()
+
 			# Redirecter vers chaque chapitre
 			if unite_compte.compte.chapitre.code_num== 1:
 				return redirect("/actualis/unite/offre/"+ str(unite_compte.unite.id)+"")
@@ -7480,8 +7440,6 @@ def update_montant_actualis(request, id):
 				return redirect("/actualis/unites")
 		else:
 			messages.error(request, "Invalid: les montants mensuel ne correspondant pas au montant Annuel (différence : " + str(diff) + " )" )
-
-
 
 
 	return render (request=request, template_name="actualis/update_montant.html", context={"form":form, "comment_form":comment_form, "update_comment_form":update_comment_form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
@@ -7520,9 +7478,9 @@ def valid_montant_actualis(request, id):
 		return HttpResponseRedirect("/actualis/unites")
 
 #valider tous 
-def valid_tous_actualis(request, id_unite, ch_num):
+def valid_tous_actualis(request, id_ann, id_unite, ch_num):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	unite = Unite.objects.get(id=id_unite)
 	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, mens_done=True, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
@@ -7554,9 +7512,9 @@ def valid_tous_actualis(request, id_unite, ch_num):
 	else:
 		return HttpResponseRedirect("/actualis/unites")
 
-def cancel_valid_tous_actualis(request, id_unite, ch_num):
+def cancel_valid_tous_actualis(request, id_ann, id_unite, ch_num):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	unite = Unite.objects.get(id=id_unite)
 	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, mens_done=True, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
@@ -7658,9 +7616,9 @@ def add_new_compte_actualis(request, id):
 	return render (request=request, template_name="actualis/add_new_compte.html", context={"form":form})
 
 # comments
-def update_comment_actualis(request, id): 
+def update_comment_actualis(request, id_ann, id): 
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF", lancement=True, cloture=False).order_by('-annee')
-	budget = all_budgets[0]
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 	comment = get_object_or_404(Commentaire, id = id)
 	form = CommentaireForm(request.POST or None, instance = comment)
 	if form.is_valid():

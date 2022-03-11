@@ -255,7 +255,7 @@ class Compte_has_Montant(models.Model):
     ('R', 'Réajustement'),
     ('N', 'Initial'),
     ]
-    # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par  (unique)
+    # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par + edition  (unique)
     code = models.CharField(max_length=100, unique=True)
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
