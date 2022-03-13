@@ -150,6 +150,7 @@
 							<thead>
 								<tr>
 									<th>Unité</th>
+									<th>Edition</th>
 									<th>Status</th>
 									<th>Action</th>
 								</tr>
@@ -160,32 +161,14 @@
 									<tr>
 										<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
 										<td>
-											{% for key, s in state_cadre_dic.items  %}
+											{% for key, s in edition_budget_2.items  %}
 												{% if key == u.id %}
-													
-													{% if s == "Terminé" %}
-														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-													{% elif s == "Validé" %}
-														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-													{% elif s == "Non saisie" %}
-														<span  style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
-													{% elif s == "En cours" %}
-														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-													{% endif %}
-														
+													<span class="badge badge-info"> {{s}} </span>
 												{% endif %}
 											{% endfor %}
-											-
 										</td>
-										<td><a href="{{budget_2.id}}/unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
-									</tr>
-									{% endfor %}
-								{% elif user.user_type == 5 %}
-									{% for u in dep_unites %}
-									<tr>
-										<td>{{u.lib}} ({{u.code_alpha}})</td>
 										<td>
-											{% for key, s in state_chef_dic.items  %}
+											{% for key, s in state_cadre_budget_2.items  %}
 												{% if key == u.id %}
 													
 													{% if s == "Terminé" %}
@@ -193,19 +176,56 @@
 													{% elif s == "Validé" %}
 														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
 													{% elif s == "Instance" %}
-														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
-													{% elif s == "Non saisie" %}
-														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
 													{% elif s == "En cours" %}
 														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% elif s == "-" %}
+														<span> - </span>
 													{% endif %}
 														
 												{% endif %}
 											{% endfor %}
-											-
+										</td>
+										<td>
+											<a href="{{budget_2.id}}/unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+										</td>
+									</tr>
+								
+									{% endfor %}
+								{% elif user.user_type == 5 %}
+									{% for u in dep_unites %}
+									<tr>
+										<td>{{u.lib}} ({{u.code_alpha}})</td>
+										<td>
+											{% for key, s in edition_budget_2.items  %}
+												{% if key == u.id %}
+												<span class="badge badge-info"> {{s}} </span>
+												{% endif %}
+											{% endfor %}
+										</td>
+										<td>
+											{% for key, s in state_chef_budget_2.items  %}
+												{% if key == u.id %}
+													
+													{% if s == "Terminé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+													{% elif s == "Instance" %}
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+													{% elif s == "En cours" %}
+														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% elif s == "-" %}
+														<span> - </span>
+													{% endif %}
+														
+												{% endif %}
+											{% endfor %}
 										</td>
 										
-										<td><a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a></td>
+										<td>
+											<a href="{{budget_2.id}}/unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+										</td>
 									</tr>
 									{% endfor %}
 								{% elif user.user_type == 4 %}
@@ -213,26 +233,57 @@
 									<tr>
 										<td>{{u.lib}} ({{u.code_alpha}})</td>
 										<td>
-											{% for key, s in state_sdir_dic.items  %}
+											{% for key, s in edition_budget_2.items  %}
+												{% if key == u.id %}
+													<span class="badge badge-info"> {{s}} </span>
+												{% endif %}
+											{% endfor %}
+										</td>
+										<td>
+											{% for key, s in state_sdir_budget_2.items  %}
 												{% if key == u.id %}
 													
 													{% if s == "Terminé" %}
-														<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+														<a href="#" data-toggle="modal" data-target="#validtous" class="btn btn-outline-success"><span><i class="menu-icon fa fa-check"></i></span> Confirmer validation </a>
+													{% elif s == "Validé" %}
+														<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
 													{% elif s == "Instance" %}
-														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
-													{% elif s == "Non saisie" %}
-														<span><i class="menu-icon fa fa-times"></i> Non saisie</span>
+														<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
 													{% elif s == "En cours" %}
 														<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+													{% elif s == "-" %}
+														<span> - </span>
 													{% endif %}
 														
 												{% endif %}
 											{% endfor %}
-											-
+
+										<!-- Modal pour valider tous  -->
+										<div class="modal fade" id="validtous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h3 class="modal-title" id="exampleModalLabel">Confirmer la validation</h3>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+														</button>
+													</div>
+													<div class="modal-body">
+														<strong>Vous êtes sûre de Confirmer la valiation de cette Edition pour cette Unité ?</strong><br>
+														<br>
+													</div>
+													<div class="modal-footer">
+														<a href="{{budget_2.id}}/valid_edition/{{u.id}}" class="btn btn-success">Oui, Valider</a>
+														<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- End Modal -->
 										</td>
 										
 										<td>
-											<a href="unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+											<a href="{{budget_2.id}}/unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
 										</td>
 									</tr>
 									{% endfor %}

@@ -141,7 +141,7 @@
 								
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
-										{% if m.edition > 0 %}
+										{% if m.edition > m.edition_v %}
 											{% if m.vld_mens_chef_dep and m.vld_mens_sous_dir == False  %}
 												<tr class="table-danger">
 											{% elif m.vld_mens_chef_dep == False and m.vld_mens_sous_dir == False %}
@@ -287,11 +287,11 @@
 									<td>
 										{% for key, m in cm_dict.items  %}
 											{% if key == c.id %}
-												{% if  m != "null" and m.mens_done == True  %}
+												{% if  m.edition > m.edition_v  %}
 												
 													{% if m.vld_mens_sous_dir %}
-													<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-pencil"></i></span> Mise à jour</a>
-													<!-- Button trigger modal -->
+														<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+														<!-- Button trigger modal -->
 														<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}">
 															<span><i class="menu-icon fa fa-times-circle"></i></span>
 														</button>
@@ -324,7 +324,7 @@
 													{% endif %}
 
 												{% else %}
-													<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+													<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Mise à jour</a>
 												{% endif %}	
 
 												{% if user == c.added_by and m.vld_sous_dir == False %}
@@ -456,7 +456,7 @@
 
 									<th>Total Annuel <span style="margin:30px"></span></th>
 
-									<th>Action <span style="margin:50px"></span></th>
+									<th>Action <span style="margin:55px"></span></th>
 								</tr>
 							</thead>
 							<tbody id="myTable" >
@@ -464,9 +464,9 @@
 								
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
-										{% if m.edition > 0 %}
+										{% if m.edition > m.edition_v %}
 											{% if m.vld_mens_chef_dep == False and m.vld_mens_sous_dir == False  %}
-												<tr class="table-danger">
+												<tr class="table-secondary">
 											{% elif m.vld_mens_chef_dep == True and m.vld_mens_sous_dir == False %}
 												<tr class="table-warning">
 											{% elif  m.vld_mens_sous_dir == True %}
@@ -610,10 +610,10 @@
 									<td>
 										{% for key, m in cm_dict.items  %}
 											{% if key == c.id %}
-												{% if  m != "null" and m.mens_done == True  %}
+												{% if  m.edition > m.edition_v  %}
 
 													{% if m.vld_mens_sous_dir %}
-														<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-pencil"></i></span> Mise à jour</a>
+														<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 													{% else %}
 														{% if m.vld_mens_chef_dep %}
 															<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
@@ -651,36 +651,7 @@
 													{% endif %}
 
 												{% else %}
-													<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
-												{% endif %}
-
-												{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}
-													<a href="#" data-toggle="modal" data-target="#delec{{c.id}}"><span class="float-right" style="color: red; "><i class="menu-icon fa fa-trash"></i></span></a>
-													<!-- Modal -->
-													<div class="modal fade" id="delec{{c.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-														<div class="modal-dialog">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
-																	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																		<span aria-hidden="true">&times;</span>
-																	</button>
-																</div>
-																<div class="modal-body">
-																	Vous êtes sûre de supprimer ce compte ?<br>
-																	Numéro : <strong> {{c.compte.numero}} </strong> <br>
-																	Rubrique budgétaire :<strong> {{c.compte.rubrique}} </strong> <br>
-																	Réseau : <strong> {{c.reseau_compte}}</strong>
-																	<br>
-																</div>
-																<div class="modal-footer">
-																	<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-																	<a href="delete_added_compte/{{c.id}}" class="btn btn-danger">Supprimer</a>
-																</div>
-															</div>
-														</div>
-													</div>
-													<!-- End Modal -->
+													<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Mise à jour</a>
 												{% endif %}
 
 											{% endif %}
@@ -735,7 +706,7 @@
 								
 								{% for key, m in cm_dict.items  %}
 									{% if key == c.id %}
-										{% if m.edition > 0 %}
+										{% if m.edition > m.edition_v %}
 											{% if m.vld_mens_chef_dep or m.vld_mens_sous_dir %}
 												<tr class="table-success">
 											{% else %}
@@ -879,14 +850,14 @@
 									<td>
 										{% for key, m in cm_dict.items  %}
 											{% if key == c.id %}
-												{% if m != "null" and m.mens_done == True %}
+												{% if m.edition > m.edition_v %}
 														{% if m.vld_mens_chef_dep or m.vld_mens_sous_dir %}
-															<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-pencil"></i></span> Mise à jour</a>
+															<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 														{% else %}
 															<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 														{% endif %}
 												{% else %}
-													<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
+													<a href="add_montant/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-pencil"></i></span> Mise à jour</a>
 												{% endif %}	
 
 												{% if user == c.added_by and m.vld_sous_dir == False and m.vld_chef_dep == False %}

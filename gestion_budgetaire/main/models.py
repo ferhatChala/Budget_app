@@ -278,6 +278,9 @@ class Compte_has_Montant(models.Model):
     
     # Actualisation et réajustement
     edition = models.PositiveIntegerField(default=0)
+    edition_v = models.PositiveIntegerField(default=0)
+    edition_budget = models.PositiveIntegerField(default=0)
+
     type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES, default="N") 
     created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True,)
 

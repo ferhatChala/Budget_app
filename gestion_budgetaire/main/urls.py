@@ -589,6 +589,7 @@ urlpatterns = [
 # Actualisation et réajustement ----------------------------------------------------------------------------------------------------------
     path('actualis/unites', views.unites_actualis, name="unites_actualis"),
     path('actualis/<int:id_ann>/unite/<int:id>', views.unite_detail_actualis, name="unite_actualis"),
+    path('actualis/<int:id_ann>/valid_edition/<int:id>', views.valid_edition_actualis, name="valid_edition_actualis"),
     #path('actualis/<int:id_ann>/unite/<int:id>', views.unite_detail_actualis, name="unite_actualis"),
     #Offre
     path('actualis/<int:id_ann>/unite/offre/<int:id>', views.offre_comptes_actualis, name="offre_actualis"),

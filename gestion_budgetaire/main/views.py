@@ -4230,7 +4230,7 @@ def delete_comment_notif(request, id):
 # initialise edition to 0 &  maj_type none
 
 def unite_detail_notif_m(request, id):
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF", lancement=True, cloture=False).order_by('-annee')
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
 	budget = all_budgets[0]
 
 	unite = Unite.objects.get(id=id)
@@ -4336,11 +4336,11 @@ def unite_detail_notif_m(request, id):
 
 	# valid tout chef or sdir
 	def is_valid(num):
-		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_maj="N", annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
-		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_maj="N", annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
+		compte_done = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_maj="N", mens_done=True, annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num)
+		compte_done_nbr = Compte_has_Montant.objects.filter(unite_compte__unite=unite, type_maj="N", mens_done=True,  annee_budgetaire = budget, unite_compte__compte__chapitre__code_num=num).count()
 		i = 0
 		for cd in compte_done:
-			if cd.vld_chef_dep or cd.vld_sous_dir : 
+			if cd.vld_mens_chef_dep or cd.vld_mens_sous_dir : 
 				i = i+1
 
 		if i == 0:
@@ -5234,7 +5234,7 @@ def add_montant_notif_m(request, id):
 			return redirect("/notif/unites")
 	
 	#messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="notif/mens/add_montant.html", context={"form":form, "unite_compte":unite_compte, "budget":budget })
+	return render (request=request, template_name="notif/mens/add_montant.html", context={"form":form, "unite_compte":unite_compte, "budget":budget, 'montant':montant })
 
 def update_montant_notif_m(request, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)
@@ -6418,8 +6418,82 @@ def unites_actualis(request):
 	dep_unites = Unite.objects.filter(departement=request.user.departement)
 	all_unites = Unite.objects.all()
 
+	edition_budget_1 = {}
 
-	return render(request,"actualis/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget_1':budget_1, 'budget_2':budget_2 })
+	edition_budget_2 = {}
+	state_sdir_budget_2 = {}
+	state_cadre_budget_2 = {}
+	state_chef_budget_2 = {}
+
+	for u in all_unites:
+		# budget 2 (N) 2022
+		
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=u).count()
+		montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True).order_by('-edition_budget')
+		montants_nbr = len(montants)
+		montants_valid_sdir = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True, vld_mens_chef_dep=True).count()
+		montants_valid_chef = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True, vld_mens_sous_dir=True).count()
+		
+		# edition
+		if len(montants) > 0:
+			m = montants[0]
+			edition_budget_2[u.id] = m.edition_budget
+		else:
+			edition_budget_2[u.id] = 0
+		
+		# valid tous ---------------------------------
+		i = 0
+		for m in montants:
+			if m.vld_mens_chef_dep or m.vld_mens_sous_dir : 
+				i = i+1
+		if i == 0:
+			montants_valid =  False
+		else: 
+			montants_valid =  montants_nbr == i	
+		# ----------------------------------------------
+
+		#sdir state
+		if montants_nbr == montants_valid_sdir and montants_nbr != comptes_nbr: 
+			state_sdir="Terminé"
+		elif montants_nbr == montants_valid and montants_nbr != montants_valid_sdir:
+			state_sdir="Instance"
+		elif montants_nbr == comptes_nbr: 
+			state_sdir="-"
+		else:
+			state_sdir="En cours"
+		state_sdir_budget_2[u.id] = state_sdir
+		
+		#cadre state
+		if montants_nbr == montants_valid_sdir or montants_nbr == montants_valid_chef : 
+			state_cadre="Validé"
+		elif montants_nbr == comptes_nbr: 
+			state_cadre="-"
+		else : 
+			state_cadre="En cours"
+		state_cadre_budget_2[u.id] = state_cadre
+		
+		#chef state
+		if montants_nbr == montants_valid_sdir: 
+			state_chef="Validé"
+		elif montants_nbr == montants_valid_chef  and  montants_nbr != montants_valid_sdir:
+			state_chef="Terminé"
+		elif montants_nbr != montants_valid_chef:
+			state_chef="Instance"
+		elif montants_nbr == comptes_nbr: 
+			state_chef = "-"
+		state_chef_budget_2[u.id] = state_chef
+
+
+		# budget 2 (N) 2022
+		
+		# status soudir 1 et 2
+		# status chef 1 et 2
+		# status cadre 1 et 2
+
+
+	return render(request,"actualis/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget_1':budget_1, 'budget_2':budget_2,
+													'edition_budget_2':edition_budget_2,
+													'state_cadre_budget_2':state_cadre_budget_2, 'state_chef_budget_2':state_chef_budget_2, 'state_sdir_budget_2':state_sdir_budget_2  })
 
 def unite_detail_actualis(request, id_ann, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF", lancement=True, cloture=False).order_by('-annee')
@@ -6559,6 +6633,21 @@ def unite_detail_actualis(request, id_ann, id):
 															'offre_valid':offre_valid, 'traffic_valid':traffic_valid, 'ca_emmission_valid':ca_emmission_valid, 'ca_transport_valid':ca_transport_valid, 'recettes_valid':recettes_valid,
 															'depense_fonc_valid':depense_fonc_valid, 'depense_exp_valid':depense_exp_valid
 															})
+
+#valid_edition_actualis
+def valid_edition_actualis(request, id_ann, id):
+	unite = get_object_or_404(Unite, id = id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+	montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite)
+	for m in montants:
+		m.edition_budget = m.edition_budget + 1
+		if m.edition != m.edition_v:
+			m.edition_v = m.edition
+
+		m.save()
+
+
+	return HttpResponseRedirect("/actualis/unites")
 
 def offre_comptes_actualis(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7303,7 +7392,6 @@ def add_montant_actualis(request, id_ann, id):
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
 
-	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	new_edition = montant.edition + 1
@@ -7327,7 +7415,9 @@ def add_montant_actualis(request, id_ann, id):
 		novembre = montant.novembre ,
 		decembre = montant.decembre ,
 		type_decoupage = montant.type_decoupage,
-		edition= new_edition ,
+		edition = new_edition ,
+		edition_v = montant.edition_v ,
+		edition_budget = montant.edition_budget  ,
 		type_maj = "A",
 		montant_cadre = montant.montant_cadre,
 		montant = montant.montant ,
@@ -7358,20 +7448,20 @@ def add_montant_actualis(request, id_ann, id):
 
 	# Redirecter vers chaque chapitre
 	if unite_compte.compte.chapitre.code_num == 1:
-		return HttpResponseRedirect("/actualis/unite/offre/update_montant/"+ str(actualised_montant.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/offre/update_montant/"+ str(actualised_montant.id)+"")
 		# /notif/mens/unite/recettes/update_montant/1
 	elif unite_compte.compte.chapitre.code_num== 2:
-		return HttpResponseRedirect("/actualis/unite/traffic/update_montant/"+ str(actualised_montant.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/traffic/update_montant/"+ str(actualised_montant.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 3:
-		return HttpResponseRedirect("/actualis/unite/ca_emmission/update_montant/"+ str(actualised_montant.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_emmission/update_montant/"+ str(actualised_montant.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 4:
-		return HttpResponseRedirect("/actualis/unite/ca_transport/update_montant/"+ str(actualised_montant.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_transport/update_montant/"+ str(actualised_montant.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 5:
-		return HttpResponseRedirect("/actualis/unite/recettes/update_montant/"+ str(actualised_montant.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/recettes/update_montant/"+ str(actualised_montant.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 6:
-		return HttpResponseRedirect("/actualis/unite/depense_fonc/update_montant/"+ str(actualised_montant.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_fonc/update_montant/"+ str(actualised_montant.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 7:
-		return HttpResponseRedirect("/actualis/unite/depense_exp/update_montant/"+ str(actualised_montant.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/update_montant/"+ str(actualised_montant.id)+"")
 	else:
 		return HttpResponseRedirect("/actualis/unites")
 	
@@ -7423,19 +7513,19 @@ def update_montant_actualis(request, id_ann, id):
 
 			# Redirecter vers chaque chapitre
 			if unite_compte.compte.chapitre.code_num== 1:
-				return redirect("/actualis/unite/offre/"+ str(unite_compte.unite.id)+"")
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 2:
-				return redirect("/actualis/unite/traffic/"+ str(unite_compte.unite.id)+"")
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 3:
-				return redirect("/actualis/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 4:
-				return redirect("/actualis/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 5:
-				return redirect("/actualis/unite/recettes/"+ str(unite_compte.unite.id)+"")
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 6:
-				return redirect("/actualis/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
 			elif unite_compte.compte.chapitre.code_num== 7:
-				return redirect("/actualis/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 			else:
 				return redirect("/actualis/unites")
 		else:
@@ -7444,7 +7534,7 @@ def update_montant_actualis(request, id_ann, id):
 
 	return render (request=request, template_name="actualis/update_montant.html", context={"form":form, "comment_form":comment_form, "update_comment_form":update_comment_form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
 
-def valid_montant_actualis(request, id):
+def valid_montant_actualis(request, id_ann, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = new_montant.unite_compte
 	if request.user.user_type==6:
@@ -7461,19 +7551,19 @@ def valid_montant_actualis(request, id):
 
 	# Redirecter vers chaque chapitre
 	if unite_compte.compte.chapitre.code_num== 1:
-		return HttpResponseRedirect("/actualis/unite/offre/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 2:
-		return HttpResponseRedirect("/actualis/unite/traffic/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 3:
-		return HttpResponseRedirect("/actualis/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 4:
-		return HttpResponseRedirect("/actualis/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 5:
-		return HttpResponseRedirect("/actualis/unite/recettes/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 6:
-		return HttpResponseRedirect("/actualis/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 7:
-		return HttpResponseRedirect("/actualis/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 	else:
 		return HttpResponseRedirect("/actualis/unites")
 
@@ -7496,19 +7586,19 @@ def valid_tous_actualis(request, id_ann, id_unite, ch_num):
 
 	# Redirecter vers chaque chapitre
 	if ch_num == 1:
-		return HttpResponseRedirect("/actualis/unite/offre/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/offre/"+ str(id_unite)+"")
 	elif ch_num == 2:
-		return HttpResponseRedirect("/actualis/unite/traffic/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/traffic/"+ str(id_unite)+"")
 	elif ch_num == 3:
-		return HttpResponseRedirect("/actualis/unite/ca_emmission/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(id_unite)+"")
 	elif ch_num == 4:
-		return HttpResponseRedirect("/actualis/unite/ca_transport/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_transport/"+ str(id_unite)+"")
 	elif ch_num == 5:
-		return HttpResponseRedirect("/actualis/unite/recettes/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/recettes/"+ str(id_unite)+"")
 	elif ch_num == 6:
-		return HttpResponseRedirect("/actualis/unite/depense_fonc/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(id_unite)+"")
 	elif ch_num == 7:
-		return HttpResponseRedirect("/actualis/unite/depense_exp/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(id_unite)+"")
 	else:
 		return HttpResponseRedirect("/actualis/unites")
 
@@ -7528,23 +7618,23 @@ def cancel_valid_tous_actualis(request, id_ann, id_unite, ch_num):
 
 	# Redirecter vers chaque chapitre
 	if ch_num == 1:
-		return HttpResponseRedirect("/actualis/unite/offre/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/offre/"+ str(id_unite)+"")
 	elif ch_num == 2:
-		return HttpResponseRedirect("/actualis/unite/traffic/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/traffic/"+ str(id_unite)+"")
 	elif ch_num == 3:
-		return HttpResponseRedirect("/actualis/unite/ca_emmission/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(id_unite)+"")
 	elif ch_num == 4:
-		return HttpResponseRedirect("/actualis/unite/ca_transport/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_transport/"+ str(id_unite)+"")
 	elif ch_num == 5:
-		return HttpResponseRedirect("/actualis/unite/recettes/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/recettes/"+ str(id_unite)+"")
 	elif ch_num == 6:
-		return HttpResponseRedirect("/actualis/unite/depense_fonc/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(id_unite)+"")
 	elif ch_num == 7:
-		return HttpResponseRedirect("/actualis/unite/depense_exp/"+ str(id_unite)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(id_unite)+"")
 	else:
 		return HttpResponseRedirect("/actualis/unites")	
 
-def cancel_valid_montant_actualis(request, id):
+def cancel_valid_montant_actualis(request,id_ann, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = new_montant.unite_compte
 	if request.user.user_type==6:
@@ -7560,19 +7650,19 @@ def cancel_valid_montant_actualis(request, id):
 		new_montant.save()
 	# Redirecter vers chaque chapitre
 	if unite_compte.compte.chapitre.code_num== 1:
-		return HttpResponseRedirect("/actualis/unite/offre/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 2:
-		return HttpResponseRedirect("/actualis/unite/traffic/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 3:
-		return HttpResponseRedirect("/actualis/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 4:
-		return HttpResponseRedirect("/actualis/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 5:
-		return HttpResponseRedirect("/actualis/unite/recettes/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 6:
-		return HttpResponseRedirect("/actualis/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
 	elif unite_compte.compte.chapitre.code_num== 7:
-		return HttpResponseRedirect("/actualis/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+		return HttpResponseRedirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 	else:
 		return HttpResponseRedirect("/actualis/unites")
 
