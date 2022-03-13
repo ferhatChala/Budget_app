@@ -2986,6 +2986,7 @@ def unites_notif(request):
 	bdg_ann_valid_sdir = all_comptes_nbr == all_valid_sdir_nbr
 	bdg_ann_valid = all_valid
 	# status cadre 
+	state_ann_cadre=""
 	if bdg_ann_done and bdg_ann_valid == False :
 		state_ann_cadre = "Terminé"
 	elif bdg_ann_valid and bdg_ann_done :
@@ -2996,6 +2997,7 @@ def unites_notif(request):
 		state_ann_cadre = "En cours"
 
 	# status chef 
+	state_ann_chef=""
 	if bdg_ann_done and bdg_ann_valid_chef and bdg_ann_valid_sdir == False :
 		state_ann_chef = "Terminé"
 	elif bdg_ann_valid_sdir :
@@ -3008,8 +3010,9 @@ def unites_notif(request):
 		state_ann_chef = "En cours"
 	
 	# status sdir 
+	state_ann_sdir=""
 	if bdg_ann_done and bdg_ann_valid_sdir :
-		state_ann_chef = "Terminé"
+		state_ann_sdir = "Terminé"
 	elif bdg_ann_done and bdg_ann_valid:
 		state_ann_sdir = "Instance"
 	elif bdg_ann_non_s :
@@ -6412,13 +6415,18 @@ def annees_bdg_prop_realisation(request):
 def unites_actualis(request):
 	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
+	
 	budget_1 = all_budgets[0]
 	budget_2 = all_budgets[1]
+
 
 	dep_unites = Unite.objects.filter(departement=request.user.departement)
 	all_unites = Unite.objects.all()
 
 	edition_budget_1 = {}
+	state_sdir_budget_1 = {}
+	state_cadre_budget_1 = {}
+	state_chef_budget_1 = {}
 
 	edition_budget_2 = {}
 	state_sdir_budget_2 = {}
@@ -6426,74 +6434,141 @@ def unites_actualis(request):
 	state_chef_budget_2 = {}
 
 	for u in all_unites:
-		# budget 2 (N) 2022
-		
 		comptes_nbr = Unite_has_Compte.objects.filter(unite=u).count()
-		montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True).order_by('-edition_budget')
-		montants_nbr = len(montants)
-		montants_valid_sdir = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True, vld_mens_chef_dep=True).count()
-		montants_valid_chef = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True, vld_mens_sous_dir=True).count()
-		
-		# edition
-		if len(montants) > 0:
-			m = montants[0]
+		# budget 2 (N) 2022 -----------------------------------------------------------------------	
+		montants_2 = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True).order_by('-edition_budget')
+		montants_nbr_2 = len(montants_2)
+		#edited_montants -----------------
+		edited_montants_2 = []
+		for em in montants_2:
+			if em.edition != em.edition_v:
+				edited_montants_2.append(em)
+		#----------------------------------
+		edited_montants_nbr_2 = len(edited_montants_2)
+		montants_valid_sdir_2 = 0
+		montants_valid_chef_2 = 0
+		montants_valid_2 = 0
+		for em in edited_montants_2:
+			if em.vld_mens_sous_dir :
+				montants_valid_sdir_2 = montants_valid_sdir_2 + 1
+			if em.vld_mens_chef_dep :
+				montants_valid_chef_2 = montants_valid_chef_2 + 1 
+			if em.vld_mens_sous_dir or em.vld_mens_chef_dep :
+				montants_valid_2 = montants_valid_2 + 1
+
+		# edition 2 ---------------------------------
+		if len(montants_2) > 0:
+			m = montants_2[0]
 			edition_budget_2[u.id] = m.edition_budget
 		else:
 			edition_budget_2[u.id] = 0
-		
-		# valid tous ---------------------------------
-		i = 0
-		for m in montants:
-			if m.vld_mens_chef_dep or m.vld_mens_sous_dir : 
-				i = i+1
-		if i == 0:
-			montants_valid =  False
-		else: 
-			montants_valid =  montants_nbr == i	
-		# ----------------------------------------------
+		# ------------------------------------------
 
 		#sdir state
-		if montants_nbr == montants_valid_sdir and montants_nbr != comptes_nbr: 
-			state_sdir="Terminé"
-		elif montants_nbr == montants_valid and montants_nbr != montants_valid_sdir:
-			state_sdir="Instance"
-		elif montants_nbr == comptes_nbr: 
+		if montants_nbr_2 == comptes_nbr: 
 			state_sdir="-"
+		elif edited_montants_nbr_2 == montants_valid_chef_2 and edited_montants_nbr_2 != montants_valid_sdir_2  :
+			state_sdir="Instance"
+		elif edited_montants_nbr_2 == montants_valid_sdir_2 and edited_montants_nbr_2 > 0 : 
+			state_sdir="Terminé"
+		elif edited_montants_nbr_2 == 0 and montants_nbr_2 != comptes_nbr: 
+			state_sdir="Validé"
 		else:
 			state_sdir="En cours"
 		state_sdir_budget_2[u.id] = state_sdir
 		
 		#cadre state
-		if montants_nbr == montants_valid_sdir or montants_nbr == montants_valid_chef : 
-			state_cadre="Validé"
-		elif montants_nbr == comptes_nbr: 
+		if montants_nbr_2 == comptes_nbr : 
 			state_cadre="-"
+		elif edited_montants_nbr_2 == montants_valid_2: 
+			state_cadre="Validé"
 		else : 
 			state_cadre="En cours"
 		state_cadre_budget_2[u.id] = state_cadre
 		
 		#chef state
-		if montants_nbr == montants_valid_sdir: 
-			state_chef="Validé"
-		elif montants_nbr == montants_valid_chef  and  montants_nbr != montants_valid_sdir:
-			state_chef="Terminé"
-		elif montants_nbr != montants_valid_chef:
-			state_chef="Instance"
-		elif montants_nbr == comptes_nbr: 
+		if montants_nbr_2 == comptes_nbr : 
 			state_chef = "-"
+		elif edited_montants_nbr_2 != montants_valid_2 and  edited_montants_nbr_2 != montants_valid_sdir_2:
+			state_chef="Instance"
+		elif edited_montants_nbr_2 == montants_valid_sdir_2:
+			state_chef="Validé"
+		elif edited_montants_nbr_2 == montants_valid_2 and edited_montants_nbr_2 != montants_valid_sdir_2:		
+			state_chef="Terminé"
+
 		state_chef_budget_2[u.id] = state_chef
-
-
-		# budget 2 (N) 2022
+		# ---------------------------------------------------------------------------------------------------------
 		
-		# status soudir 1 et 2
-		# status chef 1 et 2
-		# status cadre 1 et 2
+		# # budget 1 (N) 2023 -------------------------------------------------------------------------------------
+		montants_1 = Compte_has_Montant.objects.filter(annee_budgetaire=budget_1, unite_compte__unite=u, mens_done=True).order_by('-edition_budget')
+		montants_nbr_1 = len(montants_1)
+		#edited_montants -----------------
+		edited_montants_1 = []
+		for em in montants_1:
+			if em.edition != em.edition_v:
+				edited_montants_1.append(em)
+		#----------------------------------
+		edited_montants_nbr_1 = len(edited_montants_1)
+		montants_valid_sdir_1 = 0
+		montants_valid_chef_1 = 0
+		montants_valid_1 = 0
+		for em in edited_montants_1:
+			if em.vld_mens_sous_dir :
+				montants_valid_sdir_1 = montants_valid_sdir_1 + 1
+			if em.vld_mens_chef_dep :
+				montants_valid_chef_1 = montants_valid_chef_1 + 1 
+			if em.vld_mens_sous_dir or em.vld_mens_chef_dep :
+				montants_valid_1 = montants_valid_1 + 1
+
+		# edition 1 ---------------------------------
+		if len(montants_1) > 0:
+			m1 = montants_1[0]
+			edition_budget_1[u.id] = m1.edition_budget
+		else:
+			edition_budget_1[u.id] = 0
+		# ------------------------------------------
+
+		#sdir state 1
+		if montants_nbr_1 == comptes_nbr: 
+			state_sdir_1="-"
+		elif edited_montants_nbr_1 == montants_valid_chef_1 and edited_montants_nbr_1 != montants_valid_sdir_1  :
+			state_sdir_1="Instance"
+		elif edited_montants_nbr_1 == montants_valid_sdir_1 and edited_montants_nbr_1 > 0 : 
+			state_sdir_1="Terminé"
+		elif edited_montants_nbr_1 == 0 and montants_nbr_1 != comptes_nbr: 
+			state_sdir_1="Validé"
+		else:
+			state_sdir_1="En cours"
+		state_sdir_budget_1[u.id] = state_sdir_1
+		
+		#cadre state
+		if montants_nbr_1 == comptes_nbr : 
+			state_cadre_1="-"
+		elif edited_montants_nbr_1 == montants_valid_1: 
+			state_cadre_1="Validé"
+		else : 
+			state_cadre_1="En cours"
+		state_cadre_budget_1[u.id] = state_cadre_1
+		
+		#chef state
+		if montants_nbr_1 == comptes_nbr : 
+			state_chef_1 = "-"
+		elif edited_montants_nbr_1 != montants_valid_1 and  edited_montants_nbr_1 != montants_valid_sdir_1:
+			state_chef_1="Instance"
+		elif edited_montants_nbr_1 == montants_valid_sdir_1:
+			state_chef_1="Validé"
+		elif edited_montants_nbr_1 == montants_valid_1 and edited_montants_nbr_1 != montants_valid_sdir_1:		
+			state_chef_1="Terminé"
+
+		state_chef_budget_1[u.id] = state_chef_1
+		# --------------------------------------------------------------------------------------------------------------
+		
 
 
 	return render(request,"actualis/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget_1':budget_1, 'budget_2':budget_2,
-													'edition_budget_2':edition_budget_2,
-													'state_cadre_budget_2':state_cadre_budget_2, 'state_chef_budget_2':state_chef_budget_2, 'state_sdir_budget_2':state_sdir_budget_2  })
+													'edition_budget_2':edition_budget_2, 'edition_budget_1':edition_budget_1,
+													'state_cadre_budget_2':state_cadre_budget_2, 'state_chef_budget_2':state_chef_budget_2, 'state_sdir_budget_2':state_sdir_budget_2,
+													'state_cadre_budget_1':state_cadre_budget_1, 'state_chef_budget_1':state_chef_budget_1, 'state_sdir_budget_1':state_sdir_budget_1 })
 
 def unite_detail_actualis(request, id_ann, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF", lancement=True, cloture=False).order_by('-annee')
@@ -7423,11 +7498,11 @@ def add_montant_actualis(request, id_ann, id):
 		montant = montant.montant ,
 		montant_chef_dep = montant.montant_chef_dep ,
 		montant_sous_dir = montant.montant_sous_dir ,
-		vld_cadre = montant.vld_cadre ,
-		vld_chef_dep = montant.vld_chef_dep ,
-		vld_sous_dir = montant.vld_sous_dir , 
+		vld_cadre = True ,
+		vld_chef_dep = True ,
+		vld_sous_dir = True , 
 		validation = montant.validation ,
-		mens_done = montant.mens_done ,
+		mens_done = True ,
 	)
 
 	actualised_montant.save()
