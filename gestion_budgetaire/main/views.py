@@ -7208,45 +7208,6 @@ def cancel_valid_montant_actualis(request,id_ann, id):
 	else:
 		return HttpResponseRedirect("/actualis/unites")
 
-def delete_added_compte_actualis(request,id):
-	form = Unite_has_Compte.objects.get(id=id)
-	unite = form.unite
-	compte = form.compte
-	form.delete()
-	# Redirecter vers chaque chapitre
-	if compte.chapitre.code_num== 1:
-		return HttpResponseRedirect("/actualis/unite/offre/"+ str(unite.id)+"")
-	elif compte.chapitre.code_num== 2:
-		return HttpResponseRedirect("/actualis/unite/traffic/"+ str(unite.id)+"")
-	elif compte.chapitre.code_num== 3:
-		return HttpResponseRedirect("/actualis/unite/ca_emmission/"+ str(unite.id)+"")
-	elif compte.chapitre.code_num== 4:
-		return HttpResponseRedirect("/actualis/unite/ca_transport/"+ str(unite.id)+"")
-	elif compte.chapitre.code_num== 5:
-		return HttpResponseRedirect("/actualis/unite/recettes/"+ str(unite.id)+"")
-	elif compte.chapitre.code_num== 6:
-		return HttpResponseRedirect("/actualis/unite/depense_fonc/"+ str(unite.id)+"")
-	elif compte.chapitre.code_num== 7:
-		return HttpResponseRedirect("/actualis/unite/depense_exp/"+ str(unite.id)+"")
-	else:
-		return HttpResponseRedirect("/actualis/unites")	
-
-def add_new_compte_actualis(request, id):
-	unite = Unite.objects.get(id=id)
-	form = AddCompteUniteForm(request.POST or None)
-	if request.method == "POST":
-		if  form.is_valid():
-			compte_unite = form.save(commit=False)
-			compte_unite.unite = unite
-			compte_unite.added_by = request.user
-			compte_unite.code = compte_unite.unite.code_alpha + str(compte_unite.compte.numero) + compte_unite.regle_par.code_alpha + compte_unite.reseau_compte
-			compte_unite.save()
-			messages.success(request, "compte added successfuly." )
-			return HttpResponseRedirect("/actualis/unite/"+ str(unite.id)+"")
-			
-		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="actualis/add_new_compte.html", context={"form":form})
-
 # comments
 def update_comment_actualis(request, id_ann, id): 
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF", lancement=True, cloture=False).order_by('-annee')
@@ -7266,5 +7227,821 @@ def delete_comment_actualis(request, id):
     return HttpResponseRedirect("/actualis/unites")
 
 
+# ----------------------------- Fin Actualisation et réajustement  -------------------------------------------------------------------------------------
+
+
+# Control et suivi budget -------------------------------------------------------------------------------------
+
+def unites_controle(request):
+	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="CTRL").order_by('-annee')
+	
+	budget_1 = all_budgets[0]
+	budget_2 = all_budgets[1]
+
+
+	dep_unites = Unite.objects.filter(departement=request.user.departement)
+	all_unites = Unite.objects.all()
+
+	edition_budget_1 = {}
+	state_sdir_budget_1 = {}
+	state_cadre_budget_1 = {}
+	state_chef_budget_1 = {}
+
+	edition_budget_2 = {}
+	state_sdir_budget_2 = {}
+	state_cadre_budget_2 = {}
+	state_chef_budget_2 = {}
+
+	for u in all_unites:
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=u).count()
+		# budget 2 (N) 2022 -----------------------------------------------------------------------	
+		montants_2 = Compte_has_Montant.objects.filter(annee_budgetaire=budget_2, unite_compte__unite=u, mens_done=True).order_by('-edition_budget')
+		montants_nbr_2 = len(montants_2)
+		#edited_montants -----------------
+		edited_montants_2 = []
+		for em in montants_2:
+			if em.edition != em.edition_v:
+				edited_montants_2.append(em)
+		#----------------------------------
+		edited_montants_nbr_2 = len(edited_montants_2)
+		montants_valid_sdir_2 = 0
+		montants_valid_chef_2 = 0
+		montants_valid_2 = 0
+		for em in edited_montants_2:
+			if em.vld_mens_sous_dir :
+				montants_valid_sdir_2 = montants_valid_sdir_2 + 1
+			if em.vld_mens_chef_dep :
+				montants_valid_chef_2 = montants_valid_chef_2 + 1 
+			if em.vld_mens_sous_dir or em.vld_mens_chef_dep :
+				montants_valid_2 = montants_valid_2 + 1
+
+		# edition 2 ---------------------------------
+		if len(montants_2) > 0:
+			m = montants_2[0]
+			edition_budget_2[u.id] = m.edition_budget
+		else:
+			edition_budget_2[u.id] = 0
+		# ------------------------------------------
+
+		#sdir state
+		if montants_nbr_2 == comptes_nbr: 
+			state_sdir="-"
+		elif edited_montants_nbr_2 == montants_valid_chef_2 and edited_montants_nbr_2 != montants_valid_sdir_2  :
+			state_sdir="Instance"
+		elif edited_montants_nbr_2 == montants_valid_sdir_2 and edited_montants_nbr_2 > 0 : 
+			state_sdir="Terminé"
+		elif edited_montants_nbr_2 == 0 and montants_nbr_2 != comptes_nbr: 
+			state_sdir="Validé"
+		else:
+			state_sdir="En cours"
+		state_sdir_budget_2[u.id] = state_sdir
+		
+		#cadre state
+		if montants_nbr_2 == comptes_nbr : 
+			state_cadre="-"
+		elif edited_montants_nbr_2 == montants_valid_2: 
+			state_cadre="Validé"
+		else : 
+			state_cadre="En cours"
+		state_cadre_budget_2[u.id] = state_cadre
+		
+		#chef state
+		if montants_nbr_2 == comptes_nbr : 
+			state_chef = "-"
+		elif edited_montants_nbr_2 != montants_valid_2 and  edited_montants_nbr_2 != montants_valid_sdir_2:
+			state_chef="Instance"
+		elif edited_montants_nbr_2 == montants_valid_sdir_2:
+			state_chef="Validé"
+		elif edited_montants_nbr_2 == montants_valid_2 and edited_montants_nbr_2 != montants_valid_sdir_2:		
+			state_chef="Terminé"
+
+		state_chef_budget_2[u.id] = state_chef
+		# ---------------------------------------------------------------------------------------------------------
+		
+		# # budget 1 (N) 2023 -------------------------------------------------------------------------------------
+		montants_1 = Compte_has_Montant.objects.filter(annee_budgetaire=budget_1, unite_compte__unite=u, mens_done=True).order_by('-edition_budget')
+		montants_nbr_1 = len(montants_1)
+		#edited_montants -----------------
+		edited_montants_1 = []
+		for em in montants_1:
+			if em.edition != em.edition_v:
+				edited_montants_1.append(em)
+		#----------------------------------
+		edited_montants_nbr_1 = len(edited_montants_1)
+		montants_valid_sdir_1 = 0
+		montants_valid_chef_1 = 0
+		montants_valid_1 = 0
+		for em in edited_montants_1:
+			if em.vld_mens_sous_dir :
+				montants_valid_sdir_1 = montants_valid_sdir_1 + 1
+			if em.vld_mens_chef_dep :
+				montants_valid_chef_1 = montants_valid_chef_1 + 1 
+			if em.vld_mens_sous_dir or em.vld_mens_chef_dep :
+				montants_valid_1 = montants_valid_1 + 1
+
+		# edition 1 ---------------------------------
+		if len(montants_1) > 0:
+			m1 = montants_1[0]
+			edition_budget_1[u.id] = m1.edition_budget
+		else:
+			edition_budget_1[u.id] = 0
+		# ------------------------------------------
+
+		#sdir state 1
+		if montants_nbr_1 == comptes_nbr: 
+			state_sdir_1="-"
+		elif edited_montants_nbr_1 == montants_valid_chef_1 and edited_montants_nbr_1 != montants_valid_sdir_1  :
+			state_sdir_1="Instance"
+		elif edited_montants_nbr_1 == montants_valid_sdir_1 and edited_montants_nbr_1 > 0 : 
+			state_sdir_1="Terminé"
+		elif edited_montants_nbr_1 == 0 and montants_nbr_1 != comptes_nbr: 
+			state_sdir_1="Validé"
+		else:
+			state_sdir_1="En cours"
+		state_sdir_budget_1[u.id] = state_sdir_1
+		
+		#cadre state
+		if montants_nbr_1 == comptes_nbr : 
+			state_cadre_1="-"
+		elif edited_montants_nbr_1 == montants_valid_1: 
+			state_cadre_1="Validé"
+		else : 
+			state_cadre_1="En cours"
+		state_cadre_budget_1[u.id] = state_cadre_1
+		
+		#chef state
+		if montants_nbr_1 == comptes_nbr : 
+			state_chef_1 = "-"
+		elif edited_montants_nbr_1 != montants_valid_1 and  edited_montants_nbr_1 != montants_valid_sdir_1:
+			state_chef_1="Instance"
+		elif edited_montants_nbr_1 == montants_valid_sdir_1:
+			state_chef_1="Validé"
+		elif edited_montants_nbr_1 == montants_valid_1 and edited_montants_nbr_1 != montants_valid_sdir_1:		
+			state_chef_1="Terminé"
+
+		state_chef_budget_1[u.id] = state_chef_1
+		# --------------------------------------------------------------------------------------------------------------
+		
+
+
+	return render(request,"controle/unites.html", {'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites, 'budget_1':budget_1, 'budget_2':budget_2,
+													'edition_budget_2':edition_budget_2, 'edition_budget_1':edition_budget_1,
+													'state_cadre_budget_2':state_cadre_budget_2, 'state_chef_budget_2':state_chef_budget_2, 'state_sdir_budget_2':state_sdir_budget_2,
+													'state_cadre_budget_1':state_cadre_budget_1, 'state_chef_budget_1':state_chef_budget_1, 'state_sdir_budget_1':state_sdir_budget_1 })
+
+# get the chapter satatus and modifs
+def get_chapitre_status_controle(ch_num, budget, unite):
+	montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, mens_done=True , unite_compte__compte__chapitre__code_num= ch_num).order_by('edition_budget')
+	edited_montants = []
+	# get edited montants
+	for em in montants:
+		if em.edition != em.edition_v:
+			edited_montants.append(em)
+	# indicateurs to check status 
+	edited_montants_nbr = len(edited_montants)
+	montants_valid_sdir = 0
+	montants_valid_chef = 0
+	montants_valid = 0
+	for em in edited_montants:
+		if em.vld_mens_sous_dir :
+			montants_valid_sdir = montants_valid_sdir + 1
+		if em.vld_mens_chef_dep :
+			montants_valid_chef = montants_valid_chef + 1 
+		if em.vld_mens_sous_dir or em.vld_mens_chef_dep :
+			montants_valid = montants_valid + 1	
+	# states
+	result_status = {}
+	modifs_nbr = edited_montants_nbr
+	state_cadre = ""
+	state_chef = ""
+	state_sdir = ""
+
+	# cadre state
+	if edited_montants_nbr == 0:
+		state_cadre = "-"
+	elif edited_montants_nbr == montants_valid:
+		state_cadre = "Validé"
+	else:
+		state_cadre = "En cours"
+	# chef state
+	if edited_montants_nbr == 0:
+		state_chef = "-"
+	elif edited_montants_nbr == montants_valid and edited_montants_nbr != montants_valid_sdir:
+		state_chef = "Terminé"
+	elif edited_montants_nbr == montants_valid and edited_montants_nbr == montants_valid_sdir:
+		state_chef = "Validé"
+	elif edited_montants_nbr != montants_valid:
+		state_chef = "Instance"
+	else:
+		state_chef = ""
+
+	# sdir state
+	if edited_montants_nbr == 0:
+		state_sdir = "-"
+	elif edited_montants_nbr == montants_valid and edited_montants_nbr != montants_valid_sdir:
+		state_sdir = "Instance"
+	elif edited_montants_nbr == montants_valid and edited_montants_nbr == montants_valid_sdir:
+		state_sdir = "Terminé"
+	else:
+		state_sdir = "En cours"
+	
+	# dict result 
+	result_status["modifs"] = modifs_nbr
+	result_status["cadre"] = state_cadre
+	result_status["chef"] = state_chef
+	result_status["sdir"] = state_sdir
+
+	return result_status
+
+def unite_detail_controle(request, id_ann, id):
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+	unite = Unite.objects.get(id=id)
+	all_montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, mens_done=True).order_by('edition_budget')
+
+	if len(all_montants) > 0:
+		m1 = all_montants[0]
+		edition = m1.edition_budget
+	else:
+		edition = 0
+
+
+	off_status = get_chapitre_status(1, budget, unite)
+	trf_status = get_chapitre_status(2, budget, unite)
+	cae_status = get_chapitre_status(3, budget, unite)
+	cat_status = get_chapitre_status(4, budget, unite)
+	rct_status = get_chapitre_status(5, budget, unite)
+	dpf_status = get_chapitre_status(6, budget, unite)
+	dpe_status = get_chapitre_status(7, budget, unite)
+
+	print("------------------------------------")
+	print(off_status)
+
+	return render(request,"controle/unite_detail.html", {'unite':unite, 'budget':budget, 'edition':edition,
+														'off_status':off_status, 'trf_status':trf_status, 'cae_status':cae_status, 'cat_status':cat_status, 'rct_status':rct_status,
+														'dpf_status':dpf_status, 'dpe_status':dpe_status })
+
+#valid_edition_actualis
+def valid_edition_controle(request, id_ann, id):
+	unite = get_object_or_404(Unite, id = id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+	montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite)
+	for m in montants:
+		m.edition_budget = m.edition_budget + 1
+		if m.edition != m.edition_v:
+			m.edition_v = m.edition
+
+		m.save()
+
+
+	return HttpResponseRedirect("/controle/unites")
+
+def offre_comptes_controle(request, id_ann, id):
+	unite = Unite.objects.get(id=id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	# chapitre (offre)
+	chapitre = Chapitre.objects.get(code_num=1)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]			
+
+	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	modifs = ch_status["modifs"] > 0
+	valid_sdir = ch_status["sdir"] == "Terminé"
+	valid_chef = ch_status["chef"] == "Terminé"
+
+	print("valid chef dep -----------------")
+	print(valid_chef)
+
+	return render(request,"controle/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
+														'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef  })
+
+def traffic_comptes_controle(request, id_ann, id):
+	unite = Unite.objects.get(id=id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	chapitre = Chapitre.objects.get(code_num=2)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]		
+
+	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	modifs = ch_status["modifs"] > 0
+	valid_sdir = ch_status["sdir"] == "Terminé"
+	valid_chef = ch_status["chef"] == "Terminé"
+
+	return render(request,"controle/traffic_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
+															'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+
+def ca_emmission_comptes_controle(request, id_ann, id):
+	unite = Unite.objects.get(id=id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	chapitre = Chapitre.objects.get(code_num=3)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]		
+
+	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	modifs = ch_status["modifs"] > 0
+	valid_sdir = ch_status["sdir"] == "Terminé"
+	valid_chef = ch_status["chef"] == "Terminé"
+
+	return render(request,"controle/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
+														 		'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+
+def ca_transport_comptes_controle(request, id_ann, id):
+	unite = Unite.objects.get(id=id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	chapitre = Chapitre.objects.get(code_num=4)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]		
+
+	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	modifs = ch_status["modifs"] > 0
+	valid_sdir = ch_status["sdir"] == "Terminé"
+	valid_chef = ch_status["chef"] == "Terminé"	
+
+	return render(request,"controle/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
+																'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+
+def recettes_comptes_controle(request, id_ann, id):
+	unite = Unite.objects.get(id=id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	chapitre = Chapitre.objects.get(code_num=5)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]		
+
+	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	modifs = ch_status["modifs"] > 0
+	valid_sdir = ch_status["sdir"] == "Terminé"
+	valid_chef = ch_status["chef"] == "Terminé"
+
+	return render(request,"controle/recettes_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 'chapitre':chapitre,
+															'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+
+def depense_fonc_comptes_controle(request, id_ann, id):
+	unite = Unite.objects.get(id=id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	chapitre = Chapitre.objects.get(code_num=6)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]			
+
+	# ---------- status détailleé---------
+	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=6)
+	comptes_regle_par_autre = comptes.difference(comptes_regle_par_unite)
+
+	# pos 2 comptes 
+	all_c2 = SCF_Pos_2.objects.all()
+	c2_par_unite = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_unite:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_unite.append(c2)
+
+	c2_par_autre = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_autre:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_autre.append(c2)
+	
+	c2_par_unite = list(dict.fromkeys(c2_par_unite))
+	c2_par_autre = list(dict.fromkeys(c2_par_autre))
+
+	#pos 3 comptes
+	all_c3 = SCF_Pos_3.objects.all()
+	c3_par_unite = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_unite:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_unite.append(c3)
+
+	c3_par_autre = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_autre:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_autre.append(c3)
+	
+	c3_par_unite = list(dict.fromkeys(c3_par_unite))
+	c3_par_autre = list(dict.fromkeys(c3_par_autre))
+
+	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	modifs = ch_status["modifs"] > 0
+	valid_sdir = ch_status["sdir"] == "Terminé"
+	valid_chef = ch_status["chef"] == "Terminé"
+
+	
+
+	return render(request,"controle/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
+																'budget':budget, 'chapitre':chapitre,
+																"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
+																'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef
+																})
+
+def depense_exp_comptes_controle(request, id_ann, id):
+	unite = Unite.objects.get(id=id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	chapitre = Chapitre.objects.get(code_num=7)
+
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	# join comptes with montants in dict
+	cm_dict = {}
+	for c in comptes:
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+		if len(m) == 0:
+			cm_dict[c.id] = "null"
+		else:
+			cm_dict[c.id] = m[0]		
+
+	# ---- status detailleé -------------------------------
+	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=7)
+	comptes_regle_par_autre = comptes.difference(comptes_regle_par_unite)
+
+	all_c2 = SCF_Pos_2.objects.all()
+	c2_par_unite = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_unite:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_unite.append(c2)
+
+	c2_par_autre = []
+	for c2 in all_c2:
+		for cu in comptes_regle_par_autre:
+			if c2.numero == cu.compte.ref.ref.ref.numero:
+				c2_par_autre.append(c2)
+	
+	c2_par_unite = list(dict.fromkeys(c2_par_unite))
+	c2_par_autre = list(dict.fromkeys(c2_par_autre))
+
+	# pos 3 comptes
+	all_c3 = SCF_Pos_3.objects.all()
+	c3_par_unite = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_unite:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_unite.append(c3)
+
+	c3_par_autre = []
+	for c3 in all_c3:
+		for cu in comptes_regle_par_autre:
+			if c3.numero == cu.compte.ref.ref.numero:
+				c3_par_autre.append(c3)
+	
+	c3_par_unite = list(dict.fromkeys(c3_par_unite))
+	c3_par_autre = list(dict.fromkeys(c3_par_autre))	
+
+	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	modifs = ch_status["modifs"] > 0
+	valid_sdir = ch_status["sdir"] == "Terminé"
+	valid_chef = ch_status["chef"] == "Terminé"
+
+	return render(request,"controle/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
+																	'budget':budget, 'chapitre':chapitre,
+																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
+																	'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef
+																	})
+
+# add montant to compte 
+def add_montant_controle(request, id_ann, id):
+	montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = montant.unite_compte
+
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	new_edition = montant.edition + 1
+
+	# create a new edition of same compte
+	actualised_montant = Compte_has_Montant(
+		code = montant.code + str(new_edition) ,
+		unite_compte = montant.unite_compte ,
+		type_bdg = montant.type_bdg ,
+		annee_budgetaire = montant.annee_budgetaire ,
+		janvier = montant.janvier ,
+		fevrier = montant.fevrier ,
+		mars = montant.mars ,
+		avril = montant.avril ,
+		mai = montant.mai ,
+		juin = montant.juin ,
+		juillet = montant.juillet ,
+		aout = montant.aout ,
+		septemre = montant.septemre ,
+		octobre = montant.octobre ,
+		novembre = montant.novembre ,
+		decembre = montant.decembre ,
+		type_decoupage = montant.type_decoupage,
+		edition = new_edition ,
+		edition_v = montant.edition_v ,
+		edition_budget = montant.edition_budget  ,
+		type_maj = "A",
+		montant_cadre = montant.montant_cadre,
+		montant = montant.montant ,
+		montant_chef_dep = montant.montant_chef_dep ,
+		montant_sous_dir = montant.montant_sous_dir ,
+		vld_cadre = True ,
+		vld_chef_dep = True ,
+		vld_sous_dir = True , 
+		validation = montant.validation ,
+		mens_done = True ,
+	)
+
+	actualised_montant.save()
+
+	if request.user.user_type==6:
+		actualised_montant.vld_mens_cadre = True
+		actualised_montant.validation_mens = "CADRE"
+
+	if request.user.user_type==5:
+		actualised_montant.vld_mens_chef_dep = True
+		actualised_montant.validation_mens = "CHEFD"
+
+	if request.user.user_type==4:
+		actualised_montant.vld_mens_sous_dir = True
+		actualised_montant.validation_mens = "SOUSD"
+
+	actualised_montant.save()
+
+	# Redirecter vers chaque chapitre
+	if unite_compte.compte.chapitre.code_num == 1:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/offre/update_montant/"+ str(actualised_montant.id)+"")
+		# /notif/mens/unite/recettes/update_montant/1
+	elif unite_compte.compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/traffic/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/recettes/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/update_montant/"+ str(actualised_montant.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/update_montant/"+ str(actualised_montant.id)+"")
+	else:
+		return HttpResponseRedirect("/controle/unites")
+	
+	#messages.error(request, "Unsuccessful . Invalid information.")
+	#return render (request=request, template_name="actualis/add_montant.html", context={"unite_compte":unite_compte, "budget":budget })
+
+def update_montant_controle(request, id_ann, id): 
+	montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = montant.unite_compte
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	comment_form = CommentaireForm(request.POST or None)
+	update_comment_form = CommentaireForm(request.POST or None, instance = montant.commentaire_mens)
+	form = ActualisMontantNotifForm(request.POST or None, instance = montant)
+	if form.is_valid():
+		mm = form.save(commit=False)
+		mens_accu = mm.janvier+mm.fevrier+mm.mars+mm.avril+mm.mai+mm.juin+mm.juillet+mm.aout+mm.septemre+mm.octobre+mm.novembre+mm.decembre
+		diff = mm.montant - mens_accu
+		if mm.montant == mens_accu:
+			mm.save()
+			messages.success(request, "Mis à jour avec succés." )
+			new_montant = get_object_or_404(Compte_has_Montant, id = id)
+			if request.user.user_type==6:
+				new_montant.vld_mens_cadre = True
+			if request.user.user_type==5:
+				new_montant.vld_mens_chef_dep = True
+				new_montant.validation_mens = "CHEFD"
+			if request.user.user_type==4:
+				new_montant.vld_mens_sous_dir = True
+				new_montant.validation_mens = "SOUSD"		
+			# add mens comment 
+			if comment_form.is_valid():
+				comment = comment_form.save(commit=False)
+				comment.comment_type = "M"
+				comment.user = request.user
+				comment.save()
+				new_montant.commentaire_mens = comment
+			
+			# update existed comment 
+			if update_comment_form.is_valid():
+				updated_comm = update_comment_form.save(commit=False)
+				updated_comm.comment_type = "M"
+				updated_comm.user = request.user
+				updated_comm.save()
+				new_montant.commentaire_mens = updated_comm
+
+			new_montant.save()
+
+			# Redirecter vers chaque chapitre
+			if unite_compte.compte.chapitre.code_num== 1:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 2:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 3:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 4:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 5:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 6:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 7:
+				return redirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+			else:
+				return redirect("/controle/unites")
+		else:
+			messages.error(request, "Invalid: les montants mensuel ne correspondant pas au montant Annuel (différence : " + str(diff) + " )" )
+
+
+	return render (request=request, template_name="controle/update_montant.html", context={"form":form, "comment_form":comment_form, "update_comment_form":update_comment_form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
+
+def valid_montant_controle(request, id_ann, id):
+	new_montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = new_montant.unite_compte
+	if request.user.user_type==6:
+		new_montant.vld_mens_cadre = True
+		new_montant.save()
+	if request.user.user_type==5:
+		new_montant.vld_mens_chef_dep = True
+		new_montant.validation_mens = "CHEFD"
+		new_montant.save()
+	if request.user.user_type==4:
+		new_montant.vld_mens_sous_dir = True
+		new_montant.validation_mens = "SOUSD"
+		new_montant.save()
+
+	# Redirecter vers chaque chapitre
+	if unite_compte.compte.chapitre.code_num== 1:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+	else:
+		return HttpResponseRedirect("/controle/unites")
+
+#valider tous 
+def valid_tous_controle(request, id_ann, id_unite, ch_num):
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, mens_done=True, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_mens_chef_dep = True
+			m.validation_mens = "CHEFD"
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_mens_sous_dir = True
+			m.validation_mens = "SOUSD"
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/"+ str(id_unite)+"")
+	else:
+		return HttpResponseRedirect("/controle/unites")
+
+def cancel_valid_tous_controle(request, id_ann, id_unite, ch_num):
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	unite = Unite.objects.get(id=id_unite)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, mens_done=True, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	for m in montants: 
+		if request.user.user_type == 5:
+			m.vld_mens_chef_dep = False
+			m.save()
+		elif request.user.user_type == 4:
+			m.vld_mens_sous_dir = False
+			m.save()
+
+	# Redirecter vers chaque chapitre
+	if ch_num == 1:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(id_unite)+"")
+	elif ch_num == 2:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(id_unite)+"")
+	elif ch_num == 3:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(id_unite)+"")
+	elif ch_num == 4:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(id_unite)+"")
+	elif ch_num == 5:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(id_unite)+"")
+	elif ch_num == 6:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(id_unite)+"")
+	elif ch_num == 7:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/"+ str(id_unite)+"")
+	else:
+		return HttpResponseRedirect("/controle/unites")	
+
+def cancel_valid_montant_controle(request,id_ann, id):
+	new_montant = get_object_or_404(Compte_has_Montant, id = id)
+	unite_compte = new_montant.unite_compte
+	if request.user.user_type==6:
+		new_montant.vld_mens_cadre = False
+		new_montant.save()
+	if request.user.user_type==5:
+		new_montant.vld_mens_chef_dep = False
+		new_montant.validation_mens = "CHEFD"
+		new_montant.save()
+	if request.user.user_type==4:
+		new_montant.vld_mens_sous_dir = False
+		new_montant.validation_mens = "SOUSD"
+		new_montant.save()
+	# Redirecter vers chaque chapitre
+	if unite_compte.compte.chapitre.code_num== 1:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 2:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 3:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 4:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 5:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 6:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+	elif unite_compte.compte.chapitre.code_num== 7:
+		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+	else:
+		return HttpResponseRedirect("/controle/unites")
+
+# comments
+def update_comment_controle(request, id_ann, id): 
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+	comment = get_object_or_404(Commentaire, id = id)
+	form = CommentaireForm(request.POST or None, instance = comment)
+	if form.is_valid():
+		form.save()
+		messages.success(request, "Commentaire updated successfuly." )
+		return redirect("/controle/unites")
+
+	return render (request=request, template_name="controle/update_comment.html", context={"form":form, "comment":comment, "budget":budget})
+
+def delete_comment_controle(request, id):
+    form = Commentaire.objects.get(id=id)
+    form.delete()
+    return HttpResponseRedirect("/controle/unites")
 
 

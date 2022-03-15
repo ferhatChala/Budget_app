@@ -1,0 +1,694 @@
+{% extends "base.html" %}
+
+{% block notif_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}      
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Budget Notifié <strong> {{budget.annee}}</strong></h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites_notif' %}">Unités</a></li>
+                            <li><a href="/notif/unite/{{unite.id}}">{{unite.code_alpha}}</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="row content">
+
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <span><i class="menu-icon fa fa-building-o"></i></span>  <strong class="card-title">  {{unite.lib}} <span class="float-right"> {{pr_cdr}} %</span></strong>
+            </div>
+            <div class="card-body">
+				<!-- status sous dir  -->
+				{% if user.user_type == 4 %}
+				<table id="bootstrap-data-table" class="table table-striped">
+					<thead>
+						<tr>
+							<th>Chapitre</th>
+							<th>Saisie </th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+						{% if unite.traffic  %}	
+						<tr>
+							<td>Offre</td>	
+
+							{% if offre_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif offre_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if offre_v_sdir and offre_s %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif offre_valid and offre_s and offre_v_sdir == False %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif offre_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="offre/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+
+						<tr>
+							<td>Traffic</td>
+
+							{% if traffic_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif traffic_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if traffic_v_sdir and traffic_s %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif traffic_valid and traffic_s and traffic_v_sdir == False %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif traffic_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="traffic/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+
+						{% if unite.emmission %}	
+						<tr>
+							<td>Chiffre d'affaire à l'emmission</td>
+
+							{% if ca_emmission_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif ca_emmission_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if ca_emmission_v_sdir and ca_emmission_s %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_emmission_valid and ca_emmission_s and ca_emmission_v_sdir == False %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif ca_emmission_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="ca_emmission/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+						
+						{% if unite.traffic %}
+						<tr>
+							<td>Chiffre d'affaire au Transport</td>
+
+							{% if ca_transport_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif ca_transport_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if ca_transport_v_sdir and ca_transport_s %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_transport_valid and ca_transport_s and ca_transport_v_sdir == False %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif ca_transport_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="ca_transport/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+	
+						{% if unite.recette %}	
+						<tr>
+							<td>Autre recettes</td>
+
+							{% if recettes_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif recettes_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if recettes_v_sdir and recettes_s %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif recettes_valid and recettes_s and recettes_v_sdir == False %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif recettes_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="recettes/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+
+						<tr>
+							<td>Depensses de fonctionnement</td>
+
+							{% if depense_fonc_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif depense_fonc_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if depense_fonc_v_sdir and depense_fonc_s %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_fonc_valid and depense_fonc_s and depense_fonc_v_sdir == False %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif depense_fonc_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="depense_fonc/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+												
+						{% if unite.exploitation %}	
+						<tr>
+							<td>Depensses d'exploitation</td>
+
+							{% if depense_exp_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif depense_exp_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if depense_exp_v_sdir and depense_exp_s %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_exp_valid and depense_exp_s and depense_exp_v_sdir == False %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif depense_exp_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="depense_exp/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+			
+					</tbody>
+				</table>
+				{% endif %}
+
+				<!-- status Chef dep  -->
+				{% if user.user_type == 5 %}
+				<table id="bootstrap-data-table" class="table table-striped">
+					<thead>
+						<tr>
+							<th>Chapitre</th>
+							<th>Saisie </th>
+							<th>Status</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+						{% if unite.traffic  %}	
+						<tr>
+							<td>Offre</td>	
+
+							{% if offre_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif offre_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if offre_v and offre_v_sdir == False %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif offre_valid  and offre_s and offre_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif offre_s and offre_v == False and  offre_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif offre_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif offre_non_s == False and offre_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif offre_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% endif %}
+
+							<td>
+								<a href="offre/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+
+						<tr>
+							<td>Traffic</td>
+
+							{% if traffic_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif traffic_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if traffic_v and traffic_v_sdir == False %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif traffic_valid  and traffic_s and traffic_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif traffic_s and traffic_v == False and  traffic_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif traffic_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif traffic_non_s == False and traffic_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif traffic_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% endif %}
+
+							<td>
+								<a href="traffic/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+
+						{% if unite.emmission %}	
+						<tr>
+							<td>Chiffre d'affaire à l'emmission</td>
+
+							{% if ca_emmission_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif ca_emmission_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if ca_emmission_v and ca_emmission_v_sdir == False %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_emmission_valid  and ca_emmission_s and ca_emmission_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_emmission_s and ca_emmission_v == False and  ca_emmission_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif ca_emmission_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif ca_emmission_non_s == False and ca_emmission_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif ca_emmission_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% endif %}
+
+							<td>
+								<a href="ca_emmission/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+						
+						{% if unite.traffic %}
+						<tr>
+							<td>Chiffre d'affaire au Transport</td>
+
+							{% if ca_transport_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif ca_transport_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if ca_transport_v and ca_transport_v_sdir == False %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_transport_valid  and ca_transport_s and ca_transport_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif ca_transport_s and ca_transport_v == False and  ca_transport_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif ca_transport_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif ca_transport_non_s == False and ca_transport_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif ca_transport_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% endif %}
+
+							<td>
+								<a href="ca_transport/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+	
+						{% if unite.recette %}	
+						<tr>
+							<td>Autre recettes</td>
+
+							{% if recettes_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif recettes_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if recettes_v and recettes_v_sdir == False %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif recettes_valid  and recettes_s and recettes_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif recettes_s and recettes_v == False and  recettes_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif recettes_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif recettes_non_s == False and recettes_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif recettes_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% endif %}
+
+							<td>
+								<a href="recettes/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+
+						<tr>
+							<td>Depensses de fonctionnement</td>
+
+							{% if depense_fonc_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif depense_fonc_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if depense_fonc_v and depense_fonc_v_sdir == False %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_fonc_valid  and depense_fonc_s and depense_fonc_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_fonc_s and depense_fonc_v == False and  depense_fonc_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif depense_fonc_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif depense_fonc_non_s == False and depense_fonc_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif depense_fonc_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% endif %}
+
+							<td>
+								<a href="depense_fonc/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+												
+						{% if unite.exploitation %}	
+						<tr>
+							<td>Depensses d'exploitation</td>
+
+							{% if depense_exp_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Oui</span></td>	
+							{% elif depense_exp_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if depense_exp_v and depense_exp_v_sdir == False %}	
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_exp_valid  and depense_exp_s and depense_exp_v_sdir == False%}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>
+							{% elif depense_exp_s and depense_exp_v == False and  depense_exp_valid == False %}
+							<td> <span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span></td>
+							{% elif depense_exp_non_s %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></strong>
+							{% elif depense_exp_non_s == False and depense_exp_s == False%}
+							<td> <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% elif depense_exp_v_sdir %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% endif %}
+
+							<td>
+								<a href="depense_exp/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+			
+					</tbody>
+				</table>
+				{% endif %}
+
+				<!-- status Cadre  -->
+				{% if user.user_type == 6 %}
+				<table id="bootstrap-data-table" class="table table-striped">
+					<thead>
+						<tr>
+							<th>Chapitre</th>
+							<th>Status</th>
+							<th>Validation</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+						{% if unite.traffic  %}	
+						<tr>
+							<td>Offre</td>	
+
+							{% if offre_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>	
+							{% elif offre_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if offre_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif offre_valid and offre_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="offre/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+
+						<tr>
+							<td>Traffic</td>
+
+							{% if traffic_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>	
+							{% elif traffic_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if traffic_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif traffic_valid and traffic_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="traffic/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+
+						{% if unite.emmission %}	
+						<tr>
+							<td>Chiffre d'affaire à l'emmission</td>
+
+							{% if ca_emmission_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>	
+							{% elif ca_emmission_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if ca_emmission_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif ca_emmission_valid and ca_emmission_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+							
+							<td>
+								<a href="ca_emmission/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+						
+						{% if unite.traffic %}
+						<tr>
+							<td>Chiffre d'affaire au Transport</td>
+							
+							{% if ca_transport_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>	
+							{% elif ca_transport_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if ca_transport_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif ca_transport_valid and ca_transport_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="ca_transport/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+	
+						{% if unite.recette %}	
+						<tr>
+							<td>Autre recettes</td>
+
+							{% if recettes_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>	
+							{% elif recettes_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if recettes_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif recettes_valid and recettes_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="recettes/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+
+						<tr>
+							<td>Depensses de fonctionnement</td>
+
+							{% if depense_fonc_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>	
+							{% elif depense_fonc_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if depense_fonc_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif depense_fonc_valid and depense_fonc_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="depense_fonc/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+												
+						{% if unite.exploitation %}	
+						<tr>
+							<td>Depensses d'exploitation</td>
+
+							{% if depense_exp_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span></td>	
+							{% elif depense_exp_non_s %}
+							<td><span style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							{% if depense_exp_non_s  %}
+							<td><span><i class="menu-icon fa fa-times"></i> Non saisie</span></td>
+							{% elif depense_exp_valid and depense_exp_s %}
+							<td><span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span></td>
+							{% else %}
+							<td><span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span></td>
+							{% endif %}
+
+							<td>
+								<a href="depense_exp/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+							</td>
+						</tr>
+						{% endif %}
+			
+					</tbody>
+				</table>
+				{% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+{% endblock %}

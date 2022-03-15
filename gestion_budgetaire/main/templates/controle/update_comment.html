@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block prop_active %}
+<li class="menu-item-has-children dropdown active">
+{% endblock %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}   
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-4">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Proposition Budget {{budget.annee}}</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="{% url 'unites' %}">Unités</a></li>
+							<li><a href="#">Modifier le commentaire</a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row content">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<strong class="card-title">Commentaire</strong>
+						</div>
+						<div class="card-body">
+							
+
+                            <form method="post">
+                                {% csrf_token %}
+								{{ form.importance|as_crispy_field }}
+								{{ form.text|as_crispy_field }}
+
+                                <button type="submit" class="btn btn-primary">Modifier</button>
+                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                            </form>
+						</div>
+					</div>
+				</div>
+</div>
+
+{% endblock %}

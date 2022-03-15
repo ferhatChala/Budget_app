@@ -273,7 +273,8 @@ class Compte_has_Montant(models.Model):
     septemre = models.FloatField(null=True, blank=True) 
     octobre = models.FloatField(null=True, blank=True) 
     novembre = models.FloatField(null=True, blank=True) 
-    decembre = models.FloatField(null=True, blank=True) 
+    decembre = models.FloatField(null=True, blank=True)
+    # mois :  
     type_decoupage = models.CharField( max_length=50, null=True, blank=True, choices=TYPDCPG_CHOICES, default="MS")
     
     # Actualisation et réajustement
