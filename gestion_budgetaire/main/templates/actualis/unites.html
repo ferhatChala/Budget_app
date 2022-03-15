@@ -37,10 +37,10 @@
 			<div class="accordion" id="accordionExample">
 				<!-- Budget Notifié N+1 (Budget_1) -->
 					<div class="card">
-						<div class="card-header" id="hua2" role="tab" data-toggle="collapse" data-target="#cua2" aria-expanded="true" aria-controls="cua2">
+						<div class="card-header" id="hua1" role="tab" data-toggle="collapse" data-target="#cua1" aria-expanded="true" aria-controls="cua1">
 							<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span>Budget notifié <b> {{budget_1.annee}}</b> </strong>
 						</div>
-						<div class="card-body collapse" id="cua2" aria-labelledby="hua2" data-parent="#accordionExample">		
+						<div class="card-body collapse" id="cua1" aria-labelledby="hua1" data-parent="#accordionExample">		
 							<input class="form-control" id="myInput" type="text" placeholder="Search..">
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
@@ -140,7 +140,7 @@
 													{% if key == u.id %}
 														
 														{% if s == "Terminé" %}
-															<a href="#" data-toggle="modal" data-target="#validtous" class="btn btn-outline-success"><span><i class="menu-icon fa fa-check"></i></span> Confirmer validation </a>
+															<a href="#" data-toggle="modal" data-target="#validtous1" class="btn btn-outline-success"><span><i class="menu-icon fa fa-check"></i></span> Confirmer validation </a>
 														{% elif s == "Validé" %}
 															<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
 														{% elif s == "Instance" %}
@@ -155,7 +155,7 @@
 												{% endfor %}
 
 											<!-- Modal pour valider tous  -->
-											<div class="modal fade" id="validtous" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+											<div class="modal fade" id="validtous1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 												<div class="modal-dialog">
 													<div class="modal-content">
 														<div class="modal-header">
@@ -165,7 +165,7 @@
 															</button>
 														</div>
 														<div class="modal-body">
-															<strong>Vous êtes sûre de Confirmer la valiation de cette Edition pour cette Unité ?</strong><br>
+															<strong>Vous êtes sûre de Confirmer la valiation de cette Edition <b> ( Budget notifié {{budget_1.annee}}) </b> pour cette Unité <b> " {{u.code_alpha}} " </b>?</strong><br>
 															<br>
 														</div>
 														<div class="modal-footer">
@@ -195,7 +195,7 @@
 						<div class="card-header" id="hua2" role="tab" data-toggle="collapse" data-target="#cua2" aria-expanded="true" aria-controls="cua2">
 							<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span>Budget notifié <b> {{budget_2.annee}}</b> </strong>
 						</div>
-						<div class="card-body collapse" id="cua2" aria-labelledby="hua2" data-parent="#accordionExample">		
+						<div class="card-body collapse show" id="cua2" aria-labelledby="hua2" data-parent="#accordionExample">		
 							<input class="form-control" id="myInput" type="text" placeholder="Search..">
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
@@ -320,7 +320,7 @@
 															</button>
 														</div>
 														<div class="modal-body">
-															<strong>Vous êtes sûre de Confirmer la valiation de cette Edition pour cette Unité ?</strong><br>
+															<strong>Vous êtes sûre de Confirmer la valiation de cette Edition <b> ( Budget notifié {{budget_2.annee}}) </b> pour cette Unité <b> " {{u.code_alpha}} " </b>?</strong><br>
 															<br>
 														</div>
 														<div class="modal-footer">
