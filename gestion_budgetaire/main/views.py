@@ -3988,6 +3988,7 @@ def add_montant_notif(request, id):
 			else:
 				return redirect("/notif/unites")
 		messages.error(request, "Unsuccessful . Invalid information.")
+	
 	return render (request=request, template_name="notif/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte, "budget":budget,
 																						'm_propos':m_propos, 'm_reun':m_reun })
 
@@ -7232,6 +7233,21 @@ def delete_comment_actualis(request, id):
 
 # Control et suivi budget -------------------------------------------------------------------------------------
 
+months =  [
+	(1, 'Janvier'),
+	(2, 'Février'),
+	(3, 'Mars'),
+	(4, 'Avril'),
+	(5, 'Mai'),
+	(6, 'Juin'),
+	(7, 'Juilet'),
+	(8, 'Aout'),
+	(9, 'Septembre'),
+	(10, 'Octobre'),
+	(11, 'Novembre'),
+	(12, 'Décembre'),
+]
+
 def unites_controle(request):
 	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="CTRL").order_by('-annee')
@@ -7499,7 +7515,6 @@ def valid_edition_controle(request, id_ann, id):
 def offre_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-
 	# chapitre (offre)
 	chapitre = Chapitre.objects.get(code_num=1)
 
@@ -7513,7 +7528,7 @@ def offre_comptes_controle(request, id_ann, id):
 		else:
 			cm_dict[c.id] = m[0]			
 
-	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
+	ch_status = get_chapitre_status_controle(chapitre.code_num, budget, unite)
 	modifs = ch_status["modifs"] > 0
 	valid_sdir = ch_status["sdir"] == "Terminé"
 	valid_chef = ch_status["chef"] == "Terminé"
@@ -7521,8 +7536,8 @@ def offre_comptes_controle(request, id_ann, id):
 	print("valid chef dep -----------------")
 	print(valid_chef)
 
-	return render(request,"controle/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
-														'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef  })
+	return render(request,"controle/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre, 
+														'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef, 'months':months  })
 
 def traffic_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7752,85 +7767,202 @@ def depense_exp_comptes_controle(request, id_ann, id):
 																	})
 
 # add montant to compte 
-def add_montant_controle(request, id_ann, id):
+def add_montant_controle(request, id_ann, id_month, id):
+	unite_compte = get_object_or_404(Unite_has_Compte, id = id)
+	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+	m_preves_list = Compte_has_Montant.objects.filter(unite_compte=unite_compte, annee_budgetaire__annee=budget.annee, annee_budgetaire__type_bdg="CTRL").order_by('-edition')
+	if len(m_preves_list) == 0:
+		montant_preves = "null"
+		preves_ann = "null"
+		preves_men = "null"
+	else : 
+		montant_preves = m_preves_list[0]
+		preves_ann = montant_preves.montant
+		if id_month == 1:
+			preves_mens = montant_preves.janvier
+		elif id_month == 2:
+			preves_mens = montant_preves.fevrier
+		elif id_month == 3:
+			preves_mens = montant_preves.mars
+		elif id_month == 4:
+			preves_mens = montant_preves.avril
+		elif id_month == 5:
+			preves_mens = montant_preves.mai
+		elif id_month == 6:
+			preves_mens = montant_preves.juin
+		elif id_month == 7:
+			preves_mens = montant_preves.juillet
+		elif id_month == 8:
+			preves_mens = montant_preves.aout
+		elif id_month == 9:
+			preves_mens = montant_preves.septemre
+		elif id_month == 10:
+			preves_mens = montant_preves.octobre
+		elif id_month == 11:
+			preves_mens = montant_preves.novembre
+		elif id_month == 12:
+			preves_mens = montant_preves.decembre
+
+
+	comment_form = CommentaireForm(request.POST or None)
+	montant_form = MontantOnlyForm(request.POST or None)
+	if request.method == "POST":
+		if  montant_form.is_valid():
+			montant_compte = montant_form.save(commit=False)
+			montant_compte.unite_compte = unite_compte
+			montant_compte.type_bdg = "CTRL"
+			montant_compte.annee_budgetaire = budget
+			montant_compte.code = str(montant_compte.unite_compte.id) + montant_compte.annee_budgetaire.code + montant_compte.unite_compte.monnaie.code_alpha + montant_compte.unite_compte.regle_par.code_alpha + str(montant_compte.edition)
+			if comment_form.is_valid():
+				comment = comment_form.save(commit=False)
+				comment.comment_type = "M"
+				comment.user = request.user
+				comment.save()
+				montant_compte.commentaire_montant = comment
+			# set month value 
+			if id_month == 1:
+				montant_compte.janvier = montant_compte.montant
+			elif id_month == 2:
+				montant_compte.fevrier = montant_compte.montant
+			elif id_month == 3:
+				montant_compte.mars = montant_compte.montant
+			elif id_month == 4:
+				montant_compte.avril = montant_compte.montant
+			elif id_month == 5:
+				montant_compte.mai = montant_compte.montant
+			elif id_month == 6:
+				montant_compte.juin = montant_compte.montant
+			elif id_month == 7:
+				montant_compte.juillet = montant_compte.montant
+			elif id_month == 8:
+				montant_compte.aout = montant_compte.montant
+			elif id_month == 9:
+				montant_compte.septemre = montant_compte.montant
+			elif id_month == 10:
+				montant_compte.octobre = montant_compte.montant
+			elif id_month == 11:
+				montant_compte.novembre = montant_compte.montant
+			elif id_month == 12:
+				montant_compte.decembre = montant_compte.montant
+			else:
+				messages.error(request, " Invalid informations " )
+
+			# initial validations 
+			if request.user.user_type==6:
+				montant_compte.vld_cadre = True
+				montant_compte.validation = "CADRE"
+
+			if request.user.user_type==5:
+				montant_compte.vld_chef_dep = True
+				montant_compte.vld_controle_chef_dep = id_month
+				montant_compte.validation = "CHEFD"
+			
+			if request.user.user_type==4:
+				montant_compte.vld_sous_dir = True
+				montant_compte.vld_controle_sous_dir = id_month
+				montant_compte.validation = "SOUSD"				
+			
+			montant_compte.save()
+			messages.success(request, " Montant saisié avec succes " )
+
+		# Redirecter vers chaque chapitre
+			if unite_compte.compte.chapitre.code_num== 1:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 2:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 3:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 4:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 5:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 6:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+			elif unite_compte.compte.chapitre.code_num== 7:
+				return redirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+			else:
+				return redirect("/controle/unites")
+		messages.error(request, "Unsuccessful . Invalid information.")
+
+	
+	return render (request=request, template_name="controle/add_montant.html", context={"unite_compte":unite_compte, "budget":budget, 'montant_form':montant_form, 'comment_form':comment_form ,
+																						 'id_month':id_month, 'preves_mens':preves_mens, 'preves_ann':preves_ann })
+
+# update selon month 
+def add_montant_month_controle(request, id_ann, id_month, id):
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
-
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+	#initil montant to 0
+	montant.montant = 0
+	montant.save()
 
-	new_edition = montant.edition + 1
+	update_comment_form = CommentaireForm(request.POST or None, instance = montant.commentaire_montant)
+	form = MontantOnlyForm(request.POST or None, instance = montant)
 
-	# create a new edition of same compte
-	actualised_montant = Compte_has_Montant(
-		code = montant.code + str(new_edition) ,
-		unite_compte = montant.unite_compte ,
-		type_bdg = montant.type_bdg ,
-		annee_budgetaire = montant.annee_budgetaire ,
-		janvier = montant.janvier ,
-		fevrier = montant.fevrier ,
-		mars = montant.mars ,
-		avril = montant.avril ,
-		mai = montant.mai ,
-		juin = montant.juin ,
-		juillet = montant.juillet ,
-		aout = montant.aout ,
-		septemre = montant.septemre ,
-		octobre = montant.octobre ,
-		novembre = montant.novembre ,
-		decembre = montant.decembre ,
-		type_decoupage = montant.type_decoupage,
-		edition = new_edition ,
-		edition_v = montant.edition_v ,
-		edition_budget = montant.edition_budget  ,
-		type_maj = "A",
-		montant_cadre = montant.montant_cadre,
-		montant = montant.montant ,
-		montant_chef_dep = montant.montant_chef_dep ,
-		montant_sous_dir = montant.montant_sous_dir ,
-		vld_cadre = True ,
-		vld_chef_dep = True ,
-		vld_sous_dir = True , 
-		validation = montant.validation ,
-		mens_done = True ,
-	)
+	if form.is_valid():
+		mm = form.save(commit=False)
 
-	actualised_montant.save()
+		if id_month == 1:
+			mm.janvier = mm.montant
+		elif id_month == 2:
+			mm.fevrier = mm.montant
+		elif id_month == 3:
+			mm.mars = mm.montant
+		elif id_month == 4:
+			mm.avril = mm.montant
+		elif id_month == 5:
+			mm.mai = mm.montant
+		elif id_month == 6:
+			mm.juin = mm.montant
+		elif id_month == 7:
+			mm.juillet = mm.montant
+		elif id_month == 8:
+			mm.aout = mm.montant
+		elif id_month == 9:
+			mm.septemre = mm.montant
+		elif id_month == 10:
+			mm.octobre = mm.montant
+		elif id_month == 11:
+			mm.novembre = mm.montant
+		elif id_month == 12:
+			mm.decembre = mm.montant	
 
-	if request.user.user_type==6:
-		actualised_montant.vld_mens_cadre = True
-		actualised_montant.validation_mens = "CADRE"
+		mm.montant = 0
+		
+		# update existed comment 
+		if update_comment_form.is_valid():
+			updated_comm = update_comment_form.save(commit=False)
+			updated_comm.comment_type = "M"
+			updated_comm.user = request.user
+			updated_comm.save()
+			mm.commentaire_montant = updated_comm
 
-	if request.user.user_type==5:
-		actualised_montant.vld_mens_chef_dep = True
-		actualised_montant.validation_mens = "CHEFD"
+		mm.save()
 
-	if request.user.user_type==4:
-		actualised_montant.vld_mens_sous_dir = True
-		actualised_montant.validation_mens = "SOUSD"
+		montant = get_object_or_404(Compte_has_Montant, id = id)
 
-	actualised_montant.save()
+		# Redirecter vers chaque chapitre
+		if unite_compte.compte.chapitre.code_num== 1:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 2:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 3:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 4:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 5:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 6:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 7:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
+		else:
+			return redirect("/controle/unites")
 
-	# Redirecter vers chaque chapitre
-	if unite_compte.compte.chapitre.code_num == 1:
-		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/offre/update_montant/"+ str(actualised_montant.id)+"")
-		# /notif/mens/unite/recettes/update_montant/1
-	elif unite_compte.compte.chapitre.code_num== 2:
-		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/traffic/update_montant/"+ str(actualised_montant.id)+"")
-	elif unite_compte.compte.chapitre.code_num== 3:
-		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/update_montant/"+ str(actualised_montant.id)+"")
-	elif unite_compte.compte.chapitre.code_num== 4:
-		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/update_montant/"+ str(actualised_montant.id)+"")
-	elif unite_compte.compte.chapitre.code_num== 5:
-		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/recettes/update_montant/"+ str(actualised_montant.id)+"")
-	elif unite_compte.compte.chapitre.code_num== 6:
-		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/update_montant/"+ str(actualised_montant.id)+"")
-	elif unite_compte.compte.chapitre.code_num== 7:
-		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/depense_exp/update_montant/"+ str(actualised_montant.id)+"")
-	else:
-		return HttpResponseRedirect("/controle/unites")
-	
-	#messages.error(request, "Unsuccessful . Invalid information.")
-	#return render (request=request, template_name="actualis/add_montant.html", context={"unite_compte":unite_compte, "budget":budget })
+
+	return render (request=request, template_name="controle/add_montant_month.html", context={"unite_compte":unite_compte, "budget":budget, 'montant':montant, 'update_comment_form':update_comment_form, 'form':form,
+																								'id_month':id_month })
 
 def update_montant_controle(request, id_ann, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)

@@ -226,35 +226,47 @@ class Unite_has_Compte(models.Model):
 class Compte_has_Montant(models.Model):
     #decoupage choices 
     TYPDCPG_CHOICES = [
-    ('MS', 'Mensuel'), # chaque mois
-    ('BM', 'Bimensuel'), # chaque 2 mois start with janvier
-    ('TR', 'Trimestriel'), # Janvier , Avrile, Juillet, Octobre
-    ('SM', 'Semestriel'), # Janvier , Juillet
-    ('AU', 'Autre'), # mannuelle 
-    ]    
-    # ajouter autre type de bdg (control , realisation )
+        ('MS', 'Mensuel'), # chaque mois
+        ('BM', 'Bimensuel'), # chaque 2 mois start with janvier
+        ('TR', 'Trimestriel'), # Janvier , Avrile, Juillet, Octobre
+        ('SM', 'Semestriel'), # Janvier , Juillet
+        ('AU', 'Autre'), ] # mannuelle    
+ 
     TYPBDG_CHOICES = [
-    ('PROPOS', 'Budget de proposition'),
-    ('REUN', 'Budget de Réunion'),
-    ('NOTIF', 'Budget notifié'),
-    ('CTRL', 'Budget de contrôle'),
-    ('RELS', 'Budget réalisation'),
-    ]
-
+        ('PROPOS', 'Budget de proposition'),
+        ('REUN', 'Budget de Réunion'),
+        ('NOTIF', 'Budget notifié'),
+        ('CTRL', 'Budget de contrôle'),
+        ('RELS', 'Budget réalisation'), ]
+    
     VALID_CHOICES = [
-    ('CADRE', 'Cadre Budget'),
-    ('CHEFD', 'Chef Département'),
-    ('CHEFDPI', 'Chef Département DZ P/I'),
-    ('CHEFDPI', 'Chef Département ET P/I'),
-    ('SOUSD', 'Sous Directeur'),
-    ('SOUSDPI', 'Sous Directeur P/I'),
-    ]
-
+        ('CADRE', 'Cadre Budget'),
+        ('CHEFD', 'Chef Département'),
+        ('CHEFDPI', 'Chef Département DZ P/I'),
+        ('CHEFDPI', 'Chef Département ET P/I'),
+        ('SOUSD', 'Sous Directeur'),
+        ('SOUSDPI', 'Sous Directeur P/I'),  ]
+  
     TYPMAJ_CHOICES = [
-    ('A', 'Actualisation'),
-    ('R', 'Réajustement'),
-    ('N', 'Initial'),
-    ]
+        ('A', 'Actualisation'),
+        ('R', 'Réajustement'),
+        ('N', 'Initial'),  ]
+   
+    VLD_CTRL_CHOICES = [
+        (0, 'Aucun'),
+        (1, 'Janvier'),
+        (2, 'Février'),
+        (3, 'Mars'),
+        (4, 'Avril'),
+        (5, 'Mai'),
+        (6, 'Juin'),
+        (7, 'Juilet'),
+        (8, 'Aout'),
+        (9, 'Septembre'),
+        (10, 'Octobre'),
+        (11, 'Novembre'),
+        (12, 'Décembre') ]
+    
     # code = unite_compte.id + type_bdg + annee + unite_compte.monnaie + unite_compte.regle_par + edition  (unique)
     code = models.CharField(max_length=100, unique=True)
     unite_compte = models.ForeignKey("Unite_has_Compte", related_name="montants", on_delete=models.CASCADE) # auto
@@ -297,7 +309,10 @@ class Compte_has_Montant(models.Model):
     #la validation de chaque acteur
     vld_cadre = models.BooleanField(default=False)   # auto    
     vld_chef_dep = models.BooleanField(default=False) # auto
-    vld_sous_dir = models.BooleanField(default=False)  
+    vld_sous_dir = models.BooleanField(default=False)
+    # validation par mois 
+    vld_controle_chef_dep = models.PositiveSmallIntegerField(choices= VLD_CTRL_CHOICES, default=0)
+    vld_controle_sous_dir = models.PositiveSmallIntegerField(choices= VLD_CTRL_CHOICES, default=0) 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
     # valid menseulle
     mens_done = models.BooleanField(default=False) 

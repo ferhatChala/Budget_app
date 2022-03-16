@@ -679,7 +679,9 @@ urlpatterns = [
     #path('actualis/<int:id_ann>/unite/<int:id>', views.unite_detail_actualis, name="unite_actualis"),
     #Offre
     path('controle/<int:id_ann>/unite/offre/<int:id>', views.offre_comptes_controle, name="offre_controle"),
-    path('controle/<int:id_ann>/unite/offre/add_montant/<int:id>', views.add_montant_controle, name="add_montant_offre_controle"),
+    path('controle/<int:id_ann>/unite/offre/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_offre_controle"),
+    path('controle/<int:id_ann>/unite/offre/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_offre_controle"),
+
     path('controle/<int:id_ann>/unite/offre/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
     path('controle/<int:id_ann>/unite/offre/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
