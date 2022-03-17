@@ -675,14 +675,13 @@ urlpatterns = [
 # Controle et suivi budgétaire  ----------------------------------------------------------------------------------------------------------
     path('controle/unites', views.unites_controle, name="unites_controle"),
     path('controle/<int:id_ann>/unite/<int:id>', views.unite_detail_controle, name="unite_controle"),
-    path('controle/<int:id_ann>/valid_edition/<int:id>', views.valid_edition_controle, name="valid_edition_controle"),
     #path('actualis/<int:id_ann>/unite/<int:id>', views.unite_detail_actualis, name="unite_actualis"),
     #Offre
     path('controle/<int:id_ann>/unite/offre/<int:id>', views.offre_comptes_controle, name="offre_controle"),
     path('controle/<int:id_ann>/unite/offre/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_offre_controle"),
     path('controle/<int:id_ann>/unite/offre/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_offre_controle"),
 
-    path('controle/<int:id_ann>/unite/offre/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
+    path('controle/<int:id_ann>/unite/offre/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
     path('controle/<int:id_ann>/unite/offre/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
     path('controle/<int:id_ann>/unite/offre/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),

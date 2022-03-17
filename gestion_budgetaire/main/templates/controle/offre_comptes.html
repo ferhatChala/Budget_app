@@ -41,12 +41,52 @@
 					<div class="card" style="margin-bottom: 1px;">
 						<div class="card-header" id="hua{{ month.0 }}" role="tab" data-toggle="collapse" data-target="#cua{{ month.0 }}" aria-expanded="true" aria-controls="cua{{ month.0 }}">
 							<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span> {{ month.1}} 
-								<span class="float-right">-</span>
+								<span class="float-right">
+									{% for key, status in ch_status.items  %}
+										{% if key == month.0  %}
+											{% for i, s in status.items  %}
+
+												{% if user.user_type == 6 %}
+													{% if i == "cadre" %}
+														{% if s == "Terminé" %}
+															<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+														{% elif s == "Validé" %}
+															<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+														{% elif s == "Instance" %}
+															<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+														{% elif s == "En cours" %}
+															<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+														{% elif s == "-" %}
+															<span class="float-right">-</span>
+														{% endif %}	
+													{% endif %}	
+
+												{% elif user.user_type == 5 %}
+
+													{% if i == "chef" %}
+														{% if s == "Terminé" %}
+															<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+														{% elif s == "Validé" %}
+															<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+														{% elif s == "Instance" %}
+															<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+														{% elif s == "En cours" %}
+															<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+														{% elif s == "-" %}
+															<span class="float-right"></span>
+														{% endif %}	
+													{% endif %}
+
+												{% endif %}
+
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+								</span>
 							</strong>
 						</div>
 						<div class="card-body collapse" id="cua{{ month.0 }}" aria-labelledby="hua{{ month.0 }}" data-parent="#accordionExample">
 							<!-- Cadre section -->
-							
 								<input class="form-control" id="myInput" type="text" placeholder="Search..">
 								<table class="table table-striped">
 									<thead>
@@ -239,7 +279,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
@@ -249,7 +289,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
@@ -259,7 +299,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
@@ -270,7 +310,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -280,7 +320,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -290,7 +330,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -300,7 +340,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -310,7 +350,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -320,7 +360,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -330,7 +370,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -340,7 +380,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -350,7 +390,7 @@
 																	{% if m.vld_chef_dep or m.vld_sous_dir %}
 																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
 																	{% else %}
-																		<a href="update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>

@@ -659,15 +659,7 @@
 						{% if unite.traffic  %}	
 						<tr>
 							<td>Offre</td>	
-
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										<span class="badge badge-success"> Janvier </span>
-									{% endif %}
-								{% endfor %}	
-							</td>
-
+							<td><span class="badge badge-success"> {{off_month}} </span></td>
 							<td>
 								{% for key, s in off_status.items  %}
 									{% if key == "cadre" %}
@@ -697,13 +689,7 @@
 
 						<tr>
 							<td>Traffic</td>
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										<span class="badge badge-success"> Mars </span>
-									{% endif %}
-								{% endfor %}
-							</td>
+							<td><span class="badge badge-success"> {{trf_month}} </span></td>
 							<td>
 								{% for key, s in trf_status.items  %}
 									{% if key == "cadre" %}
@@ -732,14 +718,7 @@
 						{% if unite.emmission %}	
 						<tr>
 							<td>Chiffre d'affaire à l'emmission</td>
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										<span class="badge badge-success"> Juin </span>
-									{% endif %}
-								{% endfor %}	
-							</td>
-
+							<td><span class="badge badge-success"> {{cae_month}} </span></td>
 							<td>
 								{% for key, s in cae_status.items  %}
 									{% if key == "cadre" %}
@@ -769,14 +748,7 @@
 						{% if unite.traffic %}
 						<tr>
 							<td>Chiffre d'affaire au Transport</td>
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										<span class="badge badge-success"> Juin </span>
-									{% endif %}
-								{% endfor %}	
-							</td>
-
+							<td><span class="badge badge-success"> {{cat_month}} </span></td>
 							<td>
 								{% for key, s in cat_status.items  %}
 									{% if key == "cadre" %}
@@ -806,14 +778,7 @@
 						{% if unite.recette %}	
 						<tr>
 							<td>Autre recettes</td>
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										<span class="badge badge-success"> Mai </span>
-									{% endif %}
-								{% endfor %}	
-							</td>
-
+							<td><span class="badge badge-success"> {{rct_month}} </span></td>
 							<td>
 								{% for key, s in rct_status.items  %}
 									{% if key == "cadre" %}
@@ -842,14 +807,7 @@
 
 						<tr>
 							<td>Depensses de fonctionnement</td>
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										<span class="badge badge-success"> Juin </span>
-									{% endif %}
-								{% endfor %}
-							</td>
-
+							<td><span class="badge badge-success"> {{dpf_month}} </span></td>
 							<td>
 								{% for key, s in dpf_status.items  %}
 									{% if key == "cadre" %}
@@ -878,13 +836,7 @@
 						{% if unite.exploitation %}	
 						<tr>
 							<td>Depensses d'exploitation</td>
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										<span class="badge badge-success"> Juin </span>
-									{% endif %}
-								{% endfor %}	
-							</td>
+							<td><span class="badge badge-success"> {{dpe_month}} </span></td>
 							<td>
 								{% for key, s in dpe_status.items  %}
 									{% if key == "cadre" %}

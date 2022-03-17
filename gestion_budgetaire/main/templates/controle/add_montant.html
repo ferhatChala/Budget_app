@@ -11,14 +11,44 @@
 <div class="breadcrumbs">
 	<div class="breadcrumbs-inner">
 		<div class="row m-0">
-			<div class="col-sm-4">
+			<div class="col-sm-6">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Contrôle Budget <strong> {{budget.annee}} <br> ({{unite_compte.compte.chapitre.lib}})</strong></h1>
+						<h1>Contrôle Budget 
+							<strong>
+									{% if id_month == 1 %}
+										Janvier 
+									{% elif id_month == 2 %}
+										Février
+									{% elif id_month == 3 %}
+										Mars
+									{% elif id_month == 4 %}
+										Avril
+									{% elif id_month == 5 %}
+										Mai
+									{% elif id_month == 6 %}
+										Juin
+									{% elif id_month == 7 %}
+										Juillet
+									{% elif id_month == 8 %}
+										Aout
+									{% elif id_month == 9 %}
+										Septembre
+									{% elif id_month == 10 %}
+										Octobre
+									{% elif id_month == 11 %}
+										Novembre
+									{% elif id_month == 12 %}
+										Décembre
+									{% endif %}
+
+							 {{budget.annee}} 
+							<br> ({{unite_compte.compte.chapitre.lib}})</strong>
+						</h1>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-8">
+			<div class="col-sm-6">
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
@@ -61,23 +91,80 @@
 									<table id="bootstrap-data-table" class="table table-striped">
 										<thead>
 											<tr>
-												<th>Budget de Proposition </th>
-												<th>Budget de Réunion</th>
+												<th>Prévision Annuel</th>
+												<th> Cumulé à
+													{% if id_month == 1 %}
+														( Janvier )
+													{% elif id_month == 2 %}
+														( Février )
+													{% elif id_month == 3 %}
+														( Mars )
+													{% elif id_month == 4 %}
+														( Avril )
+													{% elif id_month == 5 %}
+														( Mai )
+													{% elif id_month == 6 %}
+														( Juin )
+													{% elif id_month == 7 %}
+														( Juillet )
+													{% elif id_month == 8 %}
+														( Aout )
+													{% elif id_month == 9 %}
+														( Septembre )
+													{% elif id_month == 10 %}
+														( Octobre )
+													{% elif id_month == 11 %}
+														( Novembre )
+													{% elif id_month == 12 %}
+														( Décembre )
+													{% endif %}
+												</th>
+												<th>Prévision
+													{% if id_month == 1 %}
+														( Janvier )
+													{% elif id_month == 2 %}
+														( Février )
+													{% elif id_month == 3 %}
+														( Mars )
+													{% elif id_month == 4 %}
+														( Avril )
+													{% elif id_month == 5 %}
+														( Mai )
+													{% elif id_month == 6 %}
+														( Juin )
+													{% elif id_month == 7 %}
+														( Juillet )
+													{% elif id_month == 8 %}
+														( Aout )
+													{% elif id_month == 9 %}
+														( Septembre )
+													{% elif id_month == 10 %}
+														( Octobre )
+													{% elif id_month == 11 %}
+														( Novembre )
+													{% elif id_month == 12 %}
+														( Décembre )
+													{% endif %}
+												</th>
+
 											</tr>
 										</thead>
 										<tbody>
 											<td>
-												{% if m_propos == "null" %}
+												{% if preves_ann == "null" %}
 													-
 												{% else %}
-											 		{{m_propos.montant}}
+													{{preves_ann}}
 												{% endif %}
 											</td>
 											<td>
-												{% if m_reun == "null" %}
+												0
+											</td>
+											<td>
+												{% if preves_mens == "null" %}
 													-
 												{% else %}
-											 		{{m_reun.montant}}
+													{{preves_mens}}
 												{% endif %}
 											</td>
 										</tbody>

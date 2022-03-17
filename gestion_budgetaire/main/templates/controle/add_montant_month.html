@@ -151,13 +151,21 @@
 										</thead>
 										<tbody>
 											<td>
-												-
+												{% if preves_ann == "null" %}
+													-
+												{% else %}
+													{{preves_ann}}
+												{% endif %}
 											</td>
 											<td>
-												-
+												{{cummul}}
 											</td>
 											<td>
-												-
+												{% if preves_mens == "null" %}
+													-
+												{% else %}
+													{{preves_mens}}
+												{% endif %}
 											</td>
 										</tbody>
 									</table>									

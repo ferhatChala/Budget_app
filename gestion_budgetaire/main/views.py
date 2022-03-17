@@ -7407,66 +7407,81 @@ def unites_controle(request):
 													'state_cadre_budget_1':state_cadre_budget_1, 'state_chef_budget_1':state_chef_budget_1, 'state_sdir_budget_1':state_sdir_budget_1 })
 
 # get the chapter satatus and modifs
-def get_chapitre_status_controle(ch_num, budget, unite):
-	montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, mens_done=True , unite_compte__compte__chapitre__code_num= ch_num).order_by('edition_budget')
-	edited_montants = []
-	# get edited montants
-	for em in montants:
-		if em.edition != em.edition_v:
-			edited_montants.append(em)
-	# indicateurs to check status 
-	edited_montants_nbr = len(edited_montants)
-	montants_valid_sdir = 0
-	montants_valid_chef = 0
-	montants_valid = 0
-	for em in edited_montants:
-		if em.vld_mens_sous_dir :
-			montants_valid_sdir = montants_valid_sdir + 1
-		if em.vld_mens_chef_dep :
-			montants_valid_chef = montants_valid_chef + 1 
-		if em.vld_mens_sous_dir or em.vld_mens_chef_dep :
-			montants_valid = montants_valid + 1	
-	# states
+def get_chapitre_status_by_month(ch_num, id_month, budget, unite):
+	montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, unite_compte__compte__chapitre__code_num= ch_num)
+	comptes_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num= ch_num ).count()
+	m_done = 0
+	m_vld = 0
+	for mm in montants:
+		if mm.vld_controle_chef_dep >= id_month:
+				m_vld = m_vld + 1
+
+		if id_month == 1:
+			if mm.janvier != None:
+				m_done = m_done + 1
+		elif id_month == 2:
+			if mm.fevrier != None:
+				m_done = m_done + 1
+		elif id_month == 3:
+			if mm.mars != None:
+				m_done = m_done + 1
+		elif id_month == 4:
+			if mm.avril != None:
+				m_done = m_done + 1
+		elif id_month == 5:
+			if mm.mai != None:
+				m_done = m_done + 1
+		elif id_month == 6:
+			if mm.juin != None:
+				m_done = m_done + 1
+		elif id_month == 7:
+			if mm.juillet != None:
+				m_done = m_done + 1
+		elif id_month == 8:
+			if mm.aout != None:
+				m_done = m_done + 1
+		elif id_month == 9:
+			if mm.septemre != None:
+				m_done = m_done + 1
+		elif id_month == 10:
+			if mm.octobre != None:
+				m_done = m_done + 1
+		elif id_month == 11:
+			if mm.novembre != None:
+				m_done = m_done + 1
+		elif id_month == 12:
+			if mm.decembre != None:
+				m_done = m_done + 1
+	
 	result_status = {}
-	modifs_nbr = edited_montants_nbr
 	state_cadre = ""
 	state_chef = ""
-	state_sdir = ""
-
 	# cadre state
-	if edited_montants_nbr == 0:
+	if m_done == 0:
 		state_cadre = "-"
-	elif edited_montants_nbr == montants_valid:
+	elif m_done == comptes_nbr and m_vld != comptes_nbr:
+		state_cadre = "Terminé"
+	elif m_vld == comptes_nbr:
 		state_cadre = "Validé"
 	else:
 		state_cadre = "En cours"
+	
 	# chef state
-	if edited_montants_nbr == 0:
+	if m_done == 0:
 		state_chef = "-"
-	elif edited_montants_nbr == montants_valid and edited_montants_nbr != montants_valid_sdir:
-		state_chef = "Terminé"
-	elif edited_montants_nbr == montants_valid and edited_montants_nbr == montants_valid_sdir:
-		state_chef = "Validé"
-	elif edited_montants_nbr != montants_valid:
+	elif m_done == comptes_nbr and m_vld != comptes_nbr:
 		state_chef = "Instance"
+	elif m_done == comptes_nbr and m_vld == comptes_nbr:
+		state_chef = "Terminé"
 	else:
-		state_chef = ""
+		state_chef = "En cours"	
 
-	# sdir state
-	if edited_montants_nbr == 0:
-		state_sdir = "-"
-	elif edited_montants_nbr == montants_valid and edited_montants_nbr != montants_valid_sdir:
-		state_sdir = "Instance"
-	elif edited_montants_nbr == montants_valid and edited_montants_nbr == montants_valid_sdir:
-		state_sdir = "Terminé"
-	else:
-		state_sdir = "En cours"
 	
 	# dict result 
-	result_status["modifs"] = modifs_nbr
+
 	result_status["cadre"] = state_cadre
 	result_status["chef"] = state_chef
-	result_status["sdir"] = state_sdir
+
 
 	return result_status
 
@@ -7475,49 +7490,159 @@ def unite_detail_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	all_montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, mens_done=True).order_by('edition_budget')
 
-	if len(all_montants) > 0:
-		m1 = all_montants[0]
-		edition = m1.edition_budget
-	else:
-		edition = 0
+	# check current month
+	def is_month_done(ch_num, id_month):
+		montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, unite_compte__compte__chapitre__code_num= ch_num)
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num= ch_num ).count()
+		m_done = 0
+		m_vld = 0
+		for mm in montants:
+				if mm.vld_controle_chef_dep >= id_month:
+						m_vld = m_vld + 1
 
+				if id_month == 1:
+					if mm.janvier != None:
+						m_done = m_done + 1
+				elif id_month == 2:
+					if mm.fevrier != None:
+						m_done = m_done + 1
+				elif id_month == 3:
+					if mm.mars != None:
+						m_done = m_done + 1
+				elif id_month == 4:
+					if mm.avril != None:
+						m_done = m_done + 1
+				elif id_month == 5:
+					if mm.mai != None:
+						m_done = m_done + 1
+				elif id_month == 6:
+					if mm.juin != None:
+						m_done = m_done + 1
+				elif id_month == 7:
+					if mm.juillet != None:
+						m_done = m_done + 1
+				elif id_month == 8:
+					if mm.aout != None:
+						m_done = m_done + 1
+				elif id_month == 9:
+					if mm.septemre != None:
+						m_done = m_done + 1
+				elif id_month == 10:
+					if mm.octobre != None:
+						m_done = m_done + 1
+				elif id_month == 11:
+					if mm.novembre != None:
+						m_done = m_done + 1
+				elif id_month == 12:
+					if mm.decembre != None:
+						m_done = m_done + 1
+			
+		return m_done == comptes_nbr
 
-	off_status = get_chapitre_status(1, budget, unite)
-	trf_status = get_chapitre_status(2, budget, unite)
-	cae_status = get_chapitre_status(3, budget, unite)
-	cat_status = get_chapitre_status(4, budget, unite)
-	rct_status = get_chapitre_status(5, budget, unite)
-	dpf_status = get_chapitre_status(6, budget, unite)
-	dpe_status = get_chapitre_status(7, budget, unite)
+	def is_month_begin(ch_num, id_month):
+		montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, unite_compte__compte__chapitre__code_num= ch_num)
+		comptes_nbr = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num= ch_num ).count()
+		m_done = 0
+		m_vld = 0
+		for mm in montants:
+			if mm.vld_controle_chef_dep >= id_month:
+					m_vld = m_vld + 1
 
-	print("------------------------------------")
+			if id_month == 1:
+				if mm.janvier != None:
+					m_done = m_done + 1
+			elif id_month == 2:
+				if mm.fevrier != None:
+					m_done = m_done + 1
+			elif id_month == 3:
+				if mm.mars != None:
+					m_done = m_done + 1
+			elif id_month == 4:
+				if mm.avril != None:
+					m_done = m_done + 1
+			elif id_month == 5:
+				if mm.mai != None:
+					m_done = m_done + 1
+			elif id_month == 6:
+				if mm.juin != None:
+					m_done = m_done + 1
+			elif id_month == 7:
+				if mm.juillet != None:
+					m_done = m_done + 1
+			elif id_month == 8:
+				if mm.aout != None:
+					m_done = m_done + 1
+			elif id_month == 9:
+				if mm.septemre != None:
+					m_done = m_done + 1
+			elif id_month == 10:
+				if mm.octobre != None:
+					m_done = m_done + 1
+			elif id_month == 11:
+				if mm.novembre != None:
+					m_done = m_done + 1
+			elif id_month == 12:
+				if mm.decembre != None:
+					m_done = m_done + 1
+			
+		return m_done > 0
+
+	def get_current_month(ch_num):
+		month = "Janvier"
+		for (id_m,m) in months:
+			if is_month_begin(ch_num, id_m) :
+				month = m
+
+		return month
+
+	off_month = get_current_month(1)
+	trf_month = get_current_month(2)
+	cae_month = get_current_month(3)
+	cat_month = get_current_month(4)
+	rct_month = get_current_month(5)
+	dpf_month = get_current_month(6)
+	dpe_month = get_current_month(7)
+
+	# check status 
+	ch_status = {}
+	off_status = {}
+	trf_status = {}
+	cae_status = {}
+	cat_status = {}
+	rct_status = {}
+	dpf_status = {}
+	dpe_status = {}
+
+	for (id_m,m) in months:
+		#ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+		off_status[id_m] = get_chapitre_status_by_month(1, id_m, budget, unite)
+	for (id_m,m) in months:	
+		trf_status[id_m] = get_chapitre_status_by_month(2, id_m, budget, unite)
+	for (id_m,m) in months:
+		cae_status[id_m] = get_chapitre_status_by_month(3, id_m, budget, unite)
+	for (id_m,m) in months:
+		cat_status[id_m] = get_chapitre_status_by_month(4, id_m, budget, unite)
+	for (id_m,m) in months:
+		rct_status[id_m] = get_chapitre_status_by_month(5, id_m, budget, unite)
+	for (id_m,m) in months:
+		dpf_status[id_m] = get_chapitre_status_by_month(6, id_m, budget, unite)
+	for (id_m,m) in months:
+		dpe_status[id_m] = get_chapitre_status_by_month(7, id_m, budget, unite)
+	# ------------------
+
+	print("--------- off status---------------------------")
 	print(off_status)
 
-	return render(request,"controle/unite_detail.html", {'unite':unite, 'budget':budget, 'edition':edition,
+	return render(request,"controle/unite_detail.html", {'unite':unite, 'budget':budget,
 														'off_status':off_status, 'trf_status':trf_status, 'cae_status':cae_status, 'cat_status':cat_status, 'rct_status':rct_status,
-														'dpf_status':dpf_status, 'dpe_status':dpe_status })
-
-#valid_edition_actualis
-def valid_edition_controle(request, id_ann, id):
-	unite = get_object_or_404(Unite, id = id)
-	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-	montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite)
-	for m in montants:
-		m.edition_budget = m.edition_budget + 1
-		if m.edition != m.edition_v:
-			m.edition_v = m.edition
-
-		m.save()
-
-
-	return HttpResponseRedirect("/controle/unites")
+														'dpf_status':dpf_status, 'dpe_status':dpe_status,
+														'off_month':off_month, 'trf_month':trf_month, 'cae_month':cae_month, 'cat_month':cat_month, 'rct_month':rct_month,
+														'dpf_month':dpf_month, 'dpe_month':dpe_month, })
 
 def offre_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-	# chapitre (offre)
 	chapitre = Chapitre.objects.get(code_num=1)
-
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -7528,23 +7653,22 @@ def offre_comptes_controle(request, id_ann, id):
 		else:
 			cm_dict[c.id] = m[0]			
 
-	ch_status = get_chapitre_status_controle(chapitre.code_num, budget, unite)
-	modifs = ch_status["modifs"] > 0
-	valid_sdir = ch_status["sdir"] == "Terminé"
-	valid_chef = ch_status["chef"] == "Terminé"
+	# check status 
+	ch_status = {}
+	for (id_m,m) in months:
+		ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+	# ------------------
 
-	print("valid chef dep -----------------")
-	print(valid_chef)
+	print("status month  -----------------")
+	print(ch_status)
 
 	return render(request,"controle/offre_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre, 
-														'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef, 'months':months  })
+														'ch_status':ch_status, 'months':months  })
 
 def traffic_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-
 	chapitre = Chapitre.objects.get(code_num=2)
-
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -7555,20 +7679,19 @@ def traffic_comptes_controle(request, id_ann, id):
 		else:
 			cm_dict[c.id] = m[0]		
 
-	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
-	modifs = ch_status["modifs"] > 0
-	valid_sdir = ch_status["sdir"] == "Terminé"
-	valid_chef = ch_status["chef"] == "Terminé"
+	# check status 
+	ch_status = {}
+	for (id_m,m) in months:
+		ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+	# ------------------
 
 	return render(request,"controle/traffic_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
-															'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+															'ch_status':ch_status })
 
 def ca_emmission_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-
 	chapitre = Chapitre.objects.get(code_num=3)
-
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -7579,20 +7702,19 @@ def ca_emmission_comptes_controle(request, id_ann, id):
 		else:
 			cm_dict[c.id] = m[0]		
 
-	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
-	modifs = ch_status["modifs"] > 0
-	valid_sdir = ch_status["sdir"] == "Terminé"
-	valid_chef = ch_status["chef"] == "Terminé"
+	# check status 
+	ch_status = {}
+	for (id_m,m) in months:
+		ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+	# ------------------
 
 	return render(request,"controle/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
-														 		'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+														 		'ch_status':ch_status })
 
 def ca_transport_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-
 	chapitre = Chapitre.objects.get(code_num=4)
-
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -7603,20 +7725,19 @@ def ca_transport_comptes_controle(request, id_ann, id):
 		else:
 			cm_dict[c.id] = m[0]		
 
-	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
-	modifs = ch_status["modifs"] > 0
-	valid_sdir = ch_status["sdir"] == "Terminé"
-	valid_chef = ch_status["chef"] == "Terminé"	
+	# check status 
+	ch_status = {}
+	for (id_m,m) in months:
+		ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+	# ------------------
 
 	return render(request,"controle/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
-																'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+																'ch_status':ch_status})
 
 def recettes_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-
 	chapitre = Chapitre.objects.get(code_num=5)
-
 	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 	# join comptes with montants in dict
 	cm_dict = {}
@@ -7627,13 +7748,14 @@ def recettes_comptes_controle(request, id_ann, id):
 		else:
 			cm_dict[c.id] = m[0]		
 
-	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
-	modifs = ch_status["modifs"] > 0
-	valid_sdir = ch_status["sdir"] == "Terminé"
-	valid_chef = ch_status["chef"] == "Terminé"
+	# check status 
+	ch_status = {}
+	for (id_m,m) in months:
+		ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+	# ------------------
 
 	return render(request,"controle/recettes_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 'chapitre':chapitre,
-															'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef })
+															'ch_status':ch_status })
 
 def depense_fonc_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7689,17 +7811,18 @@ def depense_fonc_comptes_controle(request, id_ann, id):
 	c3_par_unite = list(dict.fromkeys(c3_par_unite))
 	c3_par_autre = list(dict.fromkeys(c3_par_autre))
 
-	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
-	modifs = ch_status["modifs"] > 0
-	valid_sdir = ch_status["sdir"] == "Terminé"
-	valid_chef = ch_status["chef"] == "Terminé"
+	# check status 
+	ch_status = {}
+	for (id_m,m) in months:
+		ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+	# ------------------
 
 	
 
 	return render(request,"controle/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																'budget':budget, 'chapitre':chapitre,
 																"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
-																'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef
+																'ch_status':ch_status
 																})
 
 def depense_exp_comptes_controle(request, id_ann, id):
@@ -7755,26 +7878,30 @@ def depense_exp_comptes_controle(request, id_ann, id):
 	c3_par_unite = list(dict.fromkeys(c3_par_unite))
 	c3_par_autre = list(dict.fromkeys(c3_par_autre))	
 
-	ch_status = get_chapitre_status(chapitre.code_num, budget, unite)
-	modifs = ch_status["modifs"] > 0
-	valid_sdir = ch_status["sdir"] == "Terminé"
-	valid_chef = ch_status["chef"] == "Terminé"
+	# check status 
+	ch_status = {}
+	for (id_m,m) in months:
+		ch_status[id_m] = get_chapitre_status_by_month(chapitre.code_num, id_m, budget, unite)
+	# ------------------
 
 	return render(request,"controle/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																	'budget':budget, 'chapitre':chapitre,
 																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
-																	'ch_status':ch_status, 'modifs':modifs, 'valid_sdir':valid_sdir, 'valid_chef':valid_chef
+																	'ch_status':ch_status
 																	})
 
 # add montant to compte 
 def add_montant_controle(request, id_ann, id_month, id):
 	unite_compte = get_object_or_404(Unite_has_Compte, id = id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
-	m_preves_list = Compte_has_Montant.objects.filter(unite_compte=unite_compte, annee_budgetaire__annee=budget.annee, annee_budgetaire__type_bdg="CTRL").order_by('-edition')
+	m_preves_list = Compte_has_Montant.objects.filter(unite_compte=unite_compte, annee_budgetaire__annee=budget.annee, annee_budgetaire__type_bdg="NOTIF").order_by('-edition')
+	
+	preves_ann = "null"
+	preves_mens = "null"
 	if len(m_preves_list) == 0:
 		montant_preves = "null"
 		preves_ann = "null"
-		preves_men = "null"
+		preves_mens = "null"
 	else : 
 		montant_preves = m_preves_list[0]
 		preves_ann = montant_preves.montant
@@ -7893,6 +8020,78 @@ def add_montant_month_controle(request, id_ann, id_month, id):
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
+
+	# prevesion 
+	preves_ann = "null"
+	preves_mens = "null"
+	m_preves_list = Compte_has_Montant.objects.filter(unite_compte=unite_compte, annee_budgetaire__annee=budget.annee, annee_budgetaire__type_bdg="NOTIF").order_by('-edition')
+	if len(m_preves_list) == 0:
+		montant_preves = "null"
+		preves_ann = "null"
+		preves_mens = "null"
+	else : 
+		montant_preves = m_preves_list[0]
+		preves_ann = montant_preves.montant
+		if id_month == 1:
+			preves_mens = montant_preves.janvier
+		elif id_month == 2:
+			preves_mens = montant_preves.fevrier
+		elif id_month == 3:
+			preves_mens = montant_preves.mars
+		elif id_month == 4:
+			preves_mens = montant_preves.avril
+		elif id_month == 5:
+			preves_mens = montant_preves.mai
+		elif id_month == 6:
+			preves_mens = montant_preves.juin
+		elif id_month == 7:
+			preves_mens = montant_preves.juillet
+		elif id_month == 8:
+			preves_mens = montant_preves.aout
+		elif id_month == 9:
+			preves_mens = montant_preves.septemre
+		elif id_month == 10:
+			preves_mens = montant_preves.octobre
+		elif id_month == 11:
+			preves_mens = montant_preves.novembre
+		elif id_month == 12:
+			preves_mens = montant_preves.decembre
+	
+	# cummulé jusqua mois m
+	cummul = 0
+	if True :
+		if id_month == 1:
+			cummul = 0
+		elif id_month == 2:
+			cummul = montant.janvier
+		elif id_month == 3:
+			cummul = montant.janvier + montant.fevrier
+		elif id_month == 4:
+			cummul = montant.janvier + montant.fevrier + montant.mars
+		elif id_month == 5:
+			cummul = montant.janvier + montant.fevrier + montant.mars + montant.avril
+		elif id_month == 6:
+			cummul = montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai 
+		elif id_month == 7:
+			cummul = montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin
+		elif id_month == 8:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet)
+		elif id_month == 9:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout)
+		elif id_month == 10:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout + montant.septemre )
+		elif id_month == 11:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout + montant.septemre + montant.octobre)
+		elif id_month == 12:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout + montant.septemre + montant.octobre + montant.novembre)
+
+
+
 	#initil montant to 0
 	montant.montant = 0
 	montant.save()
@@ -7962,72 +8161,171 @@ def add_montant_month_controle(request, id_ann, id_month, id):
 
 
 	return render (request=request, template_name="controle/add_montant_month.html", context={"unite_compte":unite_compte, "budget":budget, 'montant':montant, 'update_comment_form':update_comment_form, 'form':form,
-																								'id_month':id_month })
+																								'id_month':id_month, 'preves_mens':preves_mens, 'preves_ann':preves_ann , 'cummul':cummul})
 
-def update_montant_controle(request, id_ann, id): 
+def update_montant_controle(request, id_ann, id_month, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
+	# prevesion 
+	preves_ann = "null"
+	preves_mens = "null"
+	m_preves_list = Compte_has_Montant.objects.filter(unite_compte=unite_compte, annee_budgetaire__annee=budget.annee, annee_budgetaire__type_bdg="NOTIF").order_by('-edition')
+	if len(m_preves_list) == 0:
+		montant_preves = "null"
+		preves_ann = "null"
+		preves_mens = "null"
+	else : 
+		montant_preves = m_preves_list[0]
+		preves_ann = montant_preves.montant
+		if id_month == 1:
+			preves_mens = montant_preves.janvier
+		elif id_month == 2:
+			preves_mens = montant_preves.fevrier
+		elif id_month == 3:
+			preves_mens = montant_preves.mars
+		elif id_month == 4:
+			preves_mens = montant_preves.avril
+		elif id_month == 5:
+			preves_mens = montant_preves.mai
+		elif id_month == 6:
+			preves_mens = montant_preves.juin
+		elif id_month == 7:
+			preves_mens = montant_preves.juillet
+		elif id_month == 8:
+			preves_mens = montant_preves.aout
+		elif id_month == 9:
+			preves_mens = montant_preves.septemre
+		elif id_month == 10:
+			preves_mens = montant_preves.octobre
+		elif id_month == 11:
+			preves_mens = montant_preves.novembre
+		elif id_month == 12:
+			preves_mens = montant_preves.decembre
+	
+	# cummulé jusqua mois m
+	cummul = 0
+	if True :
+		if id_month == 1:
+			cummul = 0
+		elif id_month == 2:
+			cummul = montant.janvier
+		elif id_month == 3:
+			cummul = montant.janvier + montant.fevrier
+		elif id_month == 4:
+			cummul = montant.janvier + montant.fevrier + montant.mars
+		elif id_month == 5:
+			cummul = montant.janvier + montant.fevrier + montant.mars + montant.avril
+		elif id_month == 6:
+			cummul = montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai 
+		elif id_month == 7:
+			cummul = montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin
+		elif id_month == 8:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet)
+		elif id_month == 9:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout)
+		elif id_month == 10:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout + montant.septemre )
+		elif id_month == 11:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout + montant.septemre + montant.octobre)
+		elif id_month == 12:
+			cummul = (montant.janvier + montant.fevrier + montant.mars + montant.avril + montant.mai + montant.juin + 
+					montant.juillet + montant.aout + montant.septemre + montant.octobre + montant.novembre)
+
+
+	montant.montant = montant.janvier
+	montant.save()
+
 	comment_form = CommentaireForm(request.POST or None)
-	update_comment_form = CommentaireForm(request.POST or None, instance = montant.commentaire_mens)
-	form = ActualisMontantNotifForm(request.POST or None, instance = montant)
+	update_comment_form = CommentaireForm(request.POST or None, instance = montant.commentaire_montant)
+	form = MontantOnlyForm(request.POST or None, instance = montant)
 	if form.is_valid():
 		mm = form.save(commit=False)
-		mens_accu = mm.janvier+mm.fevrier+mm.mars+mm.avril+mm.mai+mm.juin+mm.juillet+mm.aout+mm.septemre+mm.octobre+mm.novembre+mm.decembre
-		diff = mm.montant - mens_accu
-		if mm.montant == mens_accu:
-			mm.save()
-			messages.success(request, "Mis à jour avec succés." )
-			new_montant = get_object_or_404(Compte_has_Montant, id = id)
-			if request.user.user_type==6:
-				new_montant.vld_mens_cadre = True
-			if request.user.user_type==5:
-				new_montant.vld_mens_chef_dep = True
-				new_montant.validation_mens = "CHEFD"
-			if request.user.user_type==4:
-				new_montant.vld_mens_sous_dir = True
-				new_montant.validation_mens = "SOUSD"		
-			# add mens comment 
-			if comment_form.is_valid():
-				comment = comment_form.save(commit=False)
-				comment.comment_type = "M"
-				comment.user = request.user
-				comment.save()
-				new_montant.commentaire_mens = comment
-			
-			# update existed comment 
-			if update_comment_form.is_valid():
-				updated_comm = update_comment_form.save(commit=False)
-				updated_comm.comment_type = "M"
-				updated_comm.user = request.user
-				updated_comm.save()
-				new_montant.commentaire_mens = updated_comm
 
-			new_montant.save()
+		if id_month == 1:
+			mm.janvier = mm.montant
+		elif id_month == 2:
+			mm.fevrier = mm.montant
+		elif id_month == 3:
+			mm.mars = mm.montant
+		elif id_month == 4:
+			mm.avril = mm.montant
+		elif id_month == 5:
+			mm.mai = mm.montant
+		elif id_month == 6:
+			mm.juin = mm.montant
+		elif id_month == 7:
+			mm.juillet = mm.montant
+		elif id_month == 8:
+			mm.aout = mm.montant
+		elif id_month == 9:
+			mm.septemre = mm.montant
+		elif id_month == 10:
+			mm.octobre = mm.montant
+		elif id_month == 11:
+			mm.novembre = mm.montant
+		elif id_month == 12:
+			mm.decembre = mm.montant	
 
-			# Redirecter vers chaque chapitre
-			if unite_compte.compte.chapitre.code_num== 1:
-				return redirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 2:
-				return redirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 3:
-				return redirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 4:
-				return redirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 5:
-				return redirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 6:
-				return redirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
-			elif unite_compte.compte.chapitre.code_num== 7:
-				return redirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
-			else:
-				return redirect("/controle/unites")
+		mm.montant = 0
+		mm.save()
+		
+		messages.success(request, "Mis à jour avec succés." )
+		new_montant = get_object_or_404(Compte_has_Montant, id = id)
+
+		if request.user.user_type==6:
+			new_montant.vld_cadre = True
+		if request.user.user_type==5:
+			new_montant.vld_chef_dep = True
+			new_montant.validation = "CHEFD"
+		if request.user.user_type==4:
+			new_montant.vld_sous_dir = True
+			new_montant.validation = "SOUSD"
+					
+		# add mens comment 
+		if comment_form.is_valid():
+			comment = comment_form.save(commit=False)
+			comment.comment_type = "M"
+			comment.user = request.user
+			comment.save()
+			new_montant.commentaire_montant = comment
+		
+		# update existed comment 
+		if update_comment_form.is_valid():
+			updated_comm = update_comment_form.save(commit=False)
+			updated_comm.comment_type = "M"
+			updated_comm.user = request.user
+			updated_comm.save()
+			new_montant.commentaire_montant = updated_comm
+
+		new_montant.save()
+
+		# Redirecter vers chaque chapitre
+		if unite_compte.compte.chapitre.code_num== 1:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 2:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/traffic/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 3:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/ca_emmission/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 4:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/ca_transport/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 5:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/recettes/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 6:
+			return redirect("/controle/"+ str(id_ann)+ "/unite/depense_fonc/"+ str(unite_compte.unite.id)+"")
+		elif unite_compte.compte.chapitre.code_num== 7:
+			return redirect("/actualis/"+ str(id_ann)+ "/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 		else:
-			messages.error(request, "Invalid: les montants mensuel ne correspondant pas au montant Annuel (différence : " + str(diff) + " )" )
+			return redirect("/controle/unites")
 
-
-	return render (request=request, template_name="controle/update_montant.html", context={"form":form, "comment_form":comment_form, "update_comment_form":update_comment_form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
+	return render (request=request, template_name="controle/update_montant.html", context={"form":form, "comment_form":comment_form, "update_comment_form":update_comment_form,
+																							"unite_compte":unite_compte, "montant":montant, "budget":budget, "id_month":id_month,
+																							'preves_mens':preves_mens, 'preves_ann':preves_ann , 'cummul':cummul})
 
 def valid_montant_controle(request, id_ann, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)

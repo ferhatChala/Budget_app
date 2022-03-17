@@ -11,19 +11,49 @@
 <div class="breadcrumbs">
 	<div class="breadcrumbs-inner">
 		<div class="row m-0">
-			<div class="col-sm-4">
+			<div class="col-sm-6">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Budget notifié <strong> {{budget.annee}}</strong></h1>
+						<h1>Contrôle Budget 
+							<strong>
+									{% if id_month == 1 %}
+										Janvier 
+									{% elif id_month == 2 %}
+										Février
+									{% elif id_month == 3 %}
+										Mars
+									{% elif id_month == 4 %}
+										Avril
+									{% elif id_month == 5 %}
+										Mai
+									{% elif id_month == 6 %}
+										Juin
+									{% elif id_month == 7 %}
+										Juillet
+									{% elif id_month == 8 %}
+										Aout
+									{% elif id_month == 9 %}
+										Septembre
+									{% elif id_month == 10 %}
+										Octobre
+									{% elif id_month == 11 %}
+										Novembre
+									{% elif id_month == 12 %}
+										Décembre
+									{% endif %}
+
+							 {{budget.annee}} 
+							<br> ({{unite_compte.compte.chapitre.lib}})</strong>
+						</h1>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-8">
+			<div class="col-sm-6">
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites_notif' %}">Unités</a></li>
-                            <li><a href="/notif/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
+							<li><a href="{% url 'unites_controle' %}">Unités</a></li>
+                            <li><a href="/controle/{{budget.id}}/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
 							<li><a href="#">{{unite_compte.compte.chapitre.lib}}</a></li>
 						</ol>
 					</div>
@@ -52,31 +82,97 @@
 						</div>
 						<div class="card-body">
 							
-							{% if montant.commentaire_montant.importance == "F" %}
-								<div class="alert border alert-light" role="alert">
-									<strong>Commentaire</strong> <br>
-									{{montant.commentaire_montant.text}}
-								</div>	
-							{% endif %}
-							{% if montant.commentaire_montant.importance == "M" %}
-								<div class="alert alert-warning" role="alert">
-									<strong>Commentaire</strong> <br>
-									{{montant.commentaire_montant.text}}
-								</div>	
-							{% endif %}
-							{% if montant.commentaire_montant.importance == "C" %}
-								<div class="alert alert-danger" role="alert">
-									<strong>Commentaire</strong> <br>
-									{{montant.commentaire_montant.text}}
-								</div>	
-							{% endif %}
+							<div class="alert alert-light border" role="alert">
+								<strong>Année {{budget.annee}} </strong>
+								<table id="bootstrap-data-table" class="table table-striped">
+									<thead>
+										<tr>
+											<th>Prévision Annuel</th>
+											<th> Cumulé à
+												{% if id_month == 1 %}
+													( Janvier )
+												{% elif id_month == 2 %}
+													( Février )
+												{% elif id_month == 3 %}
+													( Mars )
+												{% elif id_month == 4 %}
+													( Avril )
+												{% elif id_month == 5 %}
+													( Mai )
+												{% elif id_month == 6 %}
+													( Juin )
+												{% elif id_month == 7 %}
+													( Juillet )
+												{% elif id_month == 8 %}
+													( Aout )
+												{% elif id_month == 9 %}
+													( Septembre )
+												{% elif id_month == 10 %}
+													( Octobre )
+												{% elif id_month == 11 %}
+													( Novembre )
+												{% elif id_month == 12 %}
+													( Décembre )
+												{% endif %}
+											</th>
+											<th>Prévision
+												{% if id_month == 1 %}
+													( Janvier )
+												{% elif id_month == 2 %}
+													( Février )
+												{% elif id_month == 3 %}
+													( Mars )
+												{% elif id_month == 4 %}
+													( Avril )
+												{% elif id_month == 5 %}
+													( Mai )
+												{% elif id_month == 6 %}
+													( Juin )
+												{% elif id_month == 7 %}
+													( Juillet )
+												{% elif id_month == 8 %}
+													( Aout )
+												{% elif id_month == 9 %}
+													( Septembre )
+												{% elif id_month == 10 %}
+													( Octobre )
+												{% elif id_month == 11 %}
+													( Novembre )
+												{% elif id_month == 12 %}
+													( Décembre )
+												{% endif %}
+											</th>
+
+										</tr>
+									</thead>
+									<tbody>
+										<td>
+											{% if preves_ann == "null" %}
+												-
+											{% else %}
+												{{preves_ann}}
+											{% endif %}
+										</td>
+										<td>
+											{{cummul}}
+										</td>
+										<td>
+											{% if preves_mens == "null" %}
+												-
+											{% else %}
+												{{preves_mens}}
+											{% endif %}
+										</td>
+									</tbody>
+								</table>									
+							</div>
 								
 
                             <form method="post">
                                 {% csrf_token %}
 
 								<div class="alert alert-info" role="alert">
-									<strong>Budget notifié  </strong>
+									<strong>Contrôle Budgétaire</strong>
 									<div class="form-row">
 										<div class="form-group col-md-12 mb-0">
 											{{ form.montant|as_crispy_field }}
@@ -84,6 +180,33 @@
 										<br>
 									</div>
 								</div>
+
+								{% if montant.commentaire_mens == None %}
+									<div class="alert alert-light border" role="alert">
+										<strong>Ajouter commentaire</strong>
+										<div class="form-row">
+											<div class="form-group col-md-9 mb-0">
+												{{ comment_form.text|as_crispy_field }}
+											</div>
+											<div class="form-group col-md-3 mb-0">
+												{{ comment_form.importance|as_crispy_field }}
+											</div>
+										</div>
+									</div>
+								{% else %}	
+									<div class="alert alert-light border" role="alert">
+										<strong>Modifier commentaire</strong>
+										<div class="form-row">
+											<div class="form-group col-md-9 mb-0">
+												{{ update_comment_form.text|as_crispy_field }}
+											</div>
+											<div class="form-group col-md-3 mb-0">
+												{{ update_comment_form.importance|as_crispy_field }}
+											</div>
+										</div>
+									</div>
+								{% endif %}	
+								
 								
                                 <button type="submit" class="btn btn-primary">Valider</button>
                                 <a href="{% url 'unites_notif' %}" class="btn btn-secondary">Annuler</a>
