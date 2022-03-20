@@ -7588,13 +7588,26 @@ def unite_detail_controle(request, id_ann, id):
 		return m_done > 0
 
 	def get_current_month(ch_num):
-		month = "Janvier"
+		month = {}
+		month["month"] = "Janvier"
+		month["id"] = 1
 		for (id_m,m) in months:
 			if is_month_begin(ch_num, id_m) :
-				month = m
-
+				month["month"] = m
+				month["id"] = id_m
 		return month
 
+	def get_current_done_month(ch_num):
+		month = {}
+		month["month"] = "J"
+		month["id"] = 1
+		for (id_m,m) in months:
+			if is_month_done(ch_num, id_m) :
+				month["month"] = m
+				month["id"] = id_m
+		return month
+
+	# current month
 	off_month = get_current_month(1)
 	trf_month = get_current_month(2)
 	cae_month = get_current_month(3)
@@ -7602,6 +7615,14 @@ def unite_detail_controle(request, id_ann, id):
 	rct_month = get_current_month(5)
 	dpf_month = get_current_month(6)
 	dpe_month = get_current_month(7)
+	# currnet done month
+	off_month_done = get_current_done_month(1)
+	trf_month_done = get_current_done_month(2)
+	cae_month_done = get_current_done_month(3)
+	cat_month_done = get_current_done_month(4)
+	rct_month_done = get_current_done_month(5)
+	dpf_month_done = get_current_done_month(6)
+	dpe_month_done = get_current_done_month(7)
 
 	# check status 
 	ch_status = {}
@@ -7631,13 +7652,15 @@ def unite_detail_controle(request, id_ann, id):
 	# ------------------
 
 	print("--------- off status---------------------------")
-	print(off_status)
+	print(off_month)
 
 	return render(request,"controle/unite_detail.html", {'unite':unite, 'budget':budget,
 														'off_status':off_status, 'trf_status':trf_status, 'cae_status':cae_status, 'cat_status':cat_status, 'rct_status':rct_status,
 														'dpf_status':dpf_status, 'dpe_status':dpe_status,
 														'off_month':off_month, 'trf_month':trf_month, 'cae_month':cae_month, 'cat_month':cat_month, 'rct_month':rct_month,
-														'dpf_month':dpf_month, 'dpe_month':dpe_month, })
+														'dpf_month':dpf_month, 'dpe_month':dpe_month,
+														'off_month_done':off_month_done, 'trf_month_done':trf_month_done, 'cae_month_done':cae_month_done, 'cat_month_done':cat_month_done, 'rct_month_done':rct_month_done,
+														'dpf_month_done':dpf_month_done, 'dpe_month_done':dpe_month_done, })
 
 def offre_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7686,7 +7709,7 @@ def traffic_comptes_controle(request, id_ann, id):
 	# ------------------
 
 	return render(request,"controle/traffic_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
-															'ch_status':ch_status })
+															'ch_status':ch_status , 'months':months})
 
 def ca_emmission_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7709,7 +7732,7 @@ def ca_emmission_comptes_controle(request, id_ann, id):
 	# ------------------
 
 	return render(request,"controle/ca_emmission_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
-														 		'ch_status':ch_status })
+														 		'ch_status':ch_status, 'months':months })
 
 def ca_transport_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7732,7 +7755,7 @@ def ca_transport_comptes_controle(request, id_ann, id):
 	# ------------------
 
 	return render(request,"controle/ca_transport_comptes.html", {'unite':unite, 'comptes':comptes, 'cm_dict':cm_dict, 'budget':budget, 'chapitre':chapitre,
-																'ch_status':ch_status})
+																'ch_status':ch_status, 'months':months})
 
 def recettes_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7755,7 +7778,7 @@ def recettes_comptes_controle(request, id_ann, id):
 	# ------------------
 
 	return render(request,"controle/recettes_comptes.html", {'unite':unite, 'comptes':comptes, 'budget':budget, 'cm_dict':cm_dict, 'chapitre':chapitre,
-															'ch_status':ch_status })
+															'ch_status':ch_status , 'months':months})
 
 def depense_fonc_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
@@ -7822,7 +7845,7 @@ def depense_fonc_comptes_controle(request, id_ann, id):
 	return render(request,"controle/depense_fonc_comptes.html", {'unite':unite, 'comptes':comptes, 'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																'budget':budget, 'chapitre':chapitre,
 																"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
-																'ch_status':ch_status
+																'ch_status':ch_status, 'months':months
 																})
 
 def depense_exp_comptes_controle(request, id_ann, id):
@@ -7887,7 +7910,7 @@ def depense_exp_comptes_controle(request, id_ann, id):
 	return render(request,"controle/depense_exp_comptes.html", {'unite':unite, 'comptes':comptes,  'comptes_regle_par_unite':comptes_regle_par_unite, 'comptes_regle_par_autre':comptes_regle_par_autre,
 																	'budget':budget, 'chapitre':chapitre,
 																	"c2_par_unite":c2_par_unite, "c2_par_autre":c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre, 'cm_dict':cm_dict,
-																	'ch_status':ch_status
+																	'ch_status':ch_status, 'months':months
 																	})
 
 # add montant to compte 
@@ -8327,19 +8350,13 @@ def update_montant_controle(request, id_ann, id_month, id):
 																							"unite_compte":unite_compte, "montant":montant, "budget":budget, "id_month":id_month,
 																							'preves_mens':preves_mens, 'preves_ann':preves_ann , 'cummul':cummul})
 
-def valid_montant_controle(request, id_ann, id):
+def valid_montant_controle(request, id_ann, id_month, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = new_montant.unite_compte
-	if request.user.user_type==6:
-		new_montant.vld_mens_cadre = True
-		new_montant.save()
+
 	if request.user.user_type==5:
-		new_montant.vld_mens_chef_dep = True
-		new_montant.validation_mens = "CHEFD"
-		new_montant.save()
-	if request.user.user_type==4:
-		new_montant.vld_mens_sous_dir = True
-		new_montant.validation_mens = "SOUSD"
+		new_montant.vld_controle_chef_dep = id_month
+		new_montant.validation = "CHEFD"
 		new_montant.save()
 
 	# Redirecter vers chaque chapitre
@@ -8361,20 +8378,18 @@ def valid_montant_controle(request, id_ann, id):
 		return HttpResponseRedirect("/controle/unites")
 
 #valider tous 
-def valid_tous_controle(request, id_ann, id_unite, ch_num):
+def valid_tous_controle(request, id_ann, id_month, id_unite, ch_num):
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	unite = Unite.objects.get(id=id_unite)
-	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, mens_done=True, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	
 	for m in montants: 
 		if request.user.user_type == 5:
-			m.vld_mens_chef_dep = True
-			m.validation_mens = "CHEFD"
+			m.vld_controle_chef_dep = id_month
+			m.validation = "CHEFD"
 			m.save()
-		elif request.user.user_type == 4:
-			m.vld_mens_sous_dir = True
-			m.validation_mens = "SOUSD"
-			m.save()
+
 
 	# Redirecter vers chaque chapitre
 	if ch_num == 1:
@@ -8394,17 +8409,15 @@ def valid_tous_controle(request, id_ann, id_unite, ch_num):
 	else:
 		return HttpResponseRedirect("/controle/unites")
 
-def cancel_valid_tous_controle(request, id_ann, id_unite, ch_num):
+def cancel_valid_tous_controle(request, id_ann, id_month, id_unite, ch_num):
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 
 	unite = Unite.objects.get(id=id_unite)
-	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, mens_done=True, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
+	montants = Compte_has_Montant.objects.filter(unite_compte__unite = unite, annee_budgetaire=budget, unite_compte__compte__chapitre__code_num=ch_num)
 	for m in montants: 
 		if request.user.user_type == 5:
-			m.vld_mens_chef_dep = False
-			m.save()
-		elif request.user.user_type == 4:
-			m.vld_mens_sous_dir = False
+			m.vld_controle_chef_dep = id_month - 1
+			m.validation = "CHEFD"
 			m.save()
 
 	# Redirecter vers chaque chapitre
@@ -8425,20 +8438,15 @@ def cancel_valid_tous_controle(request, id_ann, id_unite, ch_num):
 	else:
 		return HttpResponseRedirect("/controle/unites")	
 
-def cancel_valid_montant_controle(request,id_ann, id):
+def cancel_valid_montant_controle(request, id_ann, id_month, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = new_montant.unite_compte
-	if request.user.user_type==6:
-		new_montant.vld_mens_cadre = False
-		new_montant.save()
+
 	if request.user.user_type==5:
-		new_montant.vld_mens_chef_dep = False
-		new_montant.validation_mens = "CHEFD"
+		new_montant.vld_controle_chef_dep = id_month - 1
+		new_montant.validation = "CHEFD"
 		new_montant.save()
-	if request.user.user_type==4:
-		new_montant.vld_mens_sous_dir = False
-		new_montant.validation_mens = "SOUSD"
-		new_montant.save()
+
 	# Redirecter vers chaque chapitre
 	if unite_compte.compte.chapitre.code_num== 1:
 		return HttpResponseRedirect("/controle/"+ str(id_ann)+ "/unite/offre/"+ str(unite_compte.unite.id)+"")

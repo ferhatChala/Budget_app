@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager,AbstractUser
 
 # Costume Users
@@ -92,7 +93,7 @@ class Unite(models.Model):
     ('INT', 'Internationle'),
     ('DOM', 'Domestique'),
     ]
-    code_num = models.IntegerField()
+    code_num = models.IntegerField() # tranfert vers l id and add primary key 
     code_alpha = models.CharField(max_length=10)
     lib = models.CharField(max_length=100)
     departement = models.ForeignKey("Departement", related_name="unites", on_delete=models.CASCADE)
@@ -100,6 +101,7 @@ class Unite(models.Model):
     pays = models.ForeignKey("Pays",  on_delete=models.CASCADE)
     reseau_unite = models.CharField(max_length=50, choices=RES_CHOICES,default='DZ',)
     region = models.CharField(max_length=50, choices=REG_CHOICES,default='DOM',)
+    # indicateurs 
     comm = models.BooleanField('Commercial indicateur', default=False)
     tresorie = models.BooleanField('Tresorie indicateur', default=False)
     traffic = models.BooleanField('Traffic indicateur', default=False)
@@ -216,9 +218,9 @@ class Unite_has_Compte(models.Model):
     unite   = models.ForeignKey("Unite", related_name="unites", on_delete=models.CASCADE)
     compte  = models.ForeignKey("SCF_Pos_7", related_name="unite_comptes", on_delete=models.CASCADE)
     regle_par = models.ForeignKey("Unite", related_name="unite_regle" , on_delete=models.CASCADE)
-    reseau_compte  = models.CharField(max_length=50, choices=RES_CHOICES, default="ALL") # resau_compte
+    reseau_compte  = models.CharField(max_length=50, choices=RES_CHOICES, default="ALL")
     added_by = models.ForeignKey("User", null=True, blank=True, related_name="other_comptes_added", on_delete=models.CASCADE)
-    monnaie = models.ForeignKey("Monnaie",  null=True, blank=True, on_delete=models.CASCADE)
+    monnaie = models.ForeignKey("Monnaie",  null=True, blank=True, on_delete=models.CASCADE) #  add default
 
     def __str__(self):
         return self.unite.code_alpha + " - " + str(self.compte.numero) 
@@ -295,14 +297,14 @@ class Compte_has_Montant(models.Model):
     edition_budget = models.PositiveIntegerField(default=0)
 
     type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES, default="N") 
-    created_date = models.DateTimeField(auto_now_add=True, null=True, blank=True,)
+    created_date = models.DateTimeField(default=timezone.now) 
 
     # les montant pour chaque acteur
-    montant_cadre  = models.FloatField(default=0) # saiser cadre
-    montant = models.FloatField(default=0) # auto (egale la dernier de valeur de user )
-    montant_cloture = models.FloatField(default=0) # anne N  null true , blank true    
-    montant_chef_dep = models.FloatField(default=0) # saiser chef dep
-    montant_sous_dir = models.FloatField(default=0) # saiser sous_sdir 
+    montant_cadre  = models.FloatField(default=0) # 
+    montant = models.FloatField(default=0) # 
+    montant_cloture = models.FloatField(default=0) # a   
+    montant_chef_dep = models.FloatField(default=0) #
+    montant_sous_dir = models.FloatField(default=0) #  
     # commentaire 
     commentaire_montant = models.ForeignKey("Commentaire", related_name="montants_comm",  null=True, blank=True,  on_delete=models.SET_NULL)
     commentaire_mens = models.ForeignKey("Commentaire", related_name="mens_comm",  null=True, blank=True,  on_delete=models.SET_NULL) # comment mens
@@ -310,18 +312,15 @@ class Compte_has_Montant(models.Model):
     vld_cadre = models.BooleanField(default=False)   # auto    
     vld_chef_dep = models.BooleanField(default=False) # auto
     vld_sous_dir = models.BooleanField(default=False)
-    # validation par mois 
-    vld_controle_chef_dep = models.PositiveSmallIntegerField(choices= VLD_CTRL_CHOICES, default=0)
-    vld_controle_sous_dir = models.PositiveSmallIntegerField(choices= VLD_CTRL_CHOICES, default=0) 
     validation = models.CharField(max_length=50,choices=VALID_CHOICES) # auto depend de user
+    # validation Controle
+    vld_controle_chef_dep = models.PositiveSmallIntegerField(choices= VLD_CTRL_CHOICES, default=0)
     # valid menseulle
     mens_done = models.BooleanField(default=False) 
     vld_mens_cadre = models.BooleanField(default=False)   # auto    
     vld_mens_chef_dep = models.BooleanField(default=False) # auto
     vld_mens_sous_dir = models.BooleanField(default=False) 
     validation_mens = models.CharField(max_length=50,choices=VALID_CHOICES, null=True, blank=True) # auto depend de user
-
-
 
 class Cadre_has_Unite(models.Model):
     # code = cadre.id + unite.code
@@ -351,26 +350,25 @@ class Annee_Budgetaire(models.Model):
 # Historique & Notification & Commentaire & Reception
 class Historique(models.Model):
     user = models.ForeignKey("User", related_name="historique", on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now=False, auto_now_add=False)
+    date = models.DateTimeField(default=timezone.now)
     action = models.CharField(max_length=50)
 
 class Notification(models.Model):
-    user = models.ForeignKey("User", related_name="notifs", on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now=False, auto_now_add=False)
-    message = models.CharField(max_length=50)
+    user = models.ForeignKey("User", related_name="notifs", on_delete=models.CASCADE) # target user
+    date = models.DateTimeField(default=timezone.now)
+    message = models.TextField(max_length=50)
     seen = models.BooleanField()
 
 class Commentaire(models.Model):
     IMPORTANCE_CHOICES = [
-    ('A', 'Aucun'),
-    ('F', 'Faible'),
-    ('M', 'Moyenne'),
-    ('C', 'Critique'),
-    ]
+        ('A', 'Aucun'),
+        ('F', 'Faible'),
+        ('M', 'Moyenne'),
+        ('C', 'Critique'),]
     TYPE_CHOICES = [
-    ('M', 'Montant'),
-    ('C', 'Cloture'),
-    ]
+        ('M', 'Montant'),
+        ('C', 'Cloture'),]
+    
     text = models.CharField(max_length=300, default='-')
     importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='A') 
     comment_type = models.CharField(max_length=50, choices=TYPE_CHOICES ) 
@@ -378,14 +376,14 @@ class Commentaire(models.Model):
 
     def __str__(self):
         return self.text
-    
-    
+        
 class Reception(models.Model):
     TYPBDG_CHOICES = [
     ('PROPOS', 'Budget de proposition'),
     ('REUN', 'Budget de Réunion'),
     ('NOTIF', 'Budget notifié'),
     ]
+    
     unite = models.ForeignKey("Unite", on_delete=models.CASCADE)
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     type_bdg = models.CharField( max_length=50,choices=TYPBDG_CHOICES) # auto
@@ -400,6 +398,7 @@ class Interim(models.Model):
     ('PIET', 'P/I Département Etranger'),
     ('PISD', 'P/I Sous Directeur'),
     ]
+
     user = models.ForeignKey("User", related_name="interims", on_delete=models.CASCADE)
     type_interim = models.CharField(max_length=50, choices=INTERIM_CHOICES,default='PIDZ',)
     date_debut = models.DateField(auto_now=False)

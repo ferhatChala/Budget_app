@@ -668,95 +668,100 @@ urlpatterns = [
     path('actualis/<int:id_ann>/unite/depense_exp/update_comment/<int:id>', views.update_comment_actualis, name="update_comment_actualis"),
     path('actualis/<int:id_ann>/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_actualis, name="delete_comment_actualis"),
 
-# Controle et Suivi de budget ----------------------------------------------------------------------------------------------------------
-    # 2 budget 
-    # control - par mois 
-    # 
 # Controle et suivi budgétaire  ----------------------------------------------------------------------------------------------------------
     path('controle/unites', views.unites_controle, name="unites_controle"),
     path('controle/<int:id_ann>/unite/<int:id>', views.unite_detail_controle, name="unite_controle"),
     #path('actualis/<int:id_ann>/unite/<int:id>', views.unite_detail_actualis, name="unite_actualis"),
+  
     #Offre
     path('controle/<int:id_ann>/unite/offre/<int:id>', views.offre_comptes_controle, name="offre_controle"),
     path('controle/<int:id_ann>/unite/offre/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_offre_controle"),
     path('controle/<int:id_ann>/unite/offre/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_offre_controle"),
 
     path('controle/<int:id_ann>/unite/offre/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
-    path('controle/<int:id_ann>/unite/offre/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
-    path('controle/<int:id_ann>/unite/offre/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/offre/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/offre/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/offre/<int:id_month>/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/offre/<int:id_month>/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/offre/<int:id_month>/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/offre/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/offre/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/offre/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
     
     #Traffic
     path('controle/<int:id_ann>/unite/traffic/<int:id>', views.traffic_comptes_controle, name="traffic_controle"),
-    path('controle/<int:id_ann>/unite/traffic/add_montant/<int:id>', views.add_montant_controle, name="add_montant_traffic_controle"),
-    path('controle/<int:id_ann>/unite/traffic/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
-    path('controle/<int:id_ann>/unite/traffic/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
-    path('controle/<int:id_ann>/unite/traffic/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/traffic/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/traffic/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/traffic/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_traffic_controle"),
+    path('controle/<int:id_ann>/unite/traffic/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_traffic_controle"),
+
+    path('controle/<int:id_ann>/unite/traffic/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
+    path('controle/<int:id_ann>/unite/traffic/<int:id_month>/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/traffic/<int:id_month>/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/traffic/<int:id_month>/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/traffic/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/traffic/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/traffic/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
         
     #ca emmission
     path('controle/<int:id_ann>/unite/ca_emmission/<int:id>', views.ca_emmission_comptes_controle, name="ca_emmission_controle"),
-    path('controle/<int:id_ann>/unite/ca_emmission/add_montant/<int:id>', views.add_montant_controle, name="add_montant_ca_emmission_controle"),
-    path('controle/<int:id_ann>/unite/ca_emmission/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
-    path('controle/<int:id_ann>/unite/ca_emmission/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
-    path('controle/<int:id_ann>/unite/ca_emmission/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/ca_emmission/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/ca_emmission/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/ca_emmission/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_ca_emmission_controle"),
+    path('controle/<int:id_ann>/unite/ca_emmission/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_ca_emmission_controle"),
+
+    path('controle/<int:id_ann>/unite/ca_emmission/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
+    path('controle/<int:id_ann>/unite/ca_emmission/<int:id_month>/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/ca_emmission/<int:id_month>/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/ca_emmission/<int:id_month>/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/ca_emmission/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/ca_emmission/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/ca_emmission/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
     
     #ca transport
     path('controle/<int:id_ann>/unite/ca_transport/<int:id>', views.ca_transport_comptes_controle, name="ca_transport_controle"),
-    path('controle/<int:id_ann>/unite/ca_transport/add_montant/<int:id>', views.add_montant_controle, name="add_montant_ca_transport_controle"),
-    path('controle/<int:id_ann>/unite/ca_transport/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
-    path('controle/<int:id_ann>/unite/ca_transport/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
-    path('controle/<int:id_ann>/unite/ca_transport/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/ca_transport/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/ca_transport/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/ca_transport/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_ca_transport_controle"),
+    path('controle/<int:id_ann>/unite/ca_transport/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_ca_transport_controle"),
+
+    path('controle/<int:id_ann>/unite/ca_transport/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
+    path('controle/<int:id_ann>/unite/ca_transport/<int:id_month>/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/ca_transport/<int:id_month>/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/ca_transport/<int:id_month>/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/ca_transport/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/ca_transport/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/ca_transport/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
     
     #autre reccettes
     path('controle/<int:id_ann>/unite/recettes/<int:id>', views.recettes_comptes_controle, name="recettes_controle"),
-    path('controle/<int:id_ann>/unite/recettes/add_montant/<int:id>', views.add_montant_controle, name="add_montant_recettes_controle"),
-    path('controle/<int:id_ann>/unite/recettes/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
-    path('controle/<int:id_ann>/unite/recettes/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
-    path('controle/<int:id_ann>/unite/recettes/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/recettes/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/recettes/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/recettes/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_recettes_controle"),
+    path('controle/<int:id_ann>/unite/recettes/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_recettes_controle"),
+
+    path('controle/<int:id_ann>/unite/recettes/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
+    path('controle/<int:id_ann>/unite/recettes/<int:id_month>/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/recettes/<int:id_month>/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/recettes/<int:id_month>/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/recettes/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/recettes/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/recettes/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
-    
+
     #depense foncionement
     path('controle/<int:id_ann>/unite/depense_fonc/<int:id>', views.depense_fonc_comptes_controle, name="depense_fonc_controle"),
-    path('controle/<int:id_ann>/unite/depense_fonc/add_montant/<int:id>', views.add_montant_controle, name="add_montant_depense_fonc_controle"),   
-    path('controle/<int:id_ann>/unite/depense_fonc/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
-    path('controle/<int:id_ann>/unite/depense_fonc/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
-    path('controle/<int:id_ann>/unite/depense_fonc/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/depense_fonc/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/depense_fonc/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/depense_fonc/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_depense_fonc_controle"),
+    path('controle/<int:id_ann>/unite/depense_fonc/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_depense_fonce_controle"),
+
+    path('controle/<int:id_ann>/unite/depense_fonc/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
+    path('controle/<int:id_ann>/unite/depense_fonc/<int:id_month>/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/depense_fonc/<int:id_month>/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/depense_fonc/<int:id_month>/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/depense_fonc/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/depense_fonc/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/depense_fonc/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
     
     #depense exploitation
     path('controle/<int:id_ann>/unite/depense_exp/<int:id>', views.depense_exp_comptes_controle, name="depense_exp_controle"),
-    path('controle/<int:id_ann>/unite/depense_exp/add_montant/<int:id>', views.add_montant_controle, name="add_montant_depense_exp_controle"),
-    path('controle/<int:id_ann>/unite/depense_exp/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
-    path('controle/<int:id_ann>/unite/depense_exp/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
-    path('controle/<int:id_ann>/unite/depense_exp/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/depense_exp/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
-    path('controle/<int:id_ann>/unite/depense_exp/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/add_montant/<int:id>', views.add_montant_controle, name="add_montant_depense_exp_controle"),
+    path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/add_montant_month/<int:id>', views.add_montant_month_controle, name="add_montant_month_depense_exp_controle"),
+
+    path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/update_montant/<int:id>', views.update_montant_controle, name="update_montant_controle" ),
+    path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/valid_montant/<int:id>', views.valid_montant_controle, name="valid_montant_controle" ),
+    path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/valid_tous/<int:id_unite>/<int:ch_num>', views.valid_tous_controle, name="valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/cancel_valid_tous/<int:id_unite>/<int:ch_num>', views.cancel_valid_tous_controle, name="cancel_valid_tous_controle" ),
+    path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/depense_exp/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
-    
-
-
-
 
 ]

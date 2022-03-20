@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block ctrl_active %}
-<li class="active">
+<li class="menu-item-has-children dropdown active">
 {% endblock %}
 
 {% block content %} 
@@ -43,608 +43,8 @@
                 <span><i class="menu-icon fa fa-building-o"></i></span>  <strong class="card-title">  {{unite.lib}} <span class="float-right"></span> </strong>
             </div>
             <div class="card-body">
-				<!-- status sous dir  -->
-				{% if user.user_type == 4 %}
-				<table id="bootstrap-data-table" class="table table-striped">
-					<thead>
-						<tr>
-							<th>Chapitre</th>
-							<th>Modification</th>
-							<th>Status</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						
-						{% if unite.traffic  %}	
-						<tr>
-							<td>Offre</td>	
-
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "sdir" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="offre/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-
-							
-						</tr>
-
-						<tr>
-							<td>Traffic</td>
-							<td>
-								{% for key, s in trf_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-							<td>
-								{% for key, s in trf_status.items  %}
-									{% if key == "sdir" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}							
-							</td>
-							<td>
-								<a href="traffic/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-
-						{% if unite.emmission %}	
-						<tr>
-							<td>Chiffre d'affaire à l'emmission</td>
-							<td>
-								{% for key, s in cae_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in cae_status.items  %}
-									{% if key == "sdir" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="ca_emmission/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-						
-						{% if unite.traffic %}
-						<tr>
-							<td>Chiffre d'affaire au Transport</td>
-							<td>
-								{% for key, s in cat_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in cat_status.items  %}
-									{% if key == "sdir" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="ca_transport/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-	
-						{% if unite.recette %}	
-						<tr>
-							<td>Autre recettes</td>
-							<td>
-								{% for key, s in rct_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in rct_status.items  %}
-									{% if key == "sdir" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="recettes/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-
-						<tr>
-							<td>Depensses de fonctionnement</td>
-							<td>
-								{% for key, s in dpf_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								{% for key, s in dpf_status.items  %}
-									{% if key == "sdir" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-							
-							<td>
-								<a href="depense_fonc/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-												
-						{% if unite.exploitation %}	
-						<tr>
-							<td>Depensses d'exploitation</td>
-							<td>
-								{% for key, s in dpe_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-							<td>
-								{% for key, s in dpe_status.items  %}
-									{% if key == "sdir" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="depense_exp/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-			
-					</tbody>
-				</table>
-				{% endif %}
-
-				<!-- status Chef dep  -->
-				{% if user.user_type == 5 %}
-				<table id="bootstrap-data-table" class="table table-striped">
-					<thead>
-						<tr>
-							<th>Chapitre</th>
-							<th>Modification</th>
-							<th>Status</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						
-						{% if unite.traffic  %}	
-						<tr>
-							<td>Offre</td>	
-
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "chef" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="offre/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-
-							
-						</tr>
-
-						<tr>
-							<td>Traffic</td>
-							<td>
-								{% for key, s in trf_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-							<td>
-								{% for key, s in trf_status.items  %}
-									{% if key == "chef" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}							
-							</td>
-							<td>
-								<a href="traffic/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-
-						{% if unite.emmission %}	
-						<tr>
-							<td>Chiffre d'affaire à l'emmission</td>
-							<td>
-								{% for key, s in cae_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in cae_status.items  %}
-									{% if key == "chef" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="ca_emmission/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-						
-						{% if unite.traffic %}
-						<tr>
-							<td>Chiffre d'affaire au Transport</td>
-							<td>
-								{% for key, s in cat_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in cat_status.items  %}
-									{% if key == "chef" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="ca_transport/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-	
-						{% if unite.recette %}	
-						<tr>
-							<td>Autre recettes</td>
-							<td>
-								{% for key, s in rct_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-
-							<td>
-								{% for key, s in rct_status.items  %}
-									{% if key == "chef" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="recettes/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-
-						<tr>
-							<td>Depensses de fonctionnement</td>
-							<td>
-								{% for key, s in dpf_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								{% for key, s in dpf_status.items  %}
-									{% if key == "chef" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-							
-							<td>
-								<a href="depense_fonc/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-												
-						{% if unite.exploitation %}	
-						<tr>
-							<td>Depensses d'exploitation</td>
-							<td>
-								{% for key, s in dpe_status.items  %}
-									{% if key == "modifs" %}
-										{% if s == 0 %}
-											<span class="badge badge-secondary">Aucun</span>
-										{% else %}
-											<span class="badge badge-success">{{s}} modif</span>
-										{% endif %}
-									{% endif %}
-								{% endfor %}	
-							</td>
-							<td>
-								{% for key, s in dpe_status.items  %}
-									{% if key == "chef" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							<td>
-								<a href="depense_exp/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-							</td>
-						</tr>
-						{% endif %}
-			
-					</tbody>
-				</table>
-				{% endif %}
-
 				<!-- status Cadre  -->
-				{% if user.user_type == 6 %}
+				{% if user.user_type == 6 or user.user_type == 5 %}
 				<table id="bootstrap-data-table" class="table table-striped">
 					<thead>
 						<tr>
@@ -659,25 +59,76 @@
 						{% if unite.traffic  %}	
 						<tr>
 							<td>Offre</td>	
-							<td><span class="badge badge-success"> {{off_month}} </span></td>
-							<td>
-								{% for key, s in off_status.items  %}
-									{% if key == "cadre" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
+
+							<td>	
+								{% for key, m in off_month.items  %}
+									{% if key == "month"  %}
+										{% for keyD, mD in off_month_done.items  %}
+											{% if keyD == "month"  %}
+												
+												{% if m == mD %}
+													<span class="badge badge-success"> {{m}} </span>
+												{% else %}
+													<span class="badge badge-warning"> {{m}} </span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}	
 									{% endif %}
-								{% endfor %}
+								{% endfor %}			
+							</td>
+
+							<td>
+								<span>
+									{% for key, status in off_status.items  %}
+										
+											{% for id, m in off_month_done.items  %}
+												{% if id == "id"  %}
+													{% if key == m  %}
+
+														{% for i, s in status.items  %}
+
+															{% if user.user_type == 6 %}
+																{% if i == "cadre" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}	
+
+															{% elif user.user_type == 5 %}
+
+																{% if i == "chef" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}
+
+															{% endif %}
+
+														{% endfor %}
+
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										
+									{% endfor %}
+								</span>
 							</td>
 
 							<td>
@@ -689,26 +140,78 @@
 
 						<tr>
 							<td>Traffic</td>
-							<td><span class="badge badge-success"> {{trf_month}} </span></td>
-							<td>
-								{% for key, s in trf_status.items  %}
-									{% if key == "cadre" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
+							
+							<td>	
+								{% for key, m in trf_month.items  %}
+									{% if key == "month"  %}
+										{% for keyD, mD in trf_month_done.items  %}
+											{% if keyD == "month"  %}
+												
+												{% if m == mD %}
+													<span class="badge badge-success"> {{m}} </span>
+												{% else %}
+													<span class="badge badge-warning"> {{m}} </span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}	
 									{% endif %}
-								{% endfor %}							
+								{% endfor %}			
 							</td>
+
+							<td>
+								<span>
+									{% for key, status in trf_status.items  %}
+										
+											{% for id, m in trf_month_done.items  %}
+												{% if id == "id"  %}
+													{% if key == m  %}
+
+														{% for i, s in status.items  %}
+
+															{% if user.user_type == 6 %}
+																{% if i == "cadre" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}	
+
+															{% elif user.user_type == 5 %}
+
+																{% if i == "chef" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}
+
+															{% endif %}
+
+														{% endfor %}
+
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										
+									{% endfor %}
+								</span>
+							</td>
+
 							<td>
 								<a href="traffic/{{unite.id}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
 							</td>
@@ -718,25 +221,75 @@
 						{% if unite.emmission %}	
 						<tr>
 							<td>Chiffre d'affaire à l'emmission</td>
-							<td><span class="badge badge-success"> {{cae_month}} </span></td>
-							<td>
-								{% for key, s in cae_status.items  %}
-									{% if key == "cadre" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
+							<td>	
+								{% for key, m in cae_month.items  %}
+									{% if key == "month"  %}
+										{% for keyD, mD in cae_month_done.items  %}
+											{% if keyD == "month"  %}
+												
+												{% if m == mD %}
+													<span class="badge badge-success"> {{m}} </span>
+												{% else %}
+													<span class="badge badge-warning"> {{m}} </span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}	
 									{% endif %}
-								{% endfor %}
+								{% endfor %}			
+							</td>
+
+							<td>
+								<span>
+									{% for key, status in cae_status.items  %}
+										
+											{% for id, m in cae_month_done.items  %}
+												{% if id == "id"  %}
+													{% if key == m  %}
+
+														{% for i, s in status.items  %}
+
+															{% if user.user_type == 6 %}
+																{% if i == "cadre" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}	
+
+															{% elif user.user_type == 5 %}
+
+																{% if i == "chef" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}
+
+															{% endif %}
+
+														{% endfor %}
+
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										
+									{% endfor %}
+								</span>
 							</td>
 
 							<td>
@@ -748,25 +301,75 @@
 						{% if unite.traffic %}
 						<tr>
 							<td>Chiffre d'affaire au Transport</td>
-							<td><span class="badge badge-success"> {{cat_month}} </span></td>
-							<td>
-								{% for key, s in cat_status.items  %}
-									{% if key == "cadre" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
+							<td>	
+								{% for key, m in cat_month.items  %}
+									{% if key == "month"  %}
+										{% for keyD, mD in cat_month_done.items  %}
+											{% if keyD == "month"  %}
+												
+												{% if m == mD %}
+													<span class="badge badge-success"> {{m}} </span>
+												{% else %}
+													<span class="badge badge-warning"> {{m}} </span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}	
 									{% endif %}
-								{% endfor %}
+								{% endfor %}			
+							</td>
+
+							<td>
+								<span>
+									{% for key, status in cat_status.items  %}
+										
+											{% for id, m in cat_month_done.items  %}
+												{% if id == "id"  %}
+													{% if key == m  %}
+
+														{% for i, s in status.items  %}
+
+															{% if user.user_type == 6 %}
+																{% if i == "cadre" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}	
+
+															{% elif user.user_type == 5 %}
+
+																{% if i == "chef" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}
+
+															{% endif %}
+
+														{% endfor %}
+
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										
+									{% endfor %}
+								</span>
 							</td>
 
 							<td>
@@ -778,25 +381,75 @@
 						{% if unite.recette %}	
 						<tr>
 							<td>Autre recettes</td>
-							<td><span class="badge badge-success"> {{rct_month}} </span></td>
-							<td>
-								{% for key, s in rct_status.items  %}
-									{% if key == "cadre" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
+							<td>	
+								{% for key, m in rct_month.items  %}
+									{% if key == "month"  %}
+										{% for keyD, mD in rct_month_done.items  %}
+											{% if keyD == "month"  %}
+												
+												{% if m == mD %}
+													<span class="badge badge-success"> {{m}} </span>
+												{% else %}
+													<span class="badge badge-warning"> {{m}} </span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}	
 									{% endif %}
-								{% endfor %}
+								{% endfor %}			
+							</td>
+
+							<td>
+								<span>
+									{% for key, status in rct_status.items  %}
+										
+											{% for id, m in rct_month_done.items  %}
+												{% if id == "id"  %}
+													{% if key == m  %}
+
+														{% for i, s in status.items  %}
+
+															{% if user.user_type == 6 %}
+																{% if i == "cadre" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}	
+
+															{% elif user.user_type == 5 %}
+
+																{% if i == "chef" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}
+
+															{% endif %}
+
+														{% endfor %}
+
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										
+									{% endfor %}
+								</span>
 							</td>
 
 							<td>
@@ -807,25 +460,75 @@
 
 						<tr>
 							<td>Depensses de fonctionnement</td>
-							<td><span class="badge badge-success"> {{dpf_month}} </span></td>
-							<td>
-								{% for key, s in dpf_status.items  %}
-									{% if key == "cadre" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
+							<td>	
+								{% for key, m in dpf_month.items  %}
+									{% if key == "month"  %}
+										{% for keyD, mD in dpf_month_done.items  %}
+											{% if keyD == "month"  %}
+												
+												{% if m == mD %}
+													<span class="badge badge-success"> {{m}} </span>
+												{% else %}
+													<span class="badge badge-warning"> {{m}} </span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}	
 									{% endif %}
-								{% endfor %}
+								{% endfor %}			
+							</td>
+
+							<td>
+								<span>
+									{% for key, status in dpf_status.items  %}
+										
+											{% for id, m in dpf_month_done.items  %}
+												{% if id == "id"  %}
+													{% if key == m  %}
+
+														{% for i, s in status.items  %}
+
+															{% if user.user_type == 6 %}
+																{% if i == "cadre" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}	
+
+															{% elif user.user_type == 5 %}
+
+																{% if i == "chef" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}
+
+															{% endif %}
+
+														{% endfor %}
+
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										
+									{% endfor %}
+								</span>
 							</td>
 							
 							<td>
@@ -836,25 +539,75 @@
 						{% if unite.exploitation %}	
 						<tr>
 							<td>Depensses d'exploitation</td>
-							<td><span class="badge badge-success"> {{dpe_month}} </span></td>
-							<td>
-								{% for key, s in dpe_status.items  %}
-									{% if key == "cadre" %}
-										
-										{% if s == "Terminé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-										{% elif s == "Validé" %}
-											<span  style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-										{% elif s == "Instance" %}
-											<span  style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
-										{% elif s == "En cours" %}
-											<span  style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-										{% elif s == "-" %}
-											<span> - </span>
-										{% endif %}
-											
+							<td>	
+								{% for key, m in dpe_month.items  %}
+									{% if key == "month"  %}
+										{% for keyD, mD in dpe_month_done.items  %}
+											{% if keyD == "month"  %}
+												
+												{% if m == mD %}
+													<span class="badge badge-success"> {{m}} </span>
+												{% else %}
+													<span class="badge badge-warning"> {{m}} </span>
+												{% endif %}
+													
+											{% endif %}
+										{% endfor %}	
 									{% endif %}
-								{% endfor %}
+								{% endfor %}			
+							</td>
+
+							<td>
+								<span>
+									{% for key, status in dpe_status.items  %}
+										
+											{% for id, m in dpe_month_done.items  %}
+												{% if id == "id"  %}
+													{% if key == m  %}
+
+														{% for i, s in status.items  %}
+
+															{% if user.user_type == 6 %}
+																{% if i == "cadre" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}	
+
+															{% elif user.user_type == 5 %}
+
+																{% if i == "chef" %}
+																	{% if s == "Terminé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
+																	{% elif s == "Validé" %}
+																		<span style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
+																	{% elif s == "Instance" %}
+																		<span style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+																	{% elif s == "En cours" %}
+																		<span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+																	{% elif s == "-" %}
+																		<span>-</span>
+																	{% endif %}	
+																{% endif %}
+
+															{% endif %}
+
+														{% endfor %}
+
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										
+									{% endfor %}
+								</span>
 							</td>
 
 							<td>

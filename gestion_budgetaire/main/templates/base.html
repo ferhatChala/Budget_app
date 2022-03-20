@@ -205,9 +205,13 @@
                     </li>
 
                     {% block ctrl_active %}
-                    <li>
+                    <li class="menu-item-has-children dropdown">
                     {% endblock %}
-                        <a href="{% url 'unites_controle' %}"><i class="menu-icon fa fa-tasks"></i>Contrôle Budgétaire </a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Contrôle Budgétaire</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="fa fa-gears"></i><a href="{% url 'unites_controle' %}">Conception</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="{% url 'unites_controle' %}">Consultation</a></li>
+                        </ul>
                     </li>
 
                     {% block rls_active %}
@@ -248,7 +252,7 @@
             <div class="top-right">
                 <div class="header-menu">
                     <div class="header-left">
-                        <span style="margin-right: 20px;">Bonjour, {{ user.nom}} </span>
+                        <span style="margin-right: 20px;">Bonjour, <strong> {{ user.nom}} </strong> </span>
                         <button class="search-trigger"><i class="fa fa-search"></i></button>
                         <div class="form-inline">
                             <form class="search-form">

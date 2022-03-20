@@ -35,7 +35,7 @@
 
 <div class="row content">
 	<div class="col-md-12">
-		{% if user.user_type == 6 %}
+		{% if user.user_type == 6 or user.user_type == 5 %}
 			<div class="accordion" id="accordionExample">
 				{% for month in months %} 
 					<div class="card" style="margin-bottom: 1px;">
@@ -53,7 +53,7 @@
 														{% elif s == "Validé" %}
 															<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
 														{% elif s == "Instance" %}
-															<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+															<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
 														{% elif s == "En cours" %}
 															<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
 														{% elif s == "-" %}
@@ -69,11 +69,11 @@
 														{% elif s == "Validé" %}
 															<span class="float-right" style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
 														{% elif s == "Instance" %}
-															<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i>Instance</span>
+															<span class="float-right" style="color: red;"><i class="menu-icon fa fa-pencil-square-o"></i> Instance</span>
 														{% elif s == "En cours" %}
 															<span class="float-right" style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
 														{% elif s == "-" %}
-															<span class="float-right"></span>
+															<span class="float-right">-</span>
 														{% endif %}	
 													{% endif %}
 
@@ -86,12 +86,97 @@
 							</strong>
 						</div>
 						<div class="card-body collapse" id="cua{{ month.0 }}" aria-labelledby="hua{{ month.0 }}" data-parent="#accordionExample">
-							<!-- Cadre section -->
+							<!--  section-->
+							
+							{% if user.user_type == 6  %}
 								<input class="form-control" id="myInput" type="text" placeholder="Search..">
+							{% elif user.user_type == 5 %}
+
+								<div class="form-row">
+									{% for key, status in ch_status.items  %}
+										{% if key == month.0  %}
+											{% for i, s in status.items  %}
+
+												{% if user.user_type == 5 %}
+
+													{% if i == "cadre" %}
+														{% if s == "Terminé" or s == "Validé"  %}
+															<div class="form-group col-md-10 mb-0">
+																<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
+															</div>
+															<div class="form-group col-md-2 mb-0">
+																{% if s == "Terminé" %}
+																	<a href="#" data-toggle="modal" data-target="#validtous{{month.0}}" class="btn btn-outline-success float-right"><span><i class="menu-icon fa fa-check"></i></span> Valider tous </a>
+																{% elif s == "Validé" %}	
+																	<a href="#" data-toggle="modal" data-target="#canceltous{{month.0}}" class="btn btn-outline-danger float-right"> <span><i class="menu-icon fa fa-times-circle"></i></span> Annuler tous</a>
+																{% endif %}	
+																<!-- Modal pour valider tous  -->
+																<div class="modal fade" id="validtous{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																	<div class="modal-dialog">
+																		<div class="modal-content">
+																			<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Confirmer la validation</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																					<span aria-hidden="true">&times;</span>
+																				</button>
+																			</div>
+																			<div class="modal-body">
+																				<strong>Vous êtes sûre de valider tout les comptes ?</strong><br>
+																				<br>
+																			</div>
+																			<div class="modal-footer">
+																				<a href="{{month.0}}/valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-success">Oui, Valider</a>
+																				<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<!-- End Modal -->
+																
+																<!-- Modal pour annuler la validation pour tous  -->
+																<div class="modal fade" id="canceltous{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																	<div class="modal-dialog">
+																		<div class="modal-content">
+																			<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																					<span aria-hidden="true">&times;</span>
+																				</button>
+																			</div>
+																			<div class="modal-body">
+																				<strong>Vous êtes sûre d'annuler la validation pour tout les comptes ?</strong><br>
+																				<br>
+																			</div>
+																			<div class="modal-footer">
+																				<a href="{{month.0}}/cancel_valid_tous/{{unite.id}}/{{chapitre.code_num}}" class="btn btn-danger">Oui, Annuler la validation</a>
+																				<button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<!-- End Modal -->
+															</div>
+														{% else %}
+															<div class="form-group col-md-12 mb-0">
+																<input class="form-control" id="myInput" type="text" placeholder="Search.."> 
+															</div>
+														{% endif %}	
+													{% endif %}
+
+												{% endif %}
+
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+								</div> <br>
+
+							{% endif %}
+								
 								<table class="table table-striped">
 									<thead>
 										<tr>
-											<th>Rubrique</th>
+											<th>Rubrique budgétaire</th>
 											<th>Réseau</th>
 											<th>Montant</th>
 											<th>Action</th>
@@ -276,30 +361,146 @@
 
 															{% if month.0 == 1 %}
 																{% if m.janvier != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	
+																	{% if user.user_type == 6 %}
+														
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
+
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																{% endif %}
 															{% elif month.0 == 2 %}
 																{% if m.fevrier != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																{% endif %}
 															{% elif month.0 == 3 %}
 																{% if m.mars != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
@@ -307,90 +508,432 @@
 																
 															{% elif month.0 == 4 %}
 																{% if m.avril != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
-																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
+																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir</a>
 																{% endif %}
 															{% elif month.0 == 5 %}
 																{% if m.mai != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
 																{% endif %}
 															{% elif month.0 == 6 %}
 																{% if m.juin != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
 																{% endif %}
 															{% elif month.0 == 7 %}
 																{% if m.juillet != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
 																{% endif %}
 															{% elif month.0 == 8 %}
 																{% if m.aout != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
 																{% endif %}
 															{% elif month.0 == 9 %}
 																{% if m.septemre != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
 																{% endif %}
 															{% elif month.0 == 10 %}
 																{% if m.octobre != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
 																{% endif %}
 															{% elif month.0 == 11 %}
 																{% if m.novembre != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
 																{% endif %}
 															{% elif month.0 == 12 %}
 																{% if m.decembre != None  %}
-																	{% if m.vld_chef_dep or m.vld_sous_dir %}
-																		<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
-																	{% else %}
-																		<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																	{% if user.user_type == 6 %}
+																
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<span style="color: green;"><i class="menu-icon fa fa-check-circle"></i> Validé</span>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																		{% endif %}
+
+																	{% elif user.user_type == 5 %}
+
+																		{% if m.vld_controle_chef_dep >= month.0  %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<!-- Button trigger modal -->
+																			<button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#valid{{m.id}}{{month.0}}">
+																				<span><i class="menu-icon fa fa-times-circle"></i></span>
+																			</button>
+																			<!-- Modal -->
+																			<div class="modal fade" id="valid{{m.id}}{{month.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																				<div class="modal-dialog">
+																				<div class="modal-content">
+																					<div class="modal-header">
+																					<h3 class="modal-title" id="exampleModalLabel">Annuler la validation</h3>
+																					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																						<span aria-hidden="true">&times;</span>
+																					</button>
+																					</div>
+																					<div class="modal-body">
+																						Vous êtes sûre d'annuler la validation pour ce compte ? <br>
+																						Compte : <span style="color: red;"> {{m.unite_compte.compte.numero}} - {{m.unite_compte.compte.rubrique}}</span><br>
+																					</div>
+																					<div class="modal-footer">
+																					<a href="{{month.0}}/cancel_valid_montant/{{m.id}}" class="btn btn-sm btn-danger"> Oui, Confirmer</a>
+																					<button type="button" class="btn btn-sm  btn-secondary" data-dismiss="modal">Fermer</button>
+																					</div>
+																				</div>
+																				</div>
+																			</div>
+																		{% else %}
+																			<a href="{{month.0}}/update_montant/{{m.id}}" class="btn btn-sm btn-outline-secondary"><span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
+																			<a href="{{month.0}}/valid_montant/{{m.id}}" class="btn btn-sm btn-outline-success"  data-toggle="tooltip" data-html="true" data-placement="right" title="Vaidation du Montant"><span><i class="menu-icon fa fa-check"></i></span></a>
+																		{% endif %}
+
 																	{% endif %}
 																{% else %}
 																	<a href="{{month.0}}/add_montant_month/{{m.id}}" class="btn btn-sm btn-outline-primary"><span><i class="menu-icon fa fa-plus"></i></span> Remplir M</a>
@@ -412,7 +955,7 @@
 										{% endfor %}
 									</tbody>
 								</table>
-							<!-- End Cadre section -->							
+							<!-- End section -->							
 						</div>
 					</div>
 				{% endfor %}
