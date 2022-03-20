@@ -1,0 +1,8 @@
+- Unite compte: fixé monnaie
+- Fix admin stuff 
+- Fix Tables in model (id ,pk, code , ...)
+- recap and fixe all problems 
+- préparation des canevas
+- consulation 
+
+
