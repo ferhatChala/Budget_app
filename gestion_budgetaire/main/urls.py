@@ -763,5 +763,17 @@ urlpatterns = [
     path('controle/<int:id_ann>/unite/depense_exp/<int:id_month>/cancel_valid_montant/<int:id>', views.cancel_valid_montant_controle, name="cancel_valid_montant_controle" ),
     path('controle/<int:id_ann>/unite/depense_exp/update_comment/<int:id>', views.update_comment_controle, name="update_comment_controle"),
     path('controle/<int:id_ann>/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_controle, name="delete_comment_controle"),
+    
+
+# Consultation des budgets   ----------------------------------------------------------------------------------------------------------
+    #path('consultation/<int:id_volet/<int:id_ann>/<int:id_unite>', views.unite_detail_consultation, name="unite_detail_consultation"),
+    #path('consultation/<int:id_volet/<int:id_ann>/<int:id_unite>/<int:id_chap>', views.chapitre_consultation, name="chapitre_consultation"),
+    path('consultation/propos/unites', views.unites_consultation_propos, name="unites_consultation_propos"),
+    path('consultation/propos/<int:id_ann>/<int:id_unite>', views.unite_detail_consultation, name="unite_detail_consultation"),
+    path('consultation/propos/<int:id_ann>/<int:id_unite>/<int:id_chap>', views.chapitre_consultation, name="chapitre_consultation"),
+
+    path('consultation/reun/unites', views.unites_consultation_reun, name="unites_consultation_reun"),
+
+
 
 ]

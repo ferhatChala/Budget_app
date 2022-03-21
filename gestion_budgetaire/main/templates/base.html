@@ -170,10 +170,10 @@
                     {% endblock %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-money"></i>Porposition Budget</a>
                         <ul class="sub-menu children dropdown-menu">
-                            {% if user.user_type != 4  %}
+                            {% if user.user_type == 5 or user.user_type == 6   %}
                                 <li><i class="fa fa-gears"></i><a href="{% url 'unites' %}">Conception</a></li>
                             {% endif %}
-                            <li><i class="fa fa-folder-open"></i><a href="{% url 'annees' %}">Consultation</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="{% url 'unites_consultation_propos' %}">Consultation</a></li>
                             
                         </ul>
                     </li>

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% if budget.type_bdg == "PROPOS"  %}
+	{% block prop_active %}
+		<li class="menu-item-has-children dropdown active">
+	{% endblock %} 
+{% endif %}	
+
+
+{% block content %} 
+
+{% load crispy_forms_tags %}      
+
+<div class="breadcrumbs">
+	<div class="breadcrumbs-inner">
+		<div class="row m-0">
+			<div class="col-sm-8">
+				<div class="page-header float-left">
+					<div class="page-title">
+						<h1>Consultation :  
+							
+							{% if budget.type_bdg == "PROPOS"  %}
+								<strong> Proposition Budget <b> {{budget.annee}} </b></strong> 
+							{% elif budget.type_bdg == "REUN"%}
+								<strong> Réunion Budget <b> {{budget.annee}} </b></strong> 
+							{% elif budget.type_bdg == "NOTIF"%}
+								<strong> Budget Notifié <b> {{budget.annee}} </b></strong> 
+							{% elif budget.type_bdg == "CTRL"%}
+								<strong> Contrôle budgétaire <b> {{budget.annee}} </b></strong> 
+							{% elif budget.type_bdg == "RELS"%}
+								<strong> Réalisation Comptable <b> {{budget.annee}} </b></strong> 
+							{% endif %}	 
+						</h1>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="page-header float-right">
+					<div class="page-title">
+						<ol class="breadcrumb text-right">
+							<li><a href="#">Unités</a></li>
+                            <li><a href="#">{{unite.code_alpha}} </a></li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>  
+
+
+
+<div class="row content">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <span><i class="menu-icon fa fa-building-o"></i></span>  <strong class="card-title">  {{unite.lib}} 
+				<a class="float-right" href="#"><i class="menu-icon fa fa-download"></i> Télécharger</a> </strong>
+            </div>
+            <div class="card-body">
+				<table id="bootstrap-data-table" class="table table-striped">
+					<thead>
+						<tr>
+							<th>Chapitre</th>
+							<th>Total</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for c in chapitres  %}
+						
+							{% if c.code_num == 1 or c.code_num == 2 or c.code_num == 4 %}
+								{% if unite.traffic  %}
+									<tr>
+										<td>{{c.lib}}</td>	
+										<td>-</td>
+										<td>
+											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+										</td>
+									</tr>
+								{% endif %}
+							{% elif c.code_num == 3 %}
+								{% if unite.emmission  %}
+									<tr>
+										<td>{{c.lib}}</td>	
+										<td>-</td>
+										<td>
+											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+										</td>
+									</tr>
+								{% endif %}
+							{% elif c.code_num == 5 %}
+								{% if unite.recette  %}
+									<tr>
+										<td>{{c.lib}}</td>	
+										<td>-</td>
+										<td>
+											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+										</td>
+									</tr>
+								{% endif %}
+							{% elif c.code_num == 7 %}
+								{% if unite.exploitation  %}
+									<tr>
+										<td>{{c.lib}}</td>	
+										<td>-</td>
+										<td>
+											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+										</td>
+									</tr>
+								{% endif %}
+							{% else %} 
+								<tr>
+									<td>{{c.lib}}</td>	
+									<td>-</td>
+									<td>
+										<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+									</td>
+								</tr>
+							{% endif %}
+								
+						{% endfor %}
+					</tbody>
+				</table>				
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
