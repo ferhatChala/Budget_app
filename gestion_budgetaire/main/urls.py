@@ -192,8 +192,6 @@ urlpatterns = [
     path('proposition/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte, name="delete_added_compte" ),
     path('proposition/unite/depense_exp/update_comment/<int:id>', views.update_comment, name="update_comment"),
     path('proposition/unite/depense_exp/delete_comment/<int:id>', views.delete_comment, name="delete_comment"),
-    # consultation bdg 
-    path('proposition/annees', views.annees_bdg_prop, name="annees"),
     
     #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -291,8 +289,6 @@ urlpatterns = [
     path('reunion/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte_reunion, name="delete_added_compte_reunion" ),
     path('reunion/unite/depense_exp/update_comment/<int:id>', views.update_comment_reunion, name="update_comment_reunion"),
     path('reunion/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_reunion, name="delete_comment_reunion"),
-    # consultation bdg 
-    path('reunion/annees', views.annees_bdg_reunion, name="annees_reunion"),
     
     #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -480,9 +476,6 @@ urlpatterns = [
     path('notif/mens/unite/depense_exp/update_comment/<int:id>', views.update_comment_notif_m, name="update_comment_notif_m"),
     path('notif/mens/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_notif_m, name="delete_comment_notifm"),          
     
-    # consultation bdg --------------------
-    path('notif/annees', views.annees_bdg_notif, name="annees_notif"),
-    
     #--------------------------------------------------------------------------------------------------------------------------------
 
 # Réalisation budget ----------------------------------------------------------------------------------------------------------
@@ -581,8 +574,6 @@ urlpatterns = [
     path('realisation/unite/depense_exp/delete_added_compte/<int:id>', views.delete_added_compte_realisation, name="delete_added_compte_realisation" ),
     path('realisation/unite/depense_exp/update_comment/<int:id>', views.update_comment_realisation, name="update_comment_realisation"),
     path('realisation/unite/depense_exp/delete_comment/<int:id>', views.delete_comment_realisation, name="delete_comment_realisation"),
-    # consultation bdg 
-    path('realisation/annees', views.annees_bdg_prop_realisation, name="annees_realisation"),
     
     #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -768,12 +759,9 @@ urlpatterns = [
 # Consultation des budgets   ----------------------------------------------------------------------------------------------------------
     #path('consultation/<int:id_volet/<int:id_ann>/<int:id_unite>', views.unite_detail_consultation, name="unite_detail_consultation"),
     #path('consultation/<int:id_volet/<int:id_ann>/<int:id_unite>/<int:id_chap>', views.chapitre_consultation, name="chapitre_consultation"),
-    path('consultation/propos/unites', views.unites_consultation_propos, name="unites_consultation_propos"),
-    path('consultation/propos/<int:id_ann>/<int:id_unite>', views.unite_detail_consultation, name="unite_detail_consultation"),
-    path('consultation/propos/<int:id_ann>/<int:id_unite>/<int:id_chap>', views.chapitre_consultation, name="chapitre_consultation"),
-
-    path('consultation/reun/unites', views.unites_consultation_reun, name="unites_consultation_reun"),
-
+    path('consultation/<int:id_volet>', views.unites_consultation, name="unites_consultation"),
+    path('consultation/<int:id_volet>/<int:id_ann>/<int:id_unite>', views.unite_detail_consultation, name="unite_detail_consultation"),
+    path('consultation/<int:id_volet>/<int:id_ann>/<int:id_unite>/<int:id_chap>', views.chapitre_consultation, name="chapitre_consultation"),
 
 
 ]

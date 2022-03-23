@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
-<li class="menu-item-has-children dropdown active">
-{% endblock %}
-
 {% block content %} 
 
 {% load crispy_forms_tags %}   
@@ -55,167 +51,1214 @@
 			</div>
 			<div class="card-body">
 					<input class="form-control" id="myInput" type="text" placeholder="Search..">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>Rubrique</th>
-								<th>Réseau</th>
-								<th>Montant</th>
-							</tr>
-						</thead>
-						<tbody id="myTable">
-							{% for c in comptes %}
-							<tr>
-								<td>{{c.compte.rubrique}}</td>
-								<td>{{c.reseau_compte}}</td>
-								
-								<td>
-									{% for key, m in cm_dict.items  %}
-										{% if key == c.id %}
-											{% if m != "null" %}
-												
-												{% if m.commentaire_montant != None %}													
-													{% if m.vld_chef_dep == False and m.vld_sous_dir == False %}
-														<span>{{m.montant}}</span>	
-														
-														{% if m.commentaire_montant.importance == "F" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "M" %} 
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "C" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% endif %}
+					
+					
+					{% if chapitre.code_num == 1 or chapitre.code_num == 2 or chapitre.code_num == 4 %}	<!-- Offre / Traffic / CA Transport -->
+						
+						{% if id_volet == 3 or id_volet == 4 %}
+							<div class = "table-responsive" style="width:100%; max-width:900px;	overflow-x:scroll;">
+							<table style="font-size:small;" class="table table-striped table-bordered">
 
-													{% elif m.validation != "CADRE" and m.montant == m.montant_cadre %}
-														<span style="color: green;">{{m.montant}}</span>
-												
-														{% if m.commentaire_montant.importance == "F" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "M" %} 
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "C" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% endif %}
+						{% else %}
+							<table class="table table-striped">
+						{% endif %}
 
-													{% elif m.validation != "CADRE" and m.vld_cadre == True  and m.montant != m.montant_cadre %}
-														<span style="color: orange;"> {{m.montant}}</i></span>
+							<thead>
+								<tr>
+									<!-- Propos et reunion -->
+									{% if id_volet == 1 or id_volet == 2 %}
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Réseau</th>
 
-														{% if m.commentaire_montant.importance == "F" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "M" %} 
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "C" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% endif %}
-													{% elif m.montant != m.montant_cadre and m.vld_cadre == False  %}
-														<span style="color: red;">{{m.montant}}</span>
+										<th>Montant Prévision</th> 
+										<th>Montant Clôture</th>
+									{% endif %}
 
-														{% if m.commentaire_montant.importance == "F" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "M" %} 
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% elif m.commentaire_montant.importance == "C" %}
-															<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
-														{% endif %}
-													{% else %}
+									<!-- Notif et controle -->
+									{% if id_volet == 3 or id_volet == 4 %}
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Réseau</th>
+
+										<th>Janvier</th>
+										<th>Février</th>
+										<th>Mars</th>
+										<th>Avril</th>
+										<th>Mai</th>
+										<th>Juin</th>
+										<th class="table-secondary">Total Semestre_1</th>
+										<th>Juillet</th>
+										<th>Août</th>
+										<th>Septembre</th>
+										<th>Octobre</th>
+										<th>Novembre</th>
+										<th>Décembre</th>
+										<th class="table-secondary">Total Semestre_2</th>
+										<th class="table-success">Total Annuel <span style="margin:20px"></span></th>
+									{% endif %}
+
+									<!-- Réalisation -------->
+									{% if id_volet == 5 %}
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Réseau</th>
+
+										<th>Montant Prévision</th> 
+									{% endif %}
+										
+
+																	
+								</tr>
+							</thead>
+							<tbody id="myTable">
+								{% for c in comptes %}
+								<tr>
+									<!-- Propos et reunion -->
+									{% if id_volet == 1 or id_volet == 2 %}
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.reseau_compte}}</td>
+
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
 														<span>{{m.montant}}</span>
-													{% endif %}
-
-													<!-- Modal -->
-													<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-														<div class="modal-dialog">
-																<div class="modal-content">
-																<div class="modal-header">
-																		<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
-																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																		<span aria-hidden="true">&times;</span>
-																		</button>
-																</div>
-																<div class="modal-body">
-																	
-																	{% if m.commentaire_montant.importance == 'F' %}
-																		<div class="alert alert-secondary" role="alert">
-																			
-																			{% if m.commentaire_montant.user.user_type == 6  %}
-																				<strong>Commentaire Cadre </strong> <br>
-																			{% elif m.commentaire_montant.user.user_type == 5 %}
-																				<strong>Commentaire Chef Département </strong> <br>
-																			{% elif m.commentaire_montant.user.user_type == 4 %}
-																				<strong>Commentaire Sous Directeur </strong> <br>
-																			{% endif %}
-																			{{m.commentaire_montant.text}}
+														{% if m.commentaire_montant != None %}	
+	
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+	
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
 																		</div>
-																	{% elif m.commentaire_montant.importance == 'M'  %}
-																		<div class="alert alert-warning" role="alert">
-																			{% if m.commentaire_montant.user.user_type == 6  %}
-																				<strong>Commentaire Cadre </strong> <br>
-																			{% elif m.commentaire_montant.user.user_type == 5 %}
-																				<strong>Commentaire Chef Département </strong> <br>
-																			{% elif m.commentaire_montant.user.user_type == 4 %}
-																				<strong>Commentaire Sous Directeur </strong> <br>
-																			{% endif %}
-																			{{m.commentaire_montant.text}}
-																		</div>	
-																	{% elif m.commentaire_montant.importance == 'C' %}
-																		<div class="alert alert-danger" role="alert">
+																		<div class="modal-body">
 																			
-																			{% if m.commentaire_montant.user.user_type == 6  %}
-																				<strong>Commentaire Cadre </strong> <br>
-																			{% elif m.commentaire_montant.user.user_type == 5 %}
-																				<strong>Commentaire Chef Département </strong> <br>
-																			{% elif m.commentaire_montant.user.user_type == 4 %}
-																				<strong>Commentaire Sous Directeur </strong> <br>
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
 																			{% endif %}
-																			{{m.commentaire_montant.text}}
+																					
+	
+	
 																		</div>
-																	{% endif %}
-																			
-
-
-																</div>
-																<div class="modal-footer">
-																	
-																	{% if user == m.commentaire_montant.user %}
-																	<a href="update_comment/{{m.commentaire_montant.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>																			
-																	<a href="delete_comment/{{m.commentaire_montant.id}}" class="btn btn-sm btn-danger"> <span><i class="menu-icon fa fa-trash-o"></i></span></a>
-																	{% else %}
-																	<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-																	{% endif %}
-																		
-																		
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
 																</div>
 															</div>
-														</div>
-													</div>
-													<!-- End Modal -->
-
-												{% else %}
-													{% if m.vld_chef_dep == False and m.vld_sous_dir == False %}
-														<span>{{m.montant}}</span>	
-													{% elif m.validation != "CADRE" and m.montant == m.montant_cadre %}
-														<span style="color: green;">{{m.montant}}														
-													{% elif m.validation != "CADRE" and m.vld_cadre == True  and m.montant != m.montant_cadre  %}
-														<span style="color: orange;"> {{m.montant}}</i></span>
-													{% elif m.montant != m.montant_cadre and m.vld_cadre == False  %}
-														<span style="color: red;">{{m.montant}}</span>
+															<!-- End Modal -->							
+														{% endif %}
+	
 													{% else %}
-														<span>{{m.montant}}</span>
-													{% endif %}
-												{% endif %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+										<td>
+											{% for key, m in cm_dict.items %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant_cloture}}</span>
+													{% else %}	
+														-																
+													{% endif %}	
+												{% endif %}	
+											{% endfor %}
+										</td>
+									{% endif %}
 
-											{% else %}
-												--------											
-											{% endif %}	
-										{% endif %}		
-									{% endfor %}
-								</td>
-							</tr>
-				
-							{% endfor %}
-						</tbody>
-					</table>
+									<!-- Notif et controle -->
+									{% if id_volet == 3 or id_volet == 4 %}
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.reseau_compte}}</td>
+
+										{% for key, m in cm_dict.items  %}
+											{% if key == c.id %}
+												{% if m.mens_done == True %}
+													<td>{{m.janvier}}</td>
+													<td>{{m.fevrier}}</td>
+													<td>{{m.mars}}</td>
+													<td>{{m.avril}}</td>
+													<td>{{m.mai}}</td>
+													<td>{{m.juin}}</td>
+													<td class="table-secondary">
+														{% for key, m in s1_dict.items %}
+															{% if key == c.id %}
+																	<span>{{m}}</span>
+															{% endif %}	
+														{% endfor %}
+													</td>
+													<td>{{m.juillet}}</td>
+													<td>{{m.aout}}</td>
+													<td>{{m.septemre}}</td>
+													<td>{{m.octobre}}</td>
+													<td>{{m.novembre}}</td>
+													<td>{{m.decembre}}</td>
+													<td class="table-secondary">
+														{% for key, m in s2_dict.items %}
+															{% if key == c.id %}
+																	<span>{{m}}</span>
+															{% endif %}	
+														{% endfor %}
+													</td>
+												{% else %}
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+
+										<td class="table-success">
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+	
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+	
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+	
+	
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+	
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+	
+									{% endif %}
+
+									<!-- Réalisation -->
+									{% if id_volet == 5 %}
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.reseau_compte}}</td>
+
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+	
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+	
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+	
+	
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+	
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+									{% endif %}
+
+								</tr>
+					
+								{% endfor %}
+							</tbody>
+						</table>
+						{% if id_volet == 3 or id_volet == 4 %}
+							</div>
+						{% endif %}
+
+
+					{% elif chapitre.code_num == 3 %} <!-- CA Emmission -->
+
+						{% if id_volet == 3 or id_volet == 4 %}
+							<div class = "table-responsive" style="width:100%; max-width:900px;	overflow-x:scroll;">
+							<table style="font-size:small;" class="table table-striped table-bordered">
+
+						{% else %}
+							<table class="table table-striped">
+						{% endif %}
+
+							<thead>
+								<tr>
+									<!-- Propos et reunion -->
+									{% if id_volet == 1 or id_volet == 2 %}
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Réseau</th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+
+										<th>Montant Prévision</th> 
+										<th>Montant Clôture</th>
+									{% endif %}
+
+									<!-- Notif et controle -->
+									{% if id_volet == 3 or id_volet == 4 %}
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Réseau</th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+
+										<th>Janvier</th>
+										<th>Février</th>
+										<th>Mars</th>
+										<th>Avril</th>
+										<th>Mai</th>
+										<th>Juin</th>
+										<th class="table-secondary">Total Semestre_1</th>
+										<th>Juillet</th>
+										<th>Août</th>
+										<th>Septembre</th>
+										<th>Octobre</th>
+										<th>Novembre</th>
+										<th>Décembre</th>
+										<th class="table-secondary">Total Semestre_2</th>
+										<th class="table-success">Total Annuel <span style="margin:20px"></span></th>
+									{% endif %}
+
+									<!-- Réalisation -------->
+									{% if id_volet == 5 %}
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Réseau</th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+
+										<th>Montant</th> 
+									{% endif %}
+										
+
+																	
+								</tr>
+							</thead>
+							<tbody id="myTable">
+								{% for c in comptes %}
+								<tr>
+									<!-- Propos et reunion -->
+									{% if id_volet == 1 or id_volet == 2 %}
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.reseau_compte}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par}}</td>
+
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+
+
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+										<td>
+											{% for key, m in cm_dict.items %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant_cloture}}</span>
+													{% else %}	
+														-																
+													{% endif %}	
+												{% endif %}	
+											{% endfor %}
+										</td>
+									{% endif %}
+
+									<!-- Notif et controle -->
+									{% if id_volet == 3 or id_volet == 4 %}
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.reseau_compte}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par}}</td>
+
+										{% for key, m in cm_dict.items  %}
+											{% if key == c.id %}
+												{% if m.mens_done == True %}
+													<td>{{m.janvier}}</td>
+													<td>{{m.fevrier}}</td>
+													<td>{{m.mars}}</td>
+													<td>{{m.avril}}</td>
+													<td>{{m.mai}}</td>
+													<td>{{m.juin}}</td>
+													<td class="table-secondary">
+														{% for key, m in s1_dict.items %}
+															{% if key == c.id %}
+																	<span>{{m}}</span>
+															{% endif %}	
+														{% endfor %}
+													</td>
+													<td>{{m.juillet}}</td>
+													<td>{{m.aout}}</td>
+													<td>{{m.septemre}}</td>
+													<td>{{m.octobre}}</td>
+													<td>{{m.novembre}}</td>
+													<td>{{m.decembre}}</td>
+													<td class="table-secondary">
+														{% for key, m in s2_dict.items %}
+															{% if key == c.id %}
+																	<span>{{m}}</span>
+															{% endif %}	
+														{% endfor %}
+													</td>
+												{% else %}
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+
+										<td class="table-success">
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+
+
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+
+									{% endif %}
+
+									<!-- Réalisation -->
+									{% if id_volet == 5 %}
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.reseau_compte}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par}}</td>
+
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+
+
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+									{% endif %}
+
+								</tr>
+					
+								{% endfor %}
+							</tbody>
+						</table>
+						{% if id_volet == 3 or id_volet == 4 %}
+							</div>
+						{% endif %}
+
+					{% elif chapitre.code_num == 5 %} <!-- Recettes -->
+						{% if id_volet == 3 or id_volet == 4 %}
+							<div class = "table-responsive" style="width:100%; max-width:900px;	overflow-x:scroll;">
+							<table style="font-size:small;" class="table table-striped table-bordered">
+
+						{% else %}
+							<table class="table table-striped">
+						{% endif %}
+							<thead>
+								<tr>
+									<!-- Propos et reunion -->
+									{% if id_volet == 1 or id_volet == 2 %}
+										<th>N° SCF</th>
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+
+										<th>Montant Prévision</th> 
+										<th>Montant Clôture</th>
+									{% endif %}
+
+									<!-- Notif et controle -->
+									{% if id_volet == 3 or id_volet == 4 %}
+										<th>N° SCF</th>
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+
+										<th>Janvier</th>
+										<th>Février</th>
+										<th>Mars</th>
+										<th>Avril</th>
+										<th>Mai</th>
+										<th>Juin</th>
+										<th class="table-secondary">Total Semestre_1</th>
+										<th>Juillet</th>
+										<th>Août</th>
+										<th>Septembre</th>
+										<th>Octobre</th>
+										<th>Novembre</th>
+										<th>Décembre</th>
+										<th class="table-secondary">Total Semestre_2</th>
+										<th class="table-success">Total Annuel <span style="margin:20px"></span></th>
+									{% endif %}
+
+									<!-- Réalisation -------->
+									{% if id_volet == 5 %}
+										<th>N° SCF</th>
+										<th>Rubrique budgétaire <span style="margin:60px"></span> </th>
+										<th>Monnaie</th>
+										<th>Reglé par</th>
+
+										<th>Montant</th> 
+									{% endif %}
+																	
+								</tr>
+							</thead>
+							<tbody id="myTable">
+								{% for c in comptes %}
+								<tr>
+									<!-- Propos et reunion -->
+									{% if id_volet == 1 or id_volet == 2 %}
+										<td>{{c.compte.numero}}</td>
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par}}</td>
+
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+
+
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+										<td>
+											{% for key, m in cm_dict.items %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant_cloture}}</span>
+													{% else %}	
+														-																
+													{% endif %}	
+												{% endif %}	
+											{% endfor %}
+										</td>
+									{% endif %}
+
+									<!-- Notif et controle -->
+									{% if id_volet == 3 or id_volet == 4 %}
+										<td>{{c.compte.numero}}</td>
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par}}</td>
+
+										{% for key, m in cm_dict.items  %}
+											{% if key == c.id %}
+												{% if m.mens_done == True %}
+													<td>{{m.janvier}}</td>
+													<td>{{m.fevrier}}</td>
+													<td>{{m.mars}}</td>
+													<td>{{m.avril}}</td>
+													<td>{{m.mai}}</td>
+													<td>{{m.juin}}</td>
+													<td class="table-secondary">
+														{% for key, m in s1_dict.items %}
+															{% if key == c.id %}
+																	<span>{{m}}</span>
+															{% endif %}	
+														{% endfor %}
+													</td>
+													<td>{{m.juillet}}</td>
+													<td>{{m.aout}}</td>
+													<td>{{m.septemre}}</td>
+													<td>{{m.octobre}}</td>
+													<td>{{m.novembre}}</td>
+													<td>{{m.decembre}}</td>
+													<td class="table-secondary">
+														{% for key, m in s2_dict.items %}
+															{% if key == c.id %}
+																	<span>{{m}}</span>
+															{% endif %}	
+														{% endfor %}
+													</td>
+												{% else %}
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+
+										<td class="table-success">
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+
+
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+
+									{% endif %}
+
+									<!-- Réalisation -->
+									{% if id_volet == 5 %}
+										<td>{{c.compte.numero}}</td>
+										<td>{{c.compte.rubrique}}</td>
+										<td>{{c.monnaie}}</td>
+										<td>{{c.regle_par}}</td>
+
+										<td>
+											{% for key, m in cm_dict.items  %}
+												{% if key == c.id %}
+													{% if m != "null" %}
+														<span>{{m.montant}}</span>
+														{% if m.commentaire_montant != None %}	
+
+															{% if m.commentaire_montant.importance == "F" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "M" %} 
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right"  style="color: orange;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% elif m.commentaire_montant.importance == "C" %}
+																<a href="#" data-toggle="modal" data-target="#comment{{m.id}}"><span class="float-right" style="color: red;"><i class="menu-icon fa fa-comment-o"></i></span></a>
+															{% endif %}
+
+															<!-- Modal -->
+															<div class="modal fade" id="comment{{m.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																		<div class="modal-content">
+																		<div class="modal-header">
+																				<h3 class="modal-title" id="exampleModalLabel">Commentaire</h3>
+																				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span>
+																				</button>
+																		</div>
+																		<div class="modal-body">
+																			
+																			{% if m.commentaire_montant.importance == 'F' %}
+																				<div class="alert alert-secondary" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% elif m.commentaire_montant.importance == 'M'  %}
+																				<div class="alert alert-warning" role="alert">
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>	
+																			{% elif m.commentaire_montant.importance == 'C' %}
+																				<div class="alert alert-danger" role="alert">
+																					
+																					{% if m.commentaire_montant.user.user_type == 6  %}
+																						<strong>Commentaire Cadre </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 5 %}
+																						<strong>Commentaire Chef Département </strong> <br>
+																					{% elif m.commentaire_montant.user.user_type == 4 %}
+																						<strong>Commentaire Sous Directeur </strong> <br>
+																					{% endif %}
+																					{{m.commentaire_montant.text}}
+																				</div>
+																			{% endif %}
+																					
+
+
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<!-- End Modal -->							
+														{% endif %}
+
+													{% else %}
+														-											
+													{% endif %}	
+												{% endif %}		
+											{% endfor %}
+										</td>
+									{% endif %}
+
+								</tr>
+					
+								{% endfor %}
+							</tbody>
+						</table>
+						{% if id_volet == 3 or id_volet == 4 %}
+							</div>
+						{% endif %}
+					{% elif chapitre.code_num == 6 or chapitre.code_num == 7 %} <!-- Depenses -->
+					{% endif %}
 			
-				<!-- End Cadre section -->							
+											
 			</div>
 		</div>
 	</div>

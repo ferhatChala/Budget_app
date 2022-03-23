@@ -1,18 +1,9 @@
 {% extends "base.html" %}
-
-
-{% if id_volet == 1 %}
-	{% block prop_active %}
-	<li class="menu-item-has-children dropdown active">
-	{% endblock %}	
-{% endif %}
 	
 
 {% block content %} 
 
 {% load crispy_forms_tags %}  
-
-
 
 
 	<div class="breadcrumbs">
@@ -21,7 +12,20 @@
 				<div class="col-sm-8">
 					<div class="page-header float-left">
 						<div class="page-title">
-							<h1>Consultation du budget  <strong> Proposition</strong></h1>
+							<h1>Consultation :  
+							
+								{% if id_volet == 1  %}
+									<strong> Proposition Budget </strong> 
+								{% elif id_volet == 2 %}
+									<strong> Réunion Budget </strong> 
+								{% elif id_volet == 3 %}
+									<strong> Budget Notifié </strong> 
+								{% elif id_volet == 4 %}
+									<strong> Contrôle budgétaire </strong> 
+								{% elif id_volet == 5 %}
+									<strong> Réalisation Comptable</strong> 
+								{% endif %}	 
+							</h1>						
 						</div>
 					</div>
 				</div>
@@ -64,8 +68,8 @@
 												<td>{{u.lib}} ({{u.code_alpha}})</td>
 												<td>{{u.monnaie.code_alpha}} / {{u.monnaie.code_num}} </td>
 												<td>
-													<a href="{{budget.id}}/{{u.id}}" class="btn btn-outline-info btn-sm"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
-													<a href="{{budget.id}}/{{u.id}}" class="btn btn-outline-info btn-sm"><span><i class="menu-icon fa fa-download"></i></span></a>
+													<a href="{{id_volet}}/{{budget.id}}/{{u.id}}" class="btn btn-outline-info btn-sm"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+													<a href="{{id_volet}}/{{budget.id}}/{{u.id}}" class="btn btn-outline-info btn-sm"><span><i class="menu-icon fa fa-download"></i></span></a>
 												</td>
 											</tr>
 										{% endfor %}

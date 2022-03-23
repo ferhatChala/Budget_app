@@ -23,12 +23,7 @@ User = get_user_model()
 
 @login_required(login_url='login')
 def home(request):
-	p=1
-	r=2
-	n=3
-	c=4
-	rls=5
-	return render(request, "base.html", {'p':p, 'r':r, 'n':n, 'c':c, 'rls':rls})
+	return render(request, "base.html")
 
 # ------------ users management -----------------------------------------------
 
@@ -1470,14 +1465,6 @@ def delete_comment(request, id):
     form.delete()
     return HttpResponseRedirect("/proposition/unites")
 
-# consultation proposition budget 
-def annees_bdg_prop(request):
-	budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
-	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
-	dep_unites = Unite.objects.filter(departement=request.user.departement)
-	all_unites = Unite.objects.all()
-	return render(request,"proposition/consultation/annees.html", {'budgets':budgets, 'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites})
-
 # -------------------------------------- Fin Proposition budget --------------------------------------------------------
 
 
@@ -2775,14 +2762,6 @@ def delete_comment_reunion(request, id):
     form = Commentaire.objects.get(id=id)
     form.delete()
     return HttpResponseRedirect("/reunion/unites")
-
-# consultation reunion budget 
-def annees_bdg_reunion(request):
-	budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
-	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
-	dep_unites = Unite.objects.filter(departement=request.user.departement)
-	all_unites = Unite.objects.all()
-	return render(request,"reunion/consultation/annees.html", {'budgets':budgets, 'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites})
 
 # -------------------------------------- Fin Réunion budget --------------------------------------------------------
 
@@ -4530,7 +4509,7 @@ def ca_transport_comptes_notif_m(request, id):
 
 	chapitre = Chapitre.objects.get(code_num=4)
 
-	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num).order_by('-reseau_compte')
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
@@ -5500,15 +5479,6 @@ def delete_comment_notif_m(request, id):
     form.delete()
     return HttpResponseRedirect("/notif/unites")
 
-
-# consultation reunion budget ------------
-def annees_bdg_notif(request):
-	budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
-	dep_unites = Unite.objects.filter(departement=request.user.departement)
-	all_unites = Unite.objects.all()
-	return render(request,"notif/consultation/annees.html", {'budgets':budgets, 'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites})
-
 # -------------------------------------- Fin Notif budget --------------------------------------------------------
 
 
@@ -6404,14 +6374,6 @@ def delete_comment_realisation(request, id):
     form.delete()
     return HttpResponseRedirect("/realisation/unites")
 
-# consultation proposition budget 
-def annees_bdg_prop_realisation(request):
-	budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
-	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
-	dep_unites = Unite.objects.filter(departement=request.user.departement)
-	all_unites = Unite.objects.all()
-	return render(request,"realisation/consultation/annees.html", {'budgets':budgets, 'unites':unites, 'dep_unites':dep_unites, 'all_unites':all_unites})
-
 # -------------------------------------- Fin Réalisation budget --------------------------------------------------------
 
 
@@ -6763,7 +6725,7 @@ def ca_transport_comptes_actualis(request, id_ann, id):
 
 	chapitre = Chapitre.objects.get(code_num=4)
 
-	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num).order_by('-reseau_compte')
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
@@ -7742,7 +7704,7 @@ def ca_transport_comptes_controle(request, id_ann, id):
 	unite = Unite.objects.get(id=id)
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 	chapitre = Chapitre.objects.get(code_num=4)
-	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
+	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num).order_by('-reseau_compte')
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
@@ -8489,13 +8451,18 @@ def delete_comment_controle(request, id):
 
 # Control et suivi budget -------------------------------------------------------------------------------------
 
-def unites_consultation_propos(request):
+def unites_consultation(request, id_volet):
 	# get the budget type by id_volet
-	budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="CTRL").order_by('-annee')
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	if id_volet == 1:
+		budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
+	elif id_volet == 2:	
+		budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
+	elif id_volet == 3:	
+		budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
+	elif id_volet == 4:		
+		budgets = Annee_Budgetaire.objects.filter(type_bdg="CTRL").order_by('-annee')
+	elif id_volet == 5:	
+		budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
 
 	# get unites depend on user 
 	if request.user.user_type == 6:
@@ -8508,21 +8475,24 @@ def unites_consultation_propos(request):
 	elif request.user.user_type == 4 or request.user.user_type == 3: 
 		unites = Unite.objects.all()
 
-	return render(request,"consultation/unites.html", {'unites':unites, 'budgets':budgets})
+	return render(request,"consultation/unites.html", {'unites':unites, 'budgets':budgets, 'id_volet':id_volet})
 
-def unite_detail_consultation(request, id_ann, id_unite):
+def unite_detail_consultation(request, id_volet, id_ann, id_unite):
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 	unite = Unite.objects.get(id=id_unite)
 	chapitres = Chapitre.objects.all()
 
-	return render(request, "consultation/unite_detail.html", {'unite':unite, 'budget':budget, 'chapitres':chapitres })
+	return render(request, "consultation/unite_detail.html", {'unite':unite, 'budget':budget, 'chapitres':chapitres, 'id_volet':id_volet })
 
-def chapitre_consultation(request, id_ann, id_unite, id_chap):
+def chapitre_consultation(request, id_volet, id_ann, id_unite, id_chap):
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 	unite = Unite.objects.get(id=id_unite)
 	chapitre = Chapitre.objects.get(code_num=id_chap)
+	if id_chap == 4:
+		comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num).order_by('-reseau_compte')
+	else:
+		comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 
-	comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 	cm_dict = {}
 	for c in comptes:
 		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
@@ -8530,33 +8500,49 @@ def chapitre_consultation(request, id_ann, id_unite, id_chap):
 			cm_dict[c.id] = "null"
 		else:
 			cm_dict[c.id] = m[0]
-	return render(request, "consultation/comptes.html", {'unite':unite, 'budget':budget, 'chapitre':chapitre, 'comptes':comptes, 'cm_dict':cm_dict })
+		
+	s1_dict = {}
+	s2_dict = {}
+
+	if id_volet == 3 or id_volet == 4:
+		for c in comptes:
+			all_m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+			m = all_m[0]
+			s1 = 0
+			s2 = 0
+			# ----- S1 ----------
+			if m.janvier != None:
+				s1 = s1 + m.janvier
+			if m.fevrier != None:
+				s1 = s1 + m.fevrier
+			if m.mars != None:
+				s1 = s1 + m.mars
+			if m.avril != None:
+				s1 = s1 + m.avril
+			if m.mai != None:
+				s1 = s1 + m.mai
+			if m.juin != None:
+				s1 = s1 + m.juin
+			# ----- S2 ----------
+			if m.juillet != None:
+				s2 = s2 + m.juillet
+			if m.aout != None:
+				s2 = s2 + m.aout
+			if m.septemre != None:
+				s2 = s2 + m.septemre
+			if m.octobre != None:
+				s2 = s2 + m.octobre
+			if m.novembre != None:
+				s2 = s2 + m.novembre
+			if m.decembre != None:
+				s2 = s2 + m.decembre
+			# --------------
+			s1_dict[c.id] = s1
+			s2_dict[c.id] = s2
 
 
-
-def unites_consultation_reun(request):
-
-	# get the budget type by id_volet
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
-	budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="CTRL").order_by('-annee')
-	#budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
-
-	# get unites depend on user 
-	if request.user.user_type == 6:
-		unites = []
-		unites_cadre = Cadre_has_Unite.objects.filter(cadre=request.user)
-		for uc in unites_cadre:
-			unites.append(uc.unite)
-	elif request.user.user_type == 5: 
-		unites= Unite.objects.filter(departement=request.user.departement)
-	elif request.user.user_type == 4 or request.user.user_type == 3: 
-		unites = Unite.objects.all()
-
-	return render(request,"consultation/unites.html", {'unites':unites, 'budgets':budgets, })
-
-
+	return render(request, "consultation/comptes.html", {'unite':unite, 'budget':budget, 'chapitre':chapitre, 'comptes':comptes, 'cm_dict':cm_dict,
+														 'id_volet':id_volet, 's1_dict':s1_dict, 's2_dict':s2_dict })
 
 
 

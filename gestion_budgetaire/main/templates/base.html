@@ -173,7 +173,7 @@
                             {% if user.user_type == 5 or user.user_type == 6   %}
                                 <li><i class="fa fa-gears"></i><a href="{% url 'unites' %}">Conception</a></li>
                             {% endif %}
-                            <li><i class="fa fa-folder-open"></i><a href="{% url 'unites_consultation_propos' %}">Consultation</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="/consultation/1">Consultation</a></li>
                             
                         </ul>
                     </li>
@@ -184,7 +184,7 @@
                         <a href="{% url 'unites_reunion' %}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Réunion Budget</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-gears"></i><a href="{% url 'unites_reunion' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="#">Consultation</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="/consultation/2">Consultation</a></li>
                         </ul>
                     </li>
 
@@ -194,7 +194,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bell"></i>Notification Budget</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-gears"></i><a href="{% url 'unites_notif' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="#">Consultation</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="/consultation/3">Consultation</a></li>
                         </ul>
                     </li>
                     
@@ -210,7 +210,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Contrôle Budgétaire</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-gears"></i><a href="{% url 'unites_controle' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="{% url 'unites_controle' %}">Consultation</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="/consultation/4">Consultation</a></li>
                         </ul>
                     </li>
 
@@ -220,7 +220,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-euro"></i>Réalisation Comptable</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-gears"></i><a href="{% url 'unites_realisation' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="{% url 'annees_realisation' %}">Consultation</a></li>
+                            <li><i class="fa fa-folder-open"></i><a href="/consultation/5">Consultation</a></li>
                         </ul>
                     </li>
 
