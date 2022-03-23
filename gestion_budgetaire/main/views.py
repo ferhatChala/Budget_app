@@ -119,21 +119,25 @@ def cadres_list(request):
 	cadres_count = User.objects.filter(user_type=6).count()
 	return render(request, "registration/cadres_list.html" , {'cadre' : cadre, 'cadres_count':cadres_count})
 
+@login_required(login_url='login')
 def chef_dep_list(request):
 	chefs = User.objects.filter(user_type=5)
 	chefs_count = User.objects.filter(user_type=5).count()
 	return render(request, "registration/chef_dep_list.html" , {'chefs' : chefs, 'chefs_count':chefs_count})
 
+@login_required(login_url='login')
 def sous_dir_list(request):
 	sous_dir = User.objects.filter(user_type=4)
 	sous_dir_count = User.objects.filter(user_type=4).count()
 	return render(request, "registration/sous_dir_list.html" , {'sous_dir' : sous_dir, 'sous_dir_count':sous_dir_count})
 
+@login_required(login_url='login')
 def dir_list(request):
 	dir = User.objects.filter(user_type=3)
 	dir_count = User.objects.filter(user_type=3).count()
 	return render(request, "registration/dir_list.html" , {'dir':dir, 'dir_count':dir_count})
 
+@login_required(login_url='login')
 def content_admin_list(request):
 	content_admin = User.objects.filter(user_type=2)
 	content_admin_count = User.objects.filter(user_type=2).count()
@@ -147,6 +151,7 @@ def delete_user(request, id):
     return HttpResponseRedirect("/cadres_list")
 
 #update
+
 class UserUpdateView(UpdateView):
 	model = User
 	fields = '__all__'
@@ -156,6 +161,7 @@ class UserUpdateView(UpdateView):
 
 
 # gestion des interimes ---------------------------------------------------
+
 def interims(request):
 	interims = Interim.objects.all()
 	return render(request, "registration/interims.html" , {'interims':interims})
@@ -172,7 +178,6 @@ def add_interim(request):
 
 
 # unités & Departements ---------------------------------------------------
-
 def add_unite(request):
 	unite_form = AddUniteForm(request.POST or None)
 	if request.method == "POST":
@@ -355,7 +360,6 @@ def scf_comptes(request):
 	return render(request=request, template_name="scfs/scf_comptes.html", context={'comptes':comptes})
 
 # Monnaie ---------------------------------------------------
-
 def add_monnaie(request):
 	monnaie_form = AddMonnaieForm(request.POST or None)
 	if request.method == "POST":
@@ -383,7 +387,6 @@ def delete_monnaie(request, id):
     return HttpResponseRedirect("/ref/monnaie_list")
 
 # Taux de change ---------------------------------------------
-
 def add_taux_chng(request):
 	taux_chng_form = AddTauxChngForm(request.POST or None)
 	if request.method == "POST":
@@ -475,7 +478,6 @@ def delete_pays(request, id):
     return HttpResponseRedirect("/ref/pays_list")
 
 # annee budgétaire -------------------------------------------
-
 def add_annee_bdg(request):
 	annee_bdg_form = AnneeBdgForm(request.POST or None)
 	if request.method == "POST":
@@ -509,12 +511,11 @@ def delete_annee_bdg(request, id):
 
 
 # Affectation des cadres aux unités ---------------------------------------------------
-
 def show_cadres(request):
 	cadre = User.objects.filter(user_type=6)
 	# cadres.unites  we can use related name in cadre_has_unite table
 	return render(request, "affectation/show_cadres.html" , {'cadre' : cadre})
-	
+
 def show_unites(request, id):
 	c = User.objects.get(id=id)
 	unites = Cadre_has_Unite.objects.filter(cadre = c)
@@ -8493,6 +8494,7 @@ def chapitre_consultation(request, id_volet, id_ann, id_unite, id_chap):
 	else:
 		comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=chapitre.code_num)
 
+
 	cm_dict = {}
 	for c in comptes:
 		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
@@ -8500,49 +8502,89 @@ def chapitre_consultation(request, id_volet, id_ann, id_unite, id_chap):
 			cm_dict[c.id] = "null"
 		else:
 			cm_dict[c.id] = m[0]
+
+	# pour les depenses 
+	comptes_regle_par_unite = Unite_has_Compte.objects.filter(unite=unite, regle_par=unite, compte__chapitre__code_num=id_chap)
+	comptes_regle_par_autre = comptes.difference(comptes_regle_par_unite)
+	# pos 2 comptes -------------------------------------
+	all_c2 = SCF_Pos_2.objects.all()
+	all_c3 = SCF_Pos_3.objects.all()
+	c2_par_unite = []
+	c2_par_autre = []	
+	c3_par_unite = []
+	c3_par_autre = []
+
+	if id_chap == 6 or id_chap == 7:
+		for c2 in all_c2:
+			for cu in comptes_regle_par_unite:
+				if c2.numero == cu.compte.ref.ref.ref.numero:
+					c2_par_unite.append(c2)
+
+		for c2 in all_c2:
+			for cu in comptes_regle_par_autre:
+				if c2.numero == cu.compte.ref.ref.ref.numero:
+					c2_par_autre.append(c2)
 		
+		for c3 in all_c3:
+			for cu in comptes_regle_par_unite:
+				if c3.numero == cu.compte.ref.ref.numero:
+					c3_par_unite.append(c3)
+
+		for c3 in all_c3:
+			for cu in comptes_regle_par_autre:
+				if c3.numero == cu.compte.ref.ref.numero:
+					c3_par_autre.append(c3)
+		
+		c3_par_unite = list(dict.fromkeys(c3_par_unite))
+		c3_par_autre = list(dict.fromkeys(c3_par_autre))
+		c2_par_unite = list(dict.fromkeys(c2_par_unite))
+		c2_par_autre = list(dict.fromkeys(c2_par_autre))
+	# -----------------------------------------------------------
+	
 	s1_dict = {}
 	s2_dict = {}
 
 	if id_volet == 3 or id_volet == 4:
 		for c in comptes:
-			all_m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
-			m = all_m[0]
 			s1 = 0
 			s2 = 0
-			# ----- S1 ----------
-			if m.janvier != None:
-				s1 = s1 + m.janvier
-			if m.fevrier != None:
-				s1 = s1 + m.fevrier
-			if m.mars != None:
-				s1 = s1 + m.mars
-			if m.avril != None:
-				s1 = s1 + m.avril
-			if m.mai != None:
-				s1 = s1 + m.mai
-			if m.juin != None:
-				s1 = s1 + m.juin
-			# ----- S2 ----------
-			if m.juillet != None:
-				s2 = s2 + m.juillet
-			if m.aout != None:
-				s2 = s2 + m.aout
-			if m.septemre != None:
-				s2 = s2 + m.septemre
-			if m.octobre != None:
-				s2 = s2 + m.octobre
-			if m.novembre != None:
-				s2 = s2 + m.novembre
-			if m.decembre != None:
-				s2 = s2 + m.decembre
-			# --------------
-			s1_dict[c.id] = s1
-			s2_dict[c.id] = s2
-
+			all_m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+			if len(all_m) != 0:
+				m = all_m[0]
+				# ----- S1 ----------
+				if m.janvier != None:
+					s1 = s1 + m.janvier
+				if m.fevrier != None:
+					s1 = s1 + m.fevrier
+				if m.mars != None:
+					s1 = s1 + m.mars
+				if m.avril != None:
+					s1 = s1 + m.avril
+				if m.mai != None:
+					s1 = s1 + m.mai
+				if m.juin != None:
+					s1 = s1 + m.juin
+				# ----- S2 ----------
+				if m.juillet != None:
+					s2 = s2 + m.juillet
+				if m.aout != None:
+					s2 = s2 + m.aout
+				if m.septemre != None:
+					s2 = s2 + m.septemre
+				if m.octobre != None:
+					s2 = s2 + m.octobre
+				if m.novembre != None:
+					s2 = s2 + m.novembre
+				if m.decembre != None:
+					s2 = s2 + m.decembre
+				# --------------
+				s1_dict[c.id] = s1
+				s2_dict[c.id] = s2
 
 	return render(request, "consultation/comptes.html", {'unite':unite, 'budget':budget, 'chapitre':chapitre, 'comptes':comptes, 'cm_dict':cm_dict,
-														 'id_volet':id_volet, 's1_dict':s1_dict, 's2_dict':s2_dict })
+														 'id_volet':id_volet, 's1_dict':s1_dict, 's2_dict':s2_dict, 'comptes_regle_par_unite':comptes_regle_par_unite,
+														 'comptes_regle_par_autre':comptes_regle_par_autre,
+														 'c2_par_unite':c2_par_unite, 'c2_par_autre':c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre })
 
 
 
