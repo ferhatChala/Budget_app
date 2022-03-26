@@ -2463,25 +2463,101 @@ def add_montant_reunion(request, id):
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
 	budget = all_budgets[0]
 
-	# N et N-1, N-2, N-3 pour Réalisation et notifié 
-	#re_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee') 
-	#n_1 = re_budgets[0]
-	#n_2 = re_budgets[1]
-	#n_3 = re_budgets[2]
-	# réalisation 
-	#re_n_1 = Compte_has_Montant.objects.filter(annee_budgetaire=n_1, unite_compte=unite_compte)
-	#re_n_2 = Compte_has_Montant.objects.filter(annee_budgetaire=n_2, unite_compte=unite_compte)
-	#re_n_3 = Compte_has_Montant.objects.filter(annee_budgetaire=n_3, unite_compte=unite_compte)
-	# notif 
-	#all_notif_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee') 
-	#notif_bdg_n = all_notif_budgets[0]
-	#notif_n = Compte_has_Montant.objects.filter(annee_budgetaire=notif_bdg_n, unite_compte=unite_compte)
-	# control 
-	# control accumulé N   + mois courant
-	# propos 
-	#all_propos_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
-	#bdg_propos = Compte_has_Montant.objects.filter(annee_budgetaire=all_propos_budgets[0], unite_compte=unite_compte)
+	# Les Anneés  --------------------------------------------------------------------------
+	annee_next = budget.annee    # N+1  (2023)
+	annee_n = annee_next - 1     # N    (2022)  
+	annee_n_1 = annee_next - 2   # N-1  (2021)
+	annee_n_2 = annee_next - 3   # N-2  (2020)
+	annee_n_3 = annee_next - 4   # N-3  (2019)
+
+	# Réalisation n-1, n-2, n-3
+	rls_n_1 = "-"
+	rls_n_2 = "-"
+	rls_n_3 = "-"
+	ms_n_1 = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n_1, annee_budgetaire__type_bdg = "RELS" ).order_by('-edition')
+	ms_n_2 = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n_2, annee_budgetaire__type_bdg = "RELS" ).order_by('-edition')
+	ms_n_3 = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n_3, annee_budgetaire__type_bdg = "RELS" ).order_by('-edition')
+	if len(ms_n_1) != 0:
+		rls_n_1 = ms_n_1[0].montant
+	else:
+		rls_n_1 = "-"
+
+	if len(ms_n_2) != 0:
+		rls_n_2 = ms_n_2[0].montant
+	else:
+		rls_n_2 = "-"
+
+	if len(ms_n_3) != 0:
+		rls_n_3 = ms_n_3[0].montant
+	else:
+		rls_n_3 = "-"
+
+	# annee n 
+	notif_n = "-"
+	notif_ms_n = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n, annee_budgetaire__type_bdg = "NOTIF" ).order_by('-edition')
+	if len(notif_ms_n) != 0:
+		notif_n = notif_ms_n[0].montant
+	else:
+		notif_n = "-"
 	
+	control_n = 0 # control cummulé année n
+	mois_courant = "Jnavier" # mois control budgétaire
+	control_ms_n = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n, annee_budgetaire__type_bdg = "CTRL" ).order_by('-edition')
+	if len(control_ms_n) == 0:
+		control_n = "-" 
+		mois_courant = "-"
+	else:
+		m_control = control_ms_n[0]
+		if m_control.janvier != None:
+			control_n = control_n + m_control.janvier
+			mois_courant = "Janvier"
+		if m_control.fevrier != None:
+			control_n = control_n + m_control.fevrier
+			mois_courant = "Février"
+		if m_control.mars != None:
+			control_n = control_n + m_control.mars
+			mois_courant = "Mars"
+		if m_control.avril != None:
+			control_n = control_n + m_control.avril
+			mois_courant = "Avril"
+		if m_control.mai != None:
+			control_n = control_n + m_control.mai
+			mois_courant = "Mai"
+		if m_control.juin != None:
+			control_n = control_n + m_control.juin
+			mois_courant = "Juin"
+		if m_control.juillet != None:
+			control_n = control_n + m_control.juillet
+			mois_courant = "Juillet"
+		if m_control.aout != None:
+			control_n = control_n + m_control.aout
+			mois_courant = "Août"
+		if m_control.septemre != None:
+			control_n = control_n + m_control.septemre
+			mois_courant = "Septembre"
+		if m_control.octobre != None:
+			control_n = control_n + m_control.octobre
+			mois_courant = "Octobre"
+		if m_control.novembre != None:
+			control_n = control_n + m_control.novembre
+			mois_courant = "Novembre"
+		if m_control.decembre != None:
+			control_n = control_n + m_control.decembre
+			mois_courant = "Decembre"
+
+	# Proposition (meme annee N+1) Cloture et Proposition 
+	propos_clotur = "-"
+	propos_prevs = "-"
+	propos_ms_n = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_next, annee_budgetaire__type_bdg = "PROPOS" ).order_by('-edition')
+	if len(propos_ms_n) != 0:
+		propos_clotur = propos_ms_n[0].montant_cloture
+		propos_prevs = propos_ms_n[0].montant
+	else: 
+		propos_clotur = "-"
+		propos_prevs = "-"
+
+	# ---------------------------------------------------------------------------------------------------
+
 	comment_form = CommentaireForm(request.POST or None)
 	montant_form = MontantCompteForm(request.POST or None)
 	if request.method == "POST":
@@ -2533,13 +2609,114 @@ def add_montant_reunion(request, id):
 			else:
 				return redirect("/reunion/unites")
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="reunion/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte, "budget":budget})
+	return render (request=request, template_name="reunion/add_montant.html", context={"montant_form":montant_form, "comment_form":comment_form, "unite_compte":unite_compte, "budget":budget,
+																						"rls_n_1":rls_n_1, "rls_n_2":rls_n_2, "rls_n_3":rls_n_3, "notif_n":notif_n, "control_n":control_n, 
+																						"mois_courant":mois_courant, "propos_clotur":propos_clotur, "propos_prevs":propos_prevs,
+																						"annee_n_1":annee_n_1, "annee_n_2":annee_n_2, "annee_n_3":annee_n_3, "annee_n":annee_n, })
 
 def update_montant_reunion(request, id): 
 	montant = get_object_or_404(Compte_has_Montant, id = id)
 	unite_compte = montant.unite_compte
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
 	budget = all_budgets[0]	
+
+	# Les Anneés  --------------------------------------------------------------------------
+	annee_next = budget.annee    # N+1  (2023)
+	annee_n = annee_next - 1     # N    (2022)  
+	annee_n_1 = annee_next - 2   # N-1  (2021)
+	annee_n_2 = annee_next - 3   # N-2  (2020)
+	annee_n_3 = annee_next - 4   # N-3  (2019)
+
+	# Réalisation n-1, n-2, n-3
+	rls_n_1 = "-"
+	rls_n_2 = "-"
+	rls_n_3 = "-"
+	ms_n_1 = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n_1, annee_budgetaire__type_bdg = "RELS" ).order_by('-edition')
+	ms_n_2 = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n_2, annee_budgetaire__type_bdg = "RELS" ).order_by('-edition')
+	ms_n_3 = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n_3, annee_budgetaire__type_bdg = "RELS" ).order_by('-edition')
+	if len(ms_n_1) != 0:
+		rls_n_1 = ms_n_1[0].montant
+	else:
+		rls_n_1 = "-"
+
+	if len(ms_n_2) != 0:
+		rls_n_2 = ms_n_2[0].montant
+	else:
+		rls_n_2 = "-"
+
+	if len(ms_n_3) != 0:
+		rls_n_3 = ms_n_3[0].montant
+	else:
+		rls_n_3 = "-"
+
+	# annee n 
+	notif_n = "-"
+	notif_ms_n = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n, annee_budgetaire__type_bdg = "NOTIF" ).order_by('-edition')
+	if len(notif_ms_n) != 0:
+		notif_n = notif_ms_n[0].montant
+	else:
+		notif_n = "-"
+	
+	control_n = 0 # control cummulé année n
+	mois_courant = "Jnavier" # mois control budgétaire
+	control_ms_n = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_n, annee_budgetaire__type_bdg = "CTRL" ).order_by('-edition')
+	if len(control_ms_n) == 0:
+		control_n = "-" 
+		mois_courant = "-"
+	else:
+		m_control = control_ms_n[0]
+		if m_control.janvier != None:
+			control_n = control_n + m_control.janvier
+			mois_courant = "Janvier"
+		if m_control.fevrier != None:
+			control_n = control_n + m_control.fevrier
+			mois_courant = "Février"
+		if m_control.mars != None:
+			control_n = control_n + m_control.mars
+			mois_courant = "Mars"
+		if m_control.avril != None:
+			control_n = control_n + m_control.avril
+			mois_courant = "Avril"
+		if m_control.mai != None:
+			control_n = control_n + m_control.mai
+			mois_courant = "Mai"
+		if m_control.juin != None:
+			control_n = control_n + m_control.juin
+			mois_courant = "Juin"
+		if m_control.juillet != None:
+			control_n = control_n + m_control.juillet
+			mois_courant = "Juillet"
+		if m_control.aout != None:
+			control_n = control_n + m_control.aout
+			mois_courant = "Août"
+		if m_control.septemre != None:
+			control_n = control_n + m_control.septemre
+			mois_courant = "Septembre"
+		if m_control.octobre != None:
+			control_n = control_n + m_control.octobre
+			mois_courant = "Octobre"
+		if m_control.novembre != None:
+			control_n = control_n + m_control.novembre
+			mois_courant = "Novembre"
+		if m_control.decembre != None:
+			control_n = control_n + m_control.decembre
+			mois_courant = "Decembre"
+
+	# Proposition (meme annee N+1) Cloture et Proposition 
+	propos_clotur = "-"
+	propos_prevs = "-"
+	propos_ms_n = Compte_has_Montant.objects.filter( unite_compte=unite_compte, annee_budgetaire__annee = annee_next, annee_budgetaire__type_bdg = "PROPOS" ).order_by('-edition')
+	if len(propos_ms_n) != 0:
+		propos_clotur = propos_ms_n[0].montant_cloture
+		propos_prevs = propos_ms_n[0].montant
+	else: 
+		propos_clotur = "-"
+		propos_prevs = "-"
+
+	# ---------------------------------------------------------------------------------------------------
+
+
+
 	form = UpdateMontantCompteForm(request.POST or None, instance = montant)
 	if form.is_valid():
 		form.save()
@@ -2577,7 +2754,10 @@ def update_montant_reunion(request, id):
 			return redirect("/reunion/unite/depense_exp/"+ str(unite_compte.unite.id)+"")
 		else:
 			return redirect("/reunion/unites")
-	return render (request=request, template_name="reunion/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant, "budget":budget})
+	return render (request=request, template_name="reunion/update_montant.html", context={"form":form, "unite_compte":unite_compte, "montant":montant, "budget":budget, 
+																							"rls_n_1":rls_n_1, "rls_n_2":rls_n_2, "rls_n_3":rls_n_3, "notif_n":notif_n, "control_n":control_n, 
+																							"mois_courant":mois_courant, "propos_clotur":propos_clotur, "propos_prevs":propos_prevs,
+																							"annee_n_1":annee_n_1, "annee_n_2":annee_n_2, "annee_n_3":annee_n_3, "annee_n":annee_n, })
 
 def valid_montant_reunion(request, id):
 	new_montant = get_object_or_404(Compte_has_Montant, id = id)
