@@ -23,7 +23,7 @@
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
 							<li><a href="{% url 'unites_actualis' %}">Unités</a></li>
-                            <li><a href="/actualis/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
+                            <li><a href="/actualis/{{budget.id}}/unite/{{unite_compte.unite.id}}">{{unite_compte.unite.code_alpha}}</a></li>
 							<li><a href="#">{{unite_compte.compte.chapitre.lib}}</a></li>
 						</ol>
 					</div>
@@ -38,15 +38,28 @@
 					<div class="card">
 						<div class="card-header">
 							<div class="form-row">
-								<div class="form-group col-md-6 mb-0">
-									<strong class="card-title">{{unite_compte.compte}}</strong>
-								</div>
-								<div class="form-group col-md-4 mb-0">
-									<strong class="card-title">Reglé par :{{unite_compte.regle_par}}</strong>
-								</div>
-								<div class="form-group col-md-2 mb-0">
-									<strong class="card-title"> <span class="float-right"> {{unite_compte.monnaie.code_alpha}}</span></strong>
-								</div>
+								
+								
+								{% if unite_compte.compte.chapitre.code_num != 1 and  unite_compte.compte.chapitre.code_num != 2   %}
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title">{{unite_compte.compte}}</strong>
+									</div>
+									<div class="form-group col-md-4 mb-0">
+										<strong class="card-title">Reglé par :{{unite_compte.regle_par}}</strong>
+									</div>
+									<div class="form-group col-md-2 mb-0">
+										<strong class="card-title"> <span class="float-right"> {{unite_compte.monnaie.code_alpha}}</span></strong>
+									</div>
+								{% else %}
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title">{{unite_compte.compte.rubrique}}</strong>
+									</div>
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title"> <span class="float-right">Reglé par : {{unite_compte.regle_par}}</span></strong>
+									</div>
+								{% endif %}
+									
+								
 								<br>
 							</div>
 						</div>

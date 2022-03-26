@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
+{% block actu_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Budget notifié Mensuel{{budget.annee}}</h1>
+						<h1>Actualisations & Réajustements (<strong> {{budget.annee}}</strong>)</h1>
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites_notif' %}">Unités</a></li>
+							<li><a href="{% url 'unites_actualis' %}">Unités</a></li>
 							<li><a href="#">Modifier le commentaire</a></li>
 						</ol>
 					</div>

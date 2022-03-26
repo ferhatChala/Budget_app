@@ -3358,7 +3358,7 @@ def offre_comptes_notif(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -3405,7 +3405,7 @@ def traffic_comptes_notif(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -3452,7 +3452,7 @@ def ca_emmission_comptes_notif(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -3499,7 +3499,7 @@ def ca_transport_comptes_notif(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -3545,7 +3545,7 @@ def recettes_comptes_notif(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -3591,7 +3591,7 @@ def depense_fonc_comptes_notif(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -3846,7 +3846,7 @@ def depense_exp_comptes_notif(request, id):
 	# join comptes with montants in dict
 	cm_dict = {}
 	for c in comptes:
-		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c)
+		m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, type_maj="N", unite_compte=c).order_by('-edition')
 		if len(m) == 0:
 			cm_dict[c.id] = "null"
 		else:
@@ -6570,14 +6570,20 @@ def delete_comment_realisation(request, id):
 
 def unites_actualis(request):
 	unites = Cadre_has_Unite.objects.filter(cadre=request.user)
+	dep_unites = Unite.objects.filter(departement=request.user.departement)
+	all_unites = Unite.objects.all()
 	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
 	
 	budget_1 = all_budgets[0]
 	budget_2 = all_budgets[1]
+	
+	# check all_budgets length
+	# montants where budget = budget1 for all unites and vld mens sdir
+	# all comptes of all unites
+	# all_comptes = Unite_has_Compte.objects.filter().count()
+	# all_montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget).count()
+	# all_montants >= all_comptes (valid mens)
 
-
-	dep_unites = Unite.objects.filter(departement=request.user.departement)
-	all_unites = Unite.objects.all()
 
 	edition_budget_1 = {}
 	state_sdir_budget_1 = {}
