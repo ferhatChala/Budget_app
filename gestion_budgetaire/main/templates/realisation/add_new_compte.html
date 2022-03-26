@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Réalisation Budget <strong>{{budget.annee}}</strong> </h1>
+						<h1>Réalisation Comptable <strong>{{budget.annee}}</strong> </h1>
 					</div>
 				</div>
 			</div>
@@ -36,7 +36,7 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">Ajouter compte <span class="float-right">Offre</span></strong>
+							<strong class="card-title">Ajouter compte <span class="float-right"> Unité: <b>{{unite.code_alpha}} </b></span></strong>
 						</div>
 						<div class="card-body">
                             <form method="post">
@@ -57,7 +57,7 @@
 								</div>
                                 <br>
                                 <button type="submit" class="btn btn-primary">Ajouter</button>
-                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                                <a href="{% url 'unites_realisation' %}" class="btn btn-secondary">Annuler</a>
                             </form>
 						</div>
 					</div>

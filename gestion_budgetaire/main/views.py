@@ -6441,6 +6441,8 @@ def cancel_valid_montant_realisation(request, id):
 
 def add_new_compte_realisation(request, id):
 	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="RELS").order_by('-annee')
+	budget = all_budgets[0]
 	form = AddCompteUniteForm(request.POST or None)
 	if request.method == "POST":
 		if  form.is_valid():
@@ -6453,7 +6455,7 @@ def add_new_compte_realisation(request, id):
 			return HttpResponseRedirect("/realisation/unite/"+ str(unite.id)+"")
 			
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="realisation/add_new_compte.html", context={"form":form})
+	return render (request=request, template_name="realisation/add_new_compte.html", context={"form":form, "budget":budget, "unite":unite})
 
 def delete_added_compte_realisation(request,id):
 	form = Unite_has_Compte.objects.get(id=id)
@@ -6576,7 +6578,7 @@ def unites_actualis(request):
 	
 	budget_1 = all_budgets[0]
 	budget_2 = all_budgets[1]
-	
+
 	# check all_budgets length
 	# montants where budget = budget1 for all unites and vld mens sdir
 	# all comptes of all unites

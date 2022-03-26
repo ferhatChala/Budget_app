@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Réalisation Budget <strong>{{budget.annee}}</strong> </h1>
+						<h1>Réalisation Comptable <strong>{{budget.annee}}</strong> </h1>
 					</div>
 				</div>
 			</div>
@@ -37,7 +37,31 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">{{unite_compte.compte}} <span class="float-right">Reglé par :{{unite_compte.regle_par}}</span></strong>
+							<div class="form-row">
+								
+								
+								{% if unite_compte.compte.chapitre.code_num != 1 and  unite_compte.compte.chapitre.code_num != 2   %}
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title">{{unite_compte.compte}}</strong>
+									</div>
+									<div class="form-group col-md-4 mb-0">
+										<strong class="card-title">Reglé par :{{unite_compte.regle_par}}</strong>
+									</div>
+									<div class="form-group col-md-2 mb-0">
+										<strong class="card-title"> <span class="float-right"> {{unite_compte.monnaie.code_alpha}}</span></strong>
+									</div>
+								{% else %}
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title">{{unite_compte.compte.rubrique}}</strong>
+									</div>
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title"> <span class="float-right">Reglé par : {{unite_compte.regle_par}}</span></strong>
+									</div>
+								{% endif %}
+									
+								
+								<br>
+							</div>
 						</div>
 						<div class="card-body">
 

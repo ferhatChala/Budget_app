@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Réalisation Budget <strong> {{budget.annee}}</strong></h1>
+						<h1>Réalisation Comptable <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -140,11 +140,10 @@
 									<thead>
 										<tr>
 											<th>N° SCF</th>
-											<th>Rubrique</th>
+											<th>Rubrique budgétaire</th>
 											<th>Monnaie</th>
 											<th>Reglé par</th>
 											<th>Montant</th>
-											<th>M-Clôture</th>
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -263,17 +262,7 @@
 													{% endif %}	
 												{% endfor %}
 											</td>
-											<td>
-												{% for key, m in cm_dict.items %}
-													{% if key == c.id %}
-														{% if m != "null" %}
-															<span>{{m.montant_cloture}}</span>	
-														{% else %}
-															--------																
-														{% endif %}	
-													{% endif %}	
-												{% endfor %}
-											</td>
+										
 											<td>
 												{% for key, m in cm_dict.items %}
 													{% if key == c.id %}
@@ -364,11 +353,10 @@
 									<thead>
 										<tr>
 											<th>N° SCF</th>
-											<th>Rubrique</th>
+											<th>Rubrique budgétaire</th>
 											<th>Monnaie</th>
 											<th>Reglé par</th>
 											<th>Montant</th>
-											<th>M-Clôture</th>
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -517,17 +505,7 @@
 													{% endif %}		
 												{% endfor %}
 											</td>
-											<td>
-												{% for key, m in cm_dict.items %}
-													{% if key == c.id %}
-														{% if m != "null" %}
-																<span>{{m.montant_cloture}}</span>
-														{% else %}
-															--------																	
-														{% endif %}	
-													{% endif %}	
-												{% endfor %}
-											</td>
+											
 											<td>
 												{% for key, m in cm_dict.items %}
 													{% if key == c.id %}
@@ -608,9 +586,9 @@
 </script>
 
 <script>
-$(function () {
-  $('[data-toggle="popover"]').popover()
-})
+	$(function () {
+	$('[data-toggle="popover"]').popover()
+	})
 </script>
 
 {% endblock %}
