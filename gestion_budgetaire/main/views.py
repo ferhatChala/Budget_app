@@ -1344,6 +1344,9 @@ def cancel_valid_montant(request, id):
 
 def add_new_compte(request, id):
 	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="PROPOS").order_by('-annee')
+	budget = all_budgets[0]
+
 	form = AddCompteUniteForm(request.POST or None)
 	if request.method == "POST":
 		if  form.is_valid():
@@ -1356,7 +1359,7 @@ def add_new_compte(request, id):
 			return HttpResponseRedirect("/proposition/unite/"+ str(unite.id)+"")
 			
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="proposition/add_new_compte.html", context={"form":form})
+	return render (request=request, template_name="proposition/add_new_compte.html", context={"form":form, 'unite':unite, 'budget':budget})
 
 def delete_added_compte(request,id):
 	form = Unite_has_Compte.objects.get(id=id)
@@ -2709,6 +2712,9 @@ def cancel_valid_montant_reunion(request, id):
 
 def add_new_compte_reunion(request, id):
 	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="REUN").order_by('-annee')
+	budget = all_budgets[0]
+
 	form = AddCompteUniteForm(request.POST or None)
 	if request.method == "POST":
 		if  form.is_valid():
@@ -2721,7 +2727,7 @@ def add_new_compte_reunion(request, id):
 			return HttpResponseRedirect("/reunion/unite/"+ str(unite.id)+"")
 			
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="reunion/add_new_compte.html", context={"form":form})
+	return render (request=request, template_name="reunion/add_new_compte.html", context={"form":form, 'unite':unite, 'budget':budget})
 
 def delete_added_compte_reunion(request,id):
 	form = Unite_has_Compte.objects.get(id=id)
@@ -4154,6 +4160,8 @@ def cancel_valid_montant_notif(request, id):
 
 def add_new_compte_notif(request, id):
 	unite = Unite.objects.get(id=id)
+	all_budgets = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
+	budget = all_budgets[0]
 	form = AddCompteUniteForm(request.POST or None)
 	if request.method == "POST":
 		if  form.is_valid():
@@ -4166,7 +4174,7 @@ def add_new_compte_notif(request, id):
 			return HttpResponseRedirect("/notif/unite/"+ str(unite.id)+"")
 			
 		messages.error(request, "Unsuccessful . Invalid information.")
-	return render (request=request, template_name="notif/add_new_compte.html", context={"form":form})
+	return render (request=request, template_name="notif/add_new_compte.html", context={"form":form, 'budget':budget, 'unite':unite})
 
 def delete_added_compte_notif(request,id):
 	form = Unite_has_Compte.objects.get(id=id)
@@ -8543,11 +8551,13 @@ def chapitre_consultation(request, id_volet, id_ann, id_unite, id_chap):
 	
 	s1_dict = {}
 	s2_dict = {}
+	total_dict = {}
 
 	if id_volet == 3 or id_volet == 4:
 		for c in comptes:
 			s1 = 0
 			s2 = 0
+			t = s1 + s2
 			all_m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
 			if len(all_m) != 0:
 				m = all_m[0]
@@ -8580,11 +8590,12 @@ def chapitre_consultation(request, id_volet, id_ann, id_unite, id_chap):
 				# --------------
 				s1_dict[c.id] = s1
 				s2_dict[c.id] = s2
+				total_dict[c.id] = s1 + s2
 
 	return render(request, "consultation/comptes.html", {'unite':unite, 'budget':budget, 'chapitre':chapitre, 'comptes':comptes, 'cm_dict':cm_dict,
 														 'id_volet':id_volet, 's1_dict':s1_dict, 's2_dict':s2_dict, 'comptes_regle_par_unite':comptes_regle_par_unite,
 														 'comptes_regle_par_autre':comptes_regle_par_autre,
-														 'c2_par_unite':c2_par_unite, 'c2_par_autre':c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre })
+														 'c2_par_unite':c2_par_unite, 'c2_par_autre':c2_par_autre, 'c3_par_unite':c3_par_unite, 'c3_par_autre':c3_par_autre,  'total_dict':total_dict, })
 
 
 

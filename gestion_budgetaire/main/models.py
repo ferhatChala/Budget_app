@@ -93,22 +93,22 @@ class Unite(models.Model):
     ('INT', 'Internationle'),
     ('DOM', 'Domestique'),
     ]
-    code_num = models.IntegerField() # tranfert vers l id and add primary key 
-    code_alpha = models.CharField(max_length=10)
-    lib = models.CharField(max_length=100)
-    departement = models.ForeignKey("Departement", related_name="unites", on_delete=models.CASCADE)
-    monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE)
-    pays = models.ForeignKey("Pays",  on_delete=models.CASCADE)
-    reseau_unite = models.CharField(max_length=50, choices=RES_CHOICES,default='DZ',)
-    region = models.CharField(max_length=50, choices=REG_CHOICES,default='DOM',)
+    code_num = models.IntegerField() # id (Primary key)  
+    code_alpha = models.CharField(max_length=10) # code unite
+    lib = models.CharField(max_length=100) # code unite 
+    departement = models.ForeignKey("Departement", related_name="unites", on_delete=models.CASCADE) # etranger
+    monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # id_monnaie
+    pays = models.ForeignKey("Pays",  on_delete=models.CASCADE) # id pays
+    reseau_unite = models.CharField(max_length=50, choices=RES_CHOICES,default='DZ',) # resau (change to same abrv in sheet csv)
+    region = models.CharField(max_length=50, choices=REG_CHOICES,default='DOM',) # etranger indecator
     # indicateurs 
-    comm = models.BooleanField('Commercial indicateur', default=False)
-    tresorie = models.BooleanField('Tresorie indicateur', default=False)
-    traffic = models.BooleanField('Traffic indicateur', default=False)
-    recette = models.BooleanField('Recette indicateur', default=False)
-    exploitation = models.BooleanField('Exploitation indicateur', default=False)
-    emmission = models.BooleanField('Emmession indicateur', default=False)
-    regle_possible = models.BooleanField('Possibilité de reglé pour autre unité indicateur', default=False)
+    comm = models.BooleanField('Commercial indicateur', default=False) # ok
+    tresorie = models.BooleanField('Tresorie indicateur', default=False) # ok
+    traffic = models.BooleanField('Traffic indicateur', default=False) # ok
+    recette = models.BooleanField('Recette indicateur', default=False) # ok
+    exploitation = models.BooleanField('Exploitation indicateur', default=False) # ok
+    emmission = models.BooleanField('Emmession indicateur', default=False) # ok
+    regle_possible = models.BooleanField('Possibilité de reglé pour autre unité indicateur', default=False) # set default False
 
     def __str__(self):
         return self.code_alpha
@@ -217,10 +217,10 @@ class Unite_has_Compte(models.Model):
     code = models.CharField(max_length=200, unique=True)
     unite   = models.ForeignKey("Unite", related_name="unites", on_delete=models.CASCADE)
     compte  = models.ForeignKey("SCF_Pos_7", related_name="unite_comptes", on_delete=models.CASCADE)
-    regle_par = models.ForeignKey("Unite", related_name="unite_regle" , on_delete=models.CASCADE)
+    regle_par = models.ForeignKey("Unite", related_name="unite_regle" , null=True, blank=True, on_delete=models.SET_NULL)
     reseau_compte  = models.CharField(max_length=50, choices=RES_CHOICES, default="ALL")
     added_by = models.ForeignKey("User", null=True, blank=True, related_name="other_comptes_added", on_delete=models.CASCADE)
-    monnaie = models.ForeignKey("Monnaie",  null=True, blank=True, on_delete=models.CASCADE) #  add default
+    monnaie = models.ForeignKey("Monnaie",  null=True, blank=True, default=1, on_delete=models.SET_NULL) #  add default
 
     def __str__(self):
         return self.unite.code_alpha + " - " + str(self.compte.numero) 

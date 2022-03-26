@@ -218,49 +218,107 @@
 
 										{% for key, m in cm_dict.items  %}
 											{% if key == c.id %}
-												{% if m.mens_done == True %}
-													<td>{{m.janvier}}</td>
-													<td>{{m.fevrier}}</td>
-													<td>{{m.mars}}</td>
-													<td>{{m.avril}}</td>
-													<td>{{m.mai}}</td>
-													<td>{{m.juin}}</td>
-													<td class="table-secondary">
-														{% for key, m in s1_dict.items %}
-															{% if key == c.id %}
-																	<span>{{m}}</span>
-															{% endif %}	
-														{% endfor %}
-													</td>
-													<td>{{m.juillet}}</td>
-													<td>{{m.aout}}</td>
-													<td>{{m.septemre}}</td>
-													<td>{{m.octobre}}</td>
-													<td>{{m.novembre}}</td>
-													<td>{{m.decembre}}</td>
-													<td class="table-secondary">
-														{% for key, m in s2_dict.items %}
-															{% if key == c.id %}
-																	<span>{{m}}</span>
-															{% endif %}	
-														{% endfor %}
-													</td>
-												{% else %}
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-													<td>-</td>
-												{% endif %}
+												
+												<td>
+													{% if m.janvier != None %}
+														{{m.janvier}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.fevrier != None %}
+														{{m.fevrier}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.mars != None %}
+														{{m.mars}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.avril != None %}
+														{{m.avril}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.mai != None %}
+														{{m.mai}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.juin != None %}
+														{{m.juin}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td class="table-secondary">
+													{% for key, m in s1_dict.items %}
+														{% if key == c.id %}
+																<span>{{m}}</span>
+														{% endif %}	
+													{% endfor %}
+												</td>
+												<td>
+													{% if m.juillet != None %}
+														{{m.juillet}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.aout != None %}
+														{{m.aout}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.septemre != None %}
+														{{m.septemre}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.octobre != None %}
+														{{m.octobre}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.novembre != None %}
+														{{m.novembre}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td>
+													{% if m.decembre != None %}
+														{{m.decembre}}
+													{% else %}
+														-
+													{% endif %}
+												</td>
+												<td class="table-secondary">
+													{% for key, m in s2_dict.items %}
+														{% if key == c.id %}
+																<span>{{m}}</span>
+														{% endif %}	
+													{% endfor %}
+												</td>
+											
+											
 											{% endif %}
 										{% endfor %}
 
@@ -268,7 +326,15 @@
 											{% for key, m in cm_dict.items  %}
 												{% if key == c.id %}
 													{% if m != "null" %}
-														<span>{{m.montant}}</span>
+
+														<span>
+															{% for k, t in total_dict.items %}
+																{% if k == c.id %}
+																		{{t}}
+																{% endif %}	
+															{% endfor %}
+														</span>
+
 														{% if m.commentaire_montant != None %}	
 	
 															{% if m.commentaire_montant.importance == "F" %}

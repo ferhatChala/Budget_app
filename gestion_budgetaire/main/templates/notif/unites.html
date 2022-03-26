@@ -42,40 +42,9 @@
 				<div class="card">
 					<div class="card-header" id="hua" role="tab" data-toggle="collapse" data-target="#cua" aria-expanded="true" aria-controls="cua">
 						<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span> Budget notifié <b>Anuelle</b>
-							{% if user.user_type == 6 %}
-								{% if state_ann_cadre == "Terminé" %}
-									<span class="float-right"  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-								{% elif state_ann_cadre == "Validé" %}
-									<span class="float-right"   style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-								{% elif state_ann_cadre == "Non saisie" %}
-									<span class="float-right"   style="color: red;"><i class="menu-icon fa fa-times"></i> Non saisie</span>
-								{% elif state_ann_cadre == "En cours" %}
-									<span class="float-right"   style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-								{% endif %}
-							{% elif user.user_type == 5 %}	
-								{% if state_ann_chef == "Terminé" %}
-									<span class="float-right"  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-								{% elif state_ann_chef == "Validé" %}
-									<span class="float-right"   style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-								{% elif state_ann_chef == "Non saisie" %}
-									<span class="float-right"><i class="menu-icon fa fa-times"></i> Non saisie</span>
-								{% elif state_ann_chef == "En cours" %}
-									<span class="float-right"   style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-								{% endif %}
-							{% elif user.user_type == 4 %}
-								{% if state_ann_sdir == "Terminé" %}
-									<span class="float-right"  style="color: green;"><i class="menu-icon fa fa-check-square-o"></i> Terminé</span>
-								{% elif state_ann_sdir == "Validé" %}
-									<span class="float-right"   style="color: green;"><i class="menu-icon fa fa-check"></i> Validé</span>
-								{% elif state_ann_sdir == "Non saisie" %}
-									<span class="float-right"><i class="menu-icon fa fa-times"></i> Non saisie</span>
-								{% elif state_ann_sdir == "En cours" %}
-									<span class="float-right"   style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-								{% endif %}
-							{% endif %}
 						</strong>
 					</div>
-					<div class="card-body collapse" id="cua" aria-labelledby="hua" data-parent="#accordionExample">		
+					<div class="card-body collapse show" id="cua" aria-labelledby="hua" data-parent="#accordionExample">		
 						<input class="form-control" id="myInput" type="text" placeholder="Search..">
 						<table id="bootstrap-data-table" class="table table-striped">
 							<thead>
@@ -211,14 +180,7 @@
 				<!-- Budget notifié Mensulle  -->
 				<div class="card"  id="hu" role="tab" data-toggle="collapse" data-target="#cu" aria-expanded="true" aria-controls="cu">
 					<div class="card-header">
-						<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span> Budget notifié <b>Mensulle</b>
-							
-							{% if globale_mens_state == True %}
-								<span  style="color: red;" class="float-right"><i class="menu-icon fa fa-times"></i> Indisponible</span>
-							{% else %}
-								<span  style="color: orange;" class="float-right"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
-							{% endif %}
-								
+						<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span> Budget notifié <b>Mensulle</b>		
 						</strong>
 					</div>
 					<div class="card-body collapse" id="cu" aria-labelledby="hu" data-parent="#accordionExample">		

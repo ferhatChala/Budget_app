@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
+{% block notif_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget 2022</h1>
+						<h1>Budget notifié <strong> {{budget.annee}}</strong></h1>
 					</div>
 				</div>
 			</div>
@@ -22,8 +22,8 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites' %}">Unités</a></li>
-							<li><a href="#">Offre</a></li>
+							<li><a href="{% url 'unites_notif' %}">Unités</a></li>
+							<li><a href="/notif/unite/{{unite.id}}">{{unite.code_alpha}}</a></li>
                             <li><a href="#">Ajouter compte</a></li>
 						</ol>
 					</div>
@@ -37,7 +37,7 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">Ajouter compte <span class="float-right">Offre</span></strong>
+							<strong class="card-title">Ajouter compte <span class="float-right"> Unité: <b>{{unite.code_alpha}} </b></span></strong>
 						</div>
 						<div class="card-body">
                             <form method="post">
@@ -58,7 +58,7 @@
 								</div>
                                 <br>
                                 <button type="submit" class="btn btn-primary">Ajouter</button>
-                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                                <a href="{% url 'unites_notif' %}" class="btn btn-secondary">Annuler</a>
                             </form>
 						</div>
 					</div>

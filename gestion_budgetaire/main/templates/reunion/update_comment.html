@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
+{% block reu_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -14,7 +14,7 @@
 			<div class="col-sm-4">
 				<div class="page-header float-left">
 					<div class="page-title">
-						<h1>Proposition Budget {{budget.annee}}</h1>
+						<h1>Réunion Budget {{budget.annee}}</h1>
 					</div>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 				<div class="page-header float-right">
 					<div class="page-title">
 						<ol class="breadcrumb text-right">
-							<li><a href="{% url 'unites' %}">Unités</a></li>
+							<li><a href="{% url 'unites_reunion' %}">Unités</a></li>
 							<li><a href="#">Modifier le commentaire</a></li>
 						</ol>
 					</div>
@@ -47,7 +47,7 @@
 								{{ form.text|as_crispy_field }}
 
                                 <button type="submit" class="btn btn-primary">Modifier</button>
-                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                                <a href="{% url 'unites_reunion' %}" class="btn btn-secondary">Annuler</a>
                             </form>
 						</div>
 					</div>

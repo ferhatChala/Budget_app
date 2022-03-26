@@ -38,15 +38,28 @@
 					<div class="card">
 						<div class="card-header">
 							<div class="form-row">
-								<div class="form-group col-md-6 mb-0">
-									<strong class="card-title">{{unite_compte.compte}}</strong>
-								</div>
-								<div class="form-group col-md-4 mb-0">
-									<strong class="card-title">Reglé par :{{unite_compte.regle_par}}</strong>
-								</div>
-								<div class="form-group col-md-2 mb-0">
-									<strong class="card-title"> <span class="float-right"> {{unite_compte.monnaie.code_alpha}}</span></strong>
-								</div>
+								
+								
+								{% if unite_compte.compte.chapitre.code_num != 1 and  unite_compte.compte.chapitre.code_num != 2   %}
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title">{{unite_compte.compte}}</strong>
+									</div>
+									<div class="form-group col-md-4 mb-0">
+										<strong class="card-title">Reglé par :{{unite_compte.regle_par}}</strong>
+									</div>
+									<div class="form-group col-md-2 mb-0">
+										<strong class="card-title"> <span class="float-right"> {{unite_compte.monnaie.code_alpha}}</span></strong>
+									</div>
+								{% else %}
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title">{{unite_compte.compte.rubrique}}</strong>
+									</div>
+									<div class="form-group col-md-6 mb-0">
+										<strong class="card-title"> <span class="float-right">Reglé par : {{unite_compte.regle_par}}</span></strong>
+									</div>
+								{% endif %}
+									
+								
 								<br>
 							</div>
 						</div>
@@ -99,7 +112,7 @@
 								</div>
         				
                                 <button type="submit" class="btn btn-primary">Suivant</button>
-                                <a href="{% url 'unites_reunion' %}" class="btn btn-secondary">Annuler</a>
+                                <a href="{% url 'unites_notif' %}" class="btn btn-secondary">Annuler</a>
                             </form>
 						</div>
 					</div>

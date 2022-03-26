@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block prop_active %}
+{% block notif_active %}
 <li class="menu-item-has-children dropdown active">
 {% endblock %}
 
@@ -47,7 +47,7 @@
 								{{ form.text|as_crispy_field }}
 
                                 <button type="submit" class="btn btn-primary">Modifier</button>
-                                <a href="{% url 'unites' %}" class="btn btn-secondary">Annuler</a>
+                                <a href="{% url 'unites_notif' %}" class="btn btn-secondary">Annuler</a>
                             </form>
 						</div>
 					</div>
