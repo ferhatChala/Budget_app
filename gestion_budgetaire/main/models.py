@@ -93,31 +93,39 @@ class Unite(models.Model):
     ('INT', 'Internationle'),
     ('DOM', 'Domestique'),
     ]
-    code_num = models.IntegerField() # id (Primary key)  
-    code_alpha = models.CharField(max_length=10) # code unite
-    lib = models.CharField(max_length=100) # code unite 
-    departement = models.ForeignKey("Departement", related_name="unites", on_delete=models.CASCADE) # etranger
-    monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # id_monnaie
-    pays = models.ForeignKey("Pays",  on_delete=models.CASCADE) # id pays
-    reseau_unite = models.CharField(max_length=50, choices=RES_CHOICES,default='DZ',) # resau (change to same abrv in sheet csv)
-    region = models.CharField(max_length=50, choices=REG_CHOICES,default='DOM',) # etranger indecator
+
+    id = models.IntegerField(primary_key = True) # yes 
+    code_alpha = models.CharField(max_length=10) # yes
+    lib = models.CharField(max_length=150) # no 
+    departement = models.ForeignKey("Departement", related_name="unites", on_delete=models.CASCADE) # no
+    monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # yes
+    pays = models.ForeignKey("Pays",  on_delete=models.CASCADE) # (yes) get id
+    reseau_unite = models.CharField(max_length=50, choices=RES_CHOICES,default='DZ',) # yes (change name brk)
+    region = models.CharField(max_length=50, choices=REG_CHOICES,default='DOM',) #  yes (etranger indecator)
     # indicateurs 
-    comm = models.BooleanField('Commercial indicateur', default=False) # ok
-    tresorie = models.BooleanField('Tresorie indicateur', default=False) # ok
-    traffic = models.BooleanField('Traffic indicateur', default=False) # ok
-    recette = models.BooleanField('Recette indicateur', default=False) # ok
-    exploitation = models.BooleanField('Exploitation indicateur', default=False) # ok
-    emmission = models.BooleanField('Emmession indicateur', default=False) # ok
-    regle_possible = models.BooleanField('Possibilité de reglé pour autre unité indicateur', default=False) # set default False
+    comm = models.BooleanField('Commercial indicateur', default=False) # yes
+    tresorie = models.BooleanField('Tresorie indicateur', default=False) # yes
+    traffic = models.BooleanField('Traffic indicateur', default=False) # yes
+    recette = models.BooleanField('Recette indicateur', default=False) # yes
+    exploitation = models.BooleanField('Exploitation indicateur', default=False) # yes
+    emmission = models.BooleanField('Emmession indicateur', default=False) # yes
+    regle_possible = models.BooleanField('Possibilité de reglé pour autre unité indicateur', default=False) # no (default)
+
+    #class Meta:
+        #db_table = 'Unite'
 
     def __str__(self):
         return self.code_alpha
 
 class Departement(models.Model):
+    # id : 1 = ALG , 2 = etranger
     # ALG & ETG 
     code = models.CharField(max_length=50)
     # Algérie & Etranger
     lib = models.CharField(max_length=100)
+
+    #class Meta:
+        #db_table = 'Departement'
 
     def __str__(self):
         return self.lib
@@ -128,14 +136,20 @@ class Pays(models.Model):
     code_alpha_three = models.CharField(max_length=3)
     lib = models.CharField(max_length=50)
 
+    #class Meta:
+        #db_table = 'Pays'
+
+
     def __str__(self):
         return self.lib
     
 class Monnaie(models.Model):
-    code_num = models.IntegerField()
-    code_alpha = models.CharField(max_length=50)
-    lib = models.CharField(max_length=50)
+    id = models.IntegerField(primary_key = True) # yes
+    code_alpha = models.CharField(max_length=50) # yes
+    lib = models.CharField(max_length=50) # yes
 
+    #class Meta:
+        #db_table = 'Monnaie'
     def __str__(self):
         return self.code_alpha
 
@@ -144,6 +158,8 @@ class Taux_de_change(models.Model):
     monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE)
     annee = models.IntegerField()
     value = models.FloatField() # la valeur de la monnaie par rapport au Dinnar DZD
+    #class Meta:
+        #db_table = 'Taux_de_change'
 
 
 # Comptes scf & Chapitre
