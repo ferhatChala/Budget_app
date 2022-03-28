@@ -35,32 +35,53 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">La list de toutes les unités </strong>
+							<strong class="card-title">Les unités </strong>
                             <a href="{% url 'add_unite' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
 						</div>
 						<div class="card-body">
 							<input class="form-control" id="myInput" type="text" placeholder="Search..">
-							<table id="bootstrap-data-table" class="table table-striped">
+							<table style="font-size:small;"  id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
-										<th>Code Num</th>
-										<th>Code Alpha</th>
-										<th>Département</th>
+										<th>#</th>
+										<th>Code_Unité</th>
+										<th>Libellé</th>
+										<th>Pays</th>
 										<th>Monnaie</th>
-                                        <th>Pays</th>
-                                        <th>Reseau</th>
-                                        <th>Action</th>
+										<th>Indicateurs <span style="margin-left:80px;"></span></th>
+                                        <th>Action <span style="margin-left:80px;"></span></th>
 									</tr>
 								</thead>
 								<tbody id="myTable">
 									{% for u in unite %}
 									<tr>
-										<td>{{u.code_num}}</td>
+										<td><b>{{u.id}}</b></td>
 										<td>{{u.code_alpha}}</td>
-										<td>{{u.departement.code}}</td>
+										<td>{{u.lib}}</td>
+										<td>{{u.pays.lib}}</td>
 										<td>{{u.monnaie.code_alpha}}</td>
-                                        <td>{{u.pays.code_alpha_two}}</td>
-                                        <td>{{u.region}}</td>
+										<th>
+											{% if u.comm %}
+												<span class="badge badge-primary">comm</span>
+											{% endif %}
+											{% if u.tresorie %}
+												<span class="badge badge-success">tres</span>
+											{% endif %}
+											{% if u.traffic %}
+												<span class="badge badge-info">traf</span>
+											{% endif %}
+											{% if u.recette %}
+												<span class="badge badge-success">rect</span>
+											{% endif %}
+											{% if u.emmission %}
+												<span class="badge badge-info">emms</span>
+											{% endif %}
+											{% if u.exploitation %}
+												<span class="badge badge-danger">exp</span>
+											{% endif %}
+											
+										</th>
+                                        
 										<td>
 											<a href="update_unite/{{u.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{u.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>

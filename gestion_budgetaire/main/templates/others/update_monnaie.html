@@ -12,14 +12,14 @@
         <div class="card">
             <div class="card-body">				
 						<br>
-						<h3>Update Monnaie</h3>
+						<h3>Modifier Monnaie :</h3>
 						<hr>
 						<!-- form pour ajouter cadres -->
 						<div class="container py-5">
 							<form method="post">
 								{% csrf_token %}
 								
-									{{ form.code_num|as_crispy_field }}
+									{{ form.id|as_crispy_field }}
                                     {{ form.code_alpha|as_crispy_field }}
                                     {{ form.lib|as_crispy_field }}
 

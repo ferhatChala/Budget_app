@@ -80,18 +80,18 @@ class User(AbstractUser):
 # unite & Departement & pays & monnaie & taux de change
 class Unite(models.Model):
     RES_CHOICES = [
-    ('DOM', 'Domestique'),
-    ('FR', 'France'),
-    ('EU', 'Europe'),
-    ('MG', 'Maghreb et Moyen Orient'),
-    ('AF', 'Afrique'),
-    ('AM', 'Amérique'),
-    ('AS', 'Asie'),
+    ('Algerie', 'Algérie'),
+    ('France', 'France'),
+    ('Europe', 'Europe'),
+    ('MMO', 'Maghreb et Moyen Orient'),
+    ('Afrique', 'Afrique'),
+    ('Amerique', 'Amérique'),
+    ('Asie', 'Asie'),
     ]
 
     REG_CHOICES = [
-    ('INT', 'Internationle'),
-    ('DOM', 'Domestique'),
+    ('1', 'Internationle'),
+    ('0', 'Domestique'),
     ]
 
     id = models.IntegerField(primary_key = True) # yes 
@@ -100,8 +100,8 @@ class Unite(models.Model):
     departement = models.ForeignKey("Departement", related_name="unites", on_delete=models.CASCADE) # no
     monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE) # yes
     pays = models.ForeignKey("Pays",  on_delete=models.CASCADE) # (yes) get id
-    reseau_unite = models.CharField(max_length=50, choices=RES_CHOICES,default='DZ',) # yes (change name brk)
-    region = models.CharField(max_length=50, choices=REG_CHOICES,default='DOM',) #  yes (etranger indecator)
+    reseau_unite = models.CharField(max_length=50, choices=RES_CHOICES,default='Algerie',) # yes (change name brk)
+    region = models.CharField(max_length=50, choices=REG_CHOICES,default='0',) #  yes (etranger indecator)
     # indicateurs 
     comm = models.BooleanField('Commercial indicateur', default=False) # yes
     tresorie = models.BooleanField('Tresorie indicateur', default=False) # yes
@@ -111,8 +111,8 @@ class Unite(models.Model):
     emmission = models.BooleanField('Emmession indicateur', default=False) # yes
     regle_possible = models.BooleanField('Possibilité de reglé pour autre unité indicateur', default=False) # no (default)
 
-    #class Meta:
-        #db_table = 'Unite'
+    class Meta:
+        db_table = 'Unite'
 
     def __str__(self):
         return self.code_alpha
@@ -124,8 +124,8 @@ class Departement(models.Model):
     # Algérie & Etranger
     lib = models.CharField(max_length=100)
 
-    #class Meta:
-        #db_table = 'Departement'
+    class Meta:
+        db_table = 'Departement'
 
     def __str__(self):
         return self.lib
@@ -136,8 +136,8 @@ class Pays(models.Model):
     code_alpha_three = models.CharField(max_length=3)
     lib = models.CharField(max_length=50)
 
-    #class Meta:
-        #db_table = 'Pays'
+    class Meta:
+        db_table = 'Pays'
 
 
     def __str__(self):
@@ -145,11 +145,11 @@ class Pays(models.Model):
     
 class Monnaie(models.Model):
     id = models.IntegerField(primary_key = True) # yes
-    code_alpha = models.CharField(max_length=50) # yes
-    lib = models.CharField(max_length=50) # yes
+    code_alpha = models.CharField(max_length=200) # yes
+    lib = models.TextField() # yes
 
-    #class Meta:
-        #db_table = 'Monnaie'
+    class Meta:
+        db_table = 'Monnaie'
     def __str__(self):
         return self.code_alpha
 
@@ -158,14 +158,18 @@ class Taux_de_change(models.Model):
     monnaie = models.ForeignKey("Monnaie", on_delete=models.CASCADE)
     annee = models.IntegerField()
     value = models.FloatField() # la valeur de la monnaie par rapport au Dinnar DZD
-    #class Meta:
-        #db_table = 'Taux_de_change'
+    
+    class Meta:
+        db_table = 'Taux_de_change'
 
 
 # Comptes scf & Chapitre
 class SCF_Pos_1(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=50)
+    
+    class Meta:
+        db_table = 'SCF_Pos_1'
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
@@ -174,6 +178,9 @@ class SCF_Pos_2(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=100)
     ref = models.ForeignKey("SCF_Pos_1", related_name= "comptes", on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'SCF_Pos_2'
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
@@ -182,6 +189,9 @@ class SCF_Pos_3(models.Model):
     numero = models.IntegerField(primary_key = True)
     rubrique = models.CharField(max_length=100)
     ref = models.ForeignKey("SCF_Pos_2", related_name= "comptes", on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'SCF_Pos_3'
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
@@ -191,6 +201,9 @@ class SCF_Pos_6(models.Model):
     rubrique = models.CharField(max_length=100)
     ref = models.ForeignKey("SCF_Pos_3", related_name= "comptes", on_delete=models.CASCADE) # auto / 
 
+    class Meta:
+        db_table = 'SCF_Pos_6'
+
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
 
@@ -199,6 +212,9 @@ class SCF_Pos_7(models.Model):
     rubrique = models.CharField(max_length=100)
     chapitre = models.ForeignKey("Chapitre", null=True, related_name="ch_comptes" , on_delete=models.CASCADE)
     ref = models.ForeignKey("SCF_Pos_6", related_name= "comptes", on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'SCF_Pos_7'
 
     def __str__(self):
         return str(self.numero) +" - " + self.rubrique
@@ -206,6 +222,9 @@ class SCF_Pos_7(models.Model):
 class Chapitre(models.Model):
     code_num = models.IntegerField(primary_key = True)
     lib = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'Chapitre'
 
     def __str__(self):
         return self.lib
@@ -230,13 +249,16 @@ class Unite_has_Compte(models.Model):
     ]
 
     # code = unite.id-compte.numero-regle-resau
-    code = models.CharField(max_length=200, unique=True)
-    unite   = models.ForeignKey("Unite", related_name="unites", on_delete=models.CASCADE)
-    compte  = models.ForeignKey("SCF_Pos_7", related_name="unite_comptes", on_delete=models.CASCADE)
-    regle_par = models.ForeignKey("Unite", related_name="unite_regle" , null=True, blank=True, on_delete=models.SET_NULL)
-    reseau_compte  = models.CharField(max_length=50, choices=RES_CHOICES, default="ALL")
-    added_by = models.ForeignKey("User", null=True, blank=True, related_name="other_comptes_added", on_delete=models.CASCADE)
-    monnaie = models.ForeignKey("Monnaie",  null=True, blank=True, default=1, on_delete=models.SET_NULL) #  add default
+    code = models.CharField(max_length=200, unique=True) # Auto generationg
+    unite   = models.ForeignKey("Unite", related_name="unites", on_delete=models.CASCADE) # unite Id
+    compte  = models.ForeignKey("SCF_Pos_7", related_name="unite_comptes", on_delete=models.CASCADE) # scf 7
+    regle_par = models.ForeignKey("Unite", related_name="unite_regle" , null=True, blank=True, on_delete=models.SET_NULL) # yes : flux
+    reseau_compte  = models.CharField(max_length=50, choices=RES_CHOICES, default="ALL") # yes
+    added_by = models.ForeignKey("User", null=True, blank=True, related_name="other_comptes_added", on_delete=models.SET_NULL) # added yes  admin
+    monnaie = models.ForeignKey("Monnaie",  null=True, blank=True, default=0, on_delete=models.SET_NULL) #  yes
+
+    class Meta:
+        db_table = 'Unite_has_Compte'
 
     def __str__(self):
         return self.unite.code_alpha + " - " + str(self.compte.numero) 
@@ -338,11 +360,19 @@ class Compte_has_Montant(models.Model):
     vld_mens_sous_dir = models.BooleanField(default=False) 
     validation_mens = models.CharField(max_length=50,choices=VALID_CHOICES, null=True, blank=True) # auto depend de user
 
+    class Meta:
+            db_table = 'Compte_has_Montant'
+
+
 class Cadre_has_Unite(models.Model):
     # code = cadre.id + unite.code
     code = models.CharField(max_length=50, unique=True)
     cadre = models.ForeignKey("User", on_delete=models.CASCADE)
     unite = models.ForeignKey("Unite", on_delete=models.CASCADE)
+
+    class Meta:
+            db_table = 'Cadre_has_Unite'
+    
     
 class Annee_Budgetaire(models.Model):
     TYPBDG_CHOICES = [
@@ -359,6 +389,9 @@ class Annee_Budgetaire(models.Model):
     lancement = models.BooleanField(default=False)
     cloture = models.BooleanField(default=False)
 
+    class Meta:
+            db_table = 'Annee_Budgetaire'
+
     def __str__(self):
         return self.type_bdg + " " + str(self.annee)
  
@@ -369,11 +402,20 @@ class Historique(models.Model):
     date = models.DateTimeField(default=timezone.now)
     action = models.CharField(max_length=50)
 
+    class Meta:
+            db_table = 'Historique'
+
+    def __str__(self):
+        return self.action
+
 class Notification(models.Model):
     user = models.ForeignKey("User", related_name="notifs", on_delete=models.CASCADE) # target user
     date = models.DateTimeField(default=timezone.now)
     message = models.TextField(max_length=50)
     seen = models.BooleanField()
+
+    class Meta:
+            db_table = 'Notification'
 
 class Commentaire(models.Model):
     IMPORTANCE_CHOICES = [
@@ -389,6 +431,9 @@ class Commentaire(models.Model):
     importance = models.CharField(max_length=50, choices=IMPORTANCE_CHOICES , default='A') 
     comment_type = models.CharField(max_length=50, choices=TYPE_CHOICES ) 
     user = models.ForeignKey("User", related_name="comments", on_delete=models.CASCADE)
+
+    class Meta:
+            db_table = 'Commentaire'
 
     def __str__(self):
         return self.text
@@ -407,6 +452,9 @@ class Reception(models.Model):
     date_recep = models.DateField(auto_now=False, auto_now_add=False)
     annee = models.IntegerField() # Anne budget N 
 
+    class Meta:
+            db_table = 'Reception'
+
 # Intérim 
 class Interim(models.Model):
     INTERIM_CHOICES = [
@@ -419,6 +467,9 @@ class Interim(models.Model):
     type_interim = models.CharField(max_length=50, choices=INTERIM_CHOICES,default='PIDZ',)
     date_debut = models.DateField(auto_now=False)
     date_fin = models.DateField(auto_now=False)
+
+    class Meta:
+            db_table = 'Interim'
 
     def __str__(self):
         return self.user.nom +"" + self.type_interim

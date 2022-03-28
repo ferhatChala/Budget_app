@@ -1,3 +1,4 @@
+from import_export.admin import ImportExportModelAdmin
 from .models import User
 from django import forms
 from django.contrib import admin
@@ -101,19 +102,74 @@ class CompteAdmin(admin.ModelAdmin):
 admin.site.register(Compte_SCF,CompteAdmin)
 #---------------------------------------------------------------------------
 
-admin.site.register(Departement)
-admin.site.register(Unite)
-admin.site.register(Pays)
-admin.site.register(Monnaie)
-admin.site.register(Taux_de_change)
-admin.site.register(Chapitre)
+class SCF_Pos_1_Admin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('numero', 'rubrique')
+admin.site.register(SCF_Pos_1, SCF_Pos_1_Admin)
 
-admin.site.register(SCF_Pos_1)
-admin.site.register(SCF_Pos_2)
-admin.site.register(SCF_Pos_3)
-admin.site.register(SCF_Pos_6)
-admin.site.register(SCF_Pos_7)
+class SCF_Pos_2_Admin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('numero', 'rubrique','ref')
+admin.site.register(SCF_Pos_2, SCF_Pos_2_Admin)
 
+class SCF_Pos_3_Admin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('numero', 'rubrique','ref')
+admin.site.register(SCF_Pos_3, SCF_Pos_3_Admin)
+
+class SCF_Pos_6_Admin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('numero', 'rubrique','ref')
+admin.site.register(SCF_Pos_6, SCF_Pos_6_Admin)
+
+class SCF_Pos_7_Admin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('numero', 'rubrique', 'chapitre')
+    list_filter = ('chapitre',)
+admin.site.register(SCF_Pos_7, SCF_Pos_7_Admin)
+
+class PaysAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('id', 'code_alpha_two','code_alpha_three', 'lib')
+    search_fields = ['lib', 'code_alpha_two', 'id', ]
+admin.site.register(Pays, PaysAdmin)
+
+class MonnaieAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('id', 'code_alpha', 'lib')
+admin.site.register(Monnaie, MonnaieAdmin)
+
+class UniteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('id', 'code_alpha', 'lib', 'pays', 'reseau_unite', 'monnaie')
+    list_filter = ('reseau_unite',)
+    search_fields = ['id', 'code_alpha', 'lib' ]
+admin.site.register(Unite, UniteAdmin)
+
+class DepartementAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('id', 'code', 'lib')
+admin.site.register(Departement, DepartementAdmin)
+
+class ChapitreAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('code_num', 'lib')
+admin.site.register(Chapitre, ChapitreAdmin)
+
+class TauxAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('annee', 'monnaie', 'value')
+    list_filter = ('monnaie',)
+admin.site.register(Taux_de_change, TauxAdmin)
+
+class Annee_BudgetaireAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('annee', 'type_bdg', 'lancement', 'cloture')
+    list_filter = ('type_bdg',)
+admin.site.register(Annee_Budgetaire, Annee_BudgetaireAdmin)
+
+#admin.site.register(Departement)
+#admin.site.register(Unite)
+#admin.site.register(Pays)
+#admin.site.register(Monnaie)
+#admin.site.register(Taux_de_change)
+#admin.site.register(Chapitre)
+
+#admin.site.register(SCF_Pos_1)
+#admin.site.register(SCF_Pos_2)
+#admin.site.register(SCF_Pos_3)
+#admin.site.register(SCF_Pos_6)
+#admin.site.register(SCF_Pos_7)
+
+#admin.site.register(Annee_Budgetaire)
 admin.site.register(Unite_has_Compte)
 admin.site.register(Compte_has_Montant)
 admin.site.register(Cadre_has_Unite)
@@ -123,6 +179,6 @@ admin.site.register(Notification)
 admin.site.register(Commentaire)
 admin.site.register(Reception)
 admin.site.register(Interim)
-admin.site.register(Annee_Budgetaire)
+
 
 

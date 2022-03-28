@@ -189,7 +189,7 @@ def add_unite(request):
 	return render (request=request, template_name="structure/add_unite.html", context={"unite_form":unite_form})
 
 def unite_list(request):
-	unite = Unite.objects.all()
+	unite = Unite.objects.all().order_by('id')
 	unite_count = Unite.objects.all().count()
 	#unite_algerie = 
 	#unite_etranger = 
@@ -371,7 +371,7 @@ def add_monnaie(request):
 	return render (request=request, template_name="others/add_monnaie.html", context={"monnaie_form":monnaie_form})
 
 def monnaie_list(request):
-	monnaie = Monnaie.objects.all()
+	monnaie = Monnaie.objects.all().order_by('id')
 	monnaie_count = Monnaie.objects.all().count()
 	return render(request, "others/monnaie_list.html" , {'monnaie' : monnaie, 'monnaie_count':monnaie_count})
 

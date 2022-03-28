@@ -12,7 +12,7 @@
         <div class="card">
             <div class="card-body">				
 						<br>
-						<h3>Add new Unite</h3>
+						<h3>Ajouter Unité: </h3>
 						<hr>
 						<!-- form pour ajouter cadres -->
 						<div class="container py-5">
@@ -20,7 +20,7 @@
 								{% csrf_token %}
 								<div class="form-row">
 									<div class="form-group col-md-4 mb-0">
-									{{ unite_form.code_num|as_crispy_field }}
+									{{ unite_form.id|as_crispy_field }}
 									</div>
 									<div class="form-group col-md-4 mb-0">
 									{{ unite_form.code_alpha|as_crispy_field }}
