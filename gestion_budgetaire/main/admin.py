@@ -133,8 +133,8 @@ class MonnaieAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 admin.site.register(Monnaie, MonnaieAdmin)
 
 class UniteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id', 'code_alpha', 'lib', 'pays', 'reseau_unite', 'monnaie')
-    list_filter = ('reseau_unite',)
+    list_display = ('id', 'code_alpha', 'lib', 'pays', 'reseau_unite', 'monnaie', 'traffic')
+    list_filter = ('reseau_unite','traffic')
     search_fields = ['id', 'code_alpha', 'lib' ]
 admin.site.register(Unite, UniteAdmin)
 
@@ -156,6 +156,17 @@ class Annee_BudgetaireAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ('type_bdg',)
 admin.site.register(Annee_Budgetaire, Annee_BudgetaireAdmin)
 
+
+class Unite_has_CompteAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('unite', 'compte', 'reseau_compte', 'monnaie')
+    list_filter = ('reseau_compte','unite',)
+admin.site.register(Unite_has_Compte, Unite_has_CompteAdmin)
+
+class Compte_has_MontantAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ('unite_compte', 'annee_budgetaire', 'montant',)
+    list_filter = ('annee_budgetaire',)
+admin.site.register(Compte_has_Montant, Compte_has_MontantAdmin)
+
 #admin.site.register(Departement)
 #admin.site.register(Unite)
 #admin.site.register(Pays)
@@ -170,8 +181,8 @@ admin.site.register(Annee_Budgetaire, Annee_BudgetaireAdmin)
 #admin.site.register(SCF_Pos_7)
 
 #admin.site.register(Annee_Budgetaire)
-admin.site.register(Unite_has_Compte)
-admin.site.register(Compte_has_Montant)
+#admin.site.register(Unite_has_Compte)
+#admin.site.register(Compte_has_Montant)
 admin.site.register(Cadre_has_Unite)
 
 admin.site.register(Historique)

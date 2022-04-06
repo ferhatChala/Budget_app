@@ -243,9 +243,9 @@ class Compte_SCF(models.Model):
 # Afféctation des comptes scf 6 position pour chaque Unité
 class Unite_has_Compte(models.Model):
     RES_CHOICES = [
-    ('INT', 'Internationle'),
-    ('DOM', 'Domestique'),
-    ('ALL', 'All'),
+    ('I', 'International'),
+    ('D', 'Domestique'),
+    ('A', 'All'),
     ]
 
     # code = unite.id-compte.numero-regle-resau
