@@ -64,7 +64,50 @@
 								{% if unite.traffic  %}
 									<tr>
 										<td>{{c.lib}}</td>	
-										<td>-</td>
+										<td>
+											
+											{% if c.code_num == 4 %}
+												<span style="color: green;">
+													<strong>{{rct_trans_total}}  <b>DZD</b></strong>
+												</span>
+											{% elif c.code_num == 1 %}
+												<span>
+													
+													{% if off_pax_total > 0 %}
+														<i class="menu-icon fa fa-users"></i> PAX :<strong> {{off_pax_total}}</strong> <br>
+													{% endif %}
+													{% if off_bcb_total > 0 %}
+														<i class="menu-icon fa fa-suitcase"></i> BCB : <strong>{{off_bcb_total}} <b>Tonnes</b> </strong> <br>
+													{% endif %}
+													{% if off_fret_total > 0 %}
+														<i class="menu-icon fa fa-cubes"></i> FRET : <strong>{{off_fret_total}} <b>Tonnes</b> </strong> <br>
+													{% endif %}
+													{% if off_poste_total > 0 %}
+														<i class="menu-icon fa fa-envelope"></i> POSTE :<strong> {{off_poste_total}} <b>Tonnes</b> </strong> <br>
+													{% endif %}
+														
+												</span>
+											{% elif c.code_num == 2 %}
+												<span>
+														
+													{% if trf_pax_total > 0 %}
+														<i class="menu-icon fa fa-users"></i> PAX :<strong> {{trf_pax_total}}</strong> <br>
+													{% endif %}
+													{% if trf_bcb_total > 0 %}
+														<i class="menu-icon fa fa-suitcase"></i> BCB : <strong>{{trf_bcb_total}} <b>Tonnes</b> </strong> <br>
+													{% endif %}
+													{% if trf_fret_total > 0 %}
+														<i class="menu-icon fa fa-cubes"></i> FRET : <strong>{{trf_fret_total}} <b>Tonnes</b> </strong> <br>
+													{% endif %}
+													{% if trf_poste_total > 0 %}
+														<i class="menu-icon fa fa-envelope"></i> POSTE :<strong> {{trf_poste_total}} <b>Tonnes</b> </strong> <br>
+													{% endif %}
+														
+												</span>
+											{% endif %}
+												
+
+										</td>
 										<td>
 											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
 										</td>
@@ -74,7 +117,9 @@
 								{% if unite.emmission  %}
 									<tr>
 										<td>{{c.lib}}</td>	
-										<td>-</td>
+										<td>
+											<strong>{{emission_total}}  <b>{{unite.monnaie}}</b></strong>
+										</td>
 										<td>
 											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
 										</td>
@@ -84,30 +129,43 @@
 								{% if unite.recette  %}
 									<tr>
 										<td>{{c.lib}}</td>	
-										<td>-</td>
+										<td>
+											<span style="color: green;">
+												<strong>{{autre_rct_total}}  <b>DZD</b></strong>
+											</span>
+										</td>
 										<td>
 											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
 										</td>
 									</tr>
 								{% endif %}
-							{% elif c.code_num == 7 %}
-								{% if unite.exploitation  %}
-									<tr>
-										<td>{{c.lib}}</td>	
-										<td>-</td>
-										<td>
-											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
-										</td>
-									</tr>
-								{% endif %}
-							{% else %} 
+							{% elif c.code_num == 6 %}
 								<tr>
 									<td>{{c.lib}}</td>	
-									<td>-</td>
+									<td>
+										<span style="color: red;">
+											<strong>{{dpns_fonc_total}}  <b>{{unite.monnaie}} </b></strong>
+										</span>
+									</td>
 									<td>
 										<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
 									</td>
 								</tr>
+							{% elif c.code_num == 7 %}
+								{% if unite.exploitation  %}
+									<tr>
+										<td>{{c.lib}}</td>	
+										<td>
+											<span style="color: red;">
+												<strong>{{dpns_exp_total}}  <b>{{unite.monnaie}} </b></strong>
+											</span>
+										</td>
+										<td>
+											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
+										</td>
+									</tr>
+								{% endif %}
+
 							{% endif %}
 								
 						{% endfor %}

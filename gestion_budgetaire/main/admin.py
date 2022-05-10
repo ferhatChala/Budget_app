@@ -148,7 +148,7 @@ admin.site.register(Chapitre, ChapitreAdmin)
 
 class TauxAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ('annee', 'monnaie', 'value')
-    list_filter = ('monnaie',)
+    list_filter = ('annee','monnaie',)
 admin.site.register(Taux_de_change, TauxAdmin)
 
 class Annee_BudgetaireAdmin(ImportExportModelAdmin, admin.ModelAdmin):

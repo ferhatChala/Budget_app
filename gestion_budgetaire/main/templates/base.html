@@ -83,11 +83,14 @@
         <nav class="navbar navbar-expand-sm navbar-default">
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+                    
                     <!-- Admin functions  (CRUD) -->
                     {% if user.is_authenticated and user.user_type == 1 %}      
                     <li class="menu-title">Administration</li><!-- /.menu-title -->
+                    {% block home_admin_active %}
                     <li>
-                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                    {% endblock %}
+                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-home"></i>Accueil</a>
                     </li>
                     {% block users_active %}
                     <li class="menu-item-has-children dropdown">
@@ -102,11 +105,7 @@
                         </ul>
                     </li>
 
-                    {% block int_active %}
-                    <li>
-                    {% endblock %}
-                        <a href="{% url 'interims' %}"><i class="menu-icon fa fa-clock-o"></i>Gestion des intérim</a>
-                    </li>
+                   
 
                     {% block unite_active %}
                     <li>
@@ -129,7 +128,14 @@
                     {% block cpt_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'all_unites' %}"><i class="menu-icon fa fa-suitcase"></i>Comptes des unités</a>
+                        <a href="{% url 'all_unites' %}"><i class="menu-icon fa fa-suitcase"></i>Rubriques budgétaires</a>
+                    </li>
+
+
+                    {% block int_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'interims' %}"><i class="menu-icon fa fa-clock-o"></i>Gestion des intérim</a>
                     </li>
 
                     {% block autre_active %}
@@ -164,7 +170,11 @@
                     
                     {% if user.user_type == 6 or user.user_type == 5 or user.user_type == 4 %}    
                     <li class="menu-title">Budget</li><!-- /.menu-title -->
-
+                    {% block home_active %}
+                    <li>
+                    {% endblock %}
+                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-home"></i>Accueil</a>
+                    </li>
                     {% block prop_active %}
                     <li class="menu-item-has-children dropdown">
                     {% endblock %}
@@ -307,115 +317,7 @@
         <!-- Content -->
         {% include 'includes/messages.html' %}
         {% block content %}
-        <div class="content">
-            <!-- Animated -->
-            <div class="animated fadeIn">
-                <!-- Widgets  -->
-                <div class="row">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-1">
-                                        <i class="pe-7s-cash"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text">$<span class="count">23569</span></div>
-                                            <div class="stat-heading">Budget</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-2">
-                                        <i class="pe-7s-cart"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text"><span class="count">{{comptes}}</span></div>
-                                            <div class="stat-heading">Comptes</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-3">
-                                        <i class="pe-7s-browser"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text"><span class="count">{{unite_count}}</span></div>
-                                            <div class="stat-heading">Unités</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-4">
-                                        <i class="pe-7s-users"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text"><span class="count">{{users_count}}</span></div>
-                                            <div class="stat-heading">Users</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <!-- /Widgets -->
-                <!--  Traffic  -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="box-title">Traffic </h4>
-                            </div>
-                            <div class="row">
-                            </div> <!-- /.row -->
-                            <div class="card-body"></div>
-                        </div>
-                    </div><!-- /# column -->
-                </div>
-                <!--  /Traffic -->
-                <div class="clearfix"></div>
-                <!-- Orders -->
-                <!-- /.orders -->
-                <!-- To Do and Live Chat -->
-                <!-- /To Do and Live Chat -->
-                <!-- Calender Chart Weather  -->
-                <!-- /Calender Chart Weather -->
-                <!-- Modal - Calendar - Add New Event -->
-                
-                <!-- /#event-modal -->
-                <!-- Modal - Calendar - Add Category -->
-                
-            <!-- /#add-category -->
-            </div>
-            <!-- .animated -->
-        </div>
+        
         {% endblock %}
         <!-- /.content -->
         <div class="clearfix"></div>

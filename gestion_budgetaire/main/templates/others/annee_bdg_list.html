@@ -45,7 +45,7 @@
 										<th>Année</th>
 										<th>Type Budget</th>
 										<th>Lancement</th>
-										<th>Cloture</th>
+										<th>Clôture</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -54,8 +54,22 @@
 									<tr>
 										<td>{{a.annee}}</td>
 										<td>{{a.type_bdg}}</td>
-										<td>{{a.lancement}}</td>
-										<td>{{a.cloture}}</td>
+										<td>
+                                            
+                                            {% if a.lancement == True %}
+                                                <span style="color: green;"><i class="menu-icon fa fa-check"></i></span>
+                                            {% else %}
+                                                <span style="color: red;"><i class="menu-icon fa fa-times"></i></span>
+                                            {% endif %}
+                                            
+                                        </td>
+                                        <td>
+                                            {% if a.cloture == True %}
+                                                <span style="color: green;"><i class="menu-icon fa fa-check"></i></span>
+                                            {% else %}
+                                                <span style="color: red;"><i class="menu-icon fa fa-times"></i></span>
+                                            {% endif %}
+                                        </td>
 										<td>
 											<a href="update_annee_bdg/{{a.id}}" class="btn btn-sm btn-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Modifier</a>
 											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{a.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>

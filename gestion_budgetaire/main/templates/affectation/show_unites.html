@@ -46,24 +46,32 @@
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
-										<th>Code Num</th>
+										<th>#</th>
 										<th>Code Alpha</th>
 										<th>Département</th>
 										<th>Monnaie</th>
                                         <th>Pays</th>
-                                        <th>Reseau</th>
+                                        <th>Réseau</th>
                                         <th>Action</th>
 									</tr>
 								</thead>
 								<tbody id="myTable">
 									{% for u in unites %}
 									<tr>
-										<td>{{u.unite.code_num}}</td>
+										<td>{{u.id}}</td>
 										<td>{{u.unite.code_alpha}}</td>
 										<td>{{u.unite.departement.code}}</td>
 										<td>{{u.unite.monnaie.code_alpha}}</td>
-                                        <td>{{u.unite.pays.code_alpha_two}}</td>
-                                        <td>{{u.unite.region}}</td>
+                                        <td>{{u.unite.pays.lib}}</td>
+                                        <td>
+											
+											{% if u.unite.region == "1.0" %}
+												International
+											{% else %}
+												Domestique
+											{% endif %}
+												
+										</td>
 										<td>
 											<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#e{{u.id}}"><span><i class="menu-icon fa fa-trash-o"></i></span></button>
 										</td>

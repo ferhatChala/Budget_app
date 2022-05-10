@@ -1,0 +1,544 @@
+{% extends "base.html" %}
+
+{% block home_admin_active %}
+<li class="active">
+{% endblock %}
+
+{% block home_active %}
+<li class="active">
+{% endblock %}
+
+{% block content %} 
+
+
+{% if user.user_type == 1 or user.user_type == 2  %}
+    <!-- Admin Home page  () -->
+    <div class="content">
+        <!-- Animated -->
+        <div class="animated fadeIn">
+            <!-- Widgets  -->
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-1">
+                                    <i class="pe-7s-users"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count"> {{users_nbr}} </span></div>
+                                        <div class="stat-heading">Users</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-2">
+                                    <i class="pe-7s-global"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{unites_nbr}}</span></div>
+                                        <div class="stat-heading">Unités</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-3">
+                                    <i class="pe-7s-menu"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{comptes_nbr}}</span></div>
+                                        <div class="stat-heading">Comptes SCF</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-4">
+                                    <i class="pe-7s-cash"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{budgets_nbr}}</span></div>
+                                        <div class="stat-heading">Budgets</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /Widgets -->
+            <!--  Traffic  -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="box-title">Budgets En cours </h4>
+                        </div>
+                        <div class="row">
+                        </div> <!-- /.row -->
+                        <div class="card-body">
+                            <input class="form-control" id="myInput" type="text" placeholder="Search..">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Année</th>
+										<th>Type budget</th>
+                                        <th>Lancement</th>
+                                        <th>Clôture</th>
+                                        <th>Action</th>
+									</tr>
+								</thead>
+								<tbody id="myTable">
+									{% for b in budgets %}
+									<tr>
+										<td>{{b.id}}</td>
+										<td>{{b.annee}}</td> 
+                                        <td>{{b.type_bdg}}</td>
+										<td>
+                                            
+                                            {% if b.lancement == True %}
+                                                <span style="color: green;"><i class="menu-icon fa fa-check"></i></span>
+                                            {% else %}
+                                                <span style="color: red;"><i class="menu-icon fa fa-times"></i></span>
+                                            {% endif %}
+                                            
+                                        </td>
+                                        <td>
+                                            {% if b.cloture == True %}
+                                                <span style="color: green;"><i class="menu-icon fa fa-check"></i></span>
+                                            {% else %}
+                                                <span style="color: red;"><i class="menu-icon fa fa-times"></i></span>
+                                            {% endif %}
+                                        </td>
+                                        <td> 
+                                            <a href="update_annee_bdg/{{b.id}}" class="btn btn-sm btn-outline-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Mis à jour</a>
+                                        </td>
+									</tr>
+
+									{% endfor %}
+								</tbody>
+							</table>
+                        </div>
+                    </div>
+                </div><!-- /# column -->
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="box-title">Rubriques Budgétaires </h4>
+                        </div>
+                        <div class="row">
+                        </div> <!-- /.row -->
+                        <div class="card-body">
+                            <input class="form-control" id="myInput" type="text" placeholder="Search..">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Unité</th>
+										<th>Nbr Rubriques</th>
+                                        <th>Action</th>
+									</tr>
+								</thead>
+								<tbody id="myTable">
+									{% for u in unites %}
+									<tr>
+										<td>{{u.id}}</td>
+										<td>{{u.code_alpha}}</td>
+										<td>
+                                            
+                                            {% for k,v in unite_rubs.items  %}
+                                                {% if u.id == k %}
+                                                    {{v}}
+                                                {% endif %}
+                                            {% endfor %}
+                                                
+                                        </td>
+                                        <td> 
+                                            <a href="show_comptes/{{u.id}}" class="btn btn-sm btn-outline-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Mis à jour</a>
+                                        </td>
+									</tr>
+
+									{% endfor %}
+								</tbody>
+							</table>
+                        </div>
+                    </div>
+                </div><!-- /# column -->
+            </div>
+
+        </div>
+        <!-- .animated -->
+    </div>
+{% elif user.user_type == 3 or user.user_type == 4 or user.user_type == 5 %}
+    <div class="content">
+        <!-- Animated -->
+        <div class="animated fadeIn">
+            <!--  Last budget notifié  -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h1 class="box-title">Budget notifié <b>{{last_budget.annee}}</b> </h2> 
+                        </div>
+                    
+                    </div>
+                </div><!-- /# column -->
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-2">
+                                    <i class="pe-7s-users"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-heading">Offre</div>
+                                        <div class="stat-text">PAX: <b><span class="count"> {{total_off_pax}} </span></b><span class="stat-heading"> (Passagers)</span></div> 
+                                        <div class="stat-text">BCB:  <b><span class="count"> {{total_off_bcb}} </span></b><span class="stat-heading"> (Tonnes)</span></div>
+                                        <div class="stat-text">FRET: <b><span class="count"> {{total_off_fret}} </span></b> <span class="stat-heading"> (Tonnes)</span></div>
+                                        <div class="stat-text">POSTE: <b><span class="count"> {{total_off_poste}} </span></b> <span class="stat-heading"> (Tonnes)</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-3">
+                                    <i class="pe-7s-plane"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-heading">Trafic</div>
+                                        <div class="stat-text">PAX: <b><span class="count"> {{total_trf_pax}} </span></b><span class="stat-heading"> (Passagers)</span></div> 
+                                        <div class="stat-text">BCB:  <b><span class="count"> {{total_trf_bcb}} </span></b><span class="stat-heading"> (Tonnes)</span></div>
+                                        <div class="stat-text">FRET: <b><span class="count"> {{total_trf_fret}} </span></b> <span class="stat-heading"> (Tonnes)</span></div>
+                                        <div class="stat-text">POSTE: <b><span class="count"> {{total_trf_poste}} </span></b> <span class="stat-heading"> (Tonnes)</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-9">
+                                    <i class="pe-7s-cash"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{total_emmission}} </span></div>
+                                        <div class="stat-heading">Chiffre d'affaire à l'émission (<strong> DZD</strong>)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-1">
+                                    <i class="pe-7s-cash"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{total_recettes_transport}}</span></div>
+                                        <div class="stat-heading">Recettes au Transport (<strong> DZD</strong>)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-1">
+                                    <i class="pe-7s-cash"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{total_autre_recettes}}</span> </div>
+                                        <div class="stat-heading">Autre Recettes (<strong> DZD</strong>)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-4">
+                                    <i class="pe-7s-cash"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{total_dep_fonc}}</span></div>
+                                        <div class="stat-heading">Dépenses de fonctionnement (<strong> DZD</strong>)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stat-widget-five">
+                                <div class="stat-icon dib flat-color-4">
+                                    <i class="pe-7s-cash"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="text-left dib">
+                                        <div class="stat-text"><span class="count">{{total_dep_exp}}</span></div>
+                                        <div class="stat-heading">Dépenses d'exploitation (<strong> DZD</strong>)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <!--  Budgets en Cours  -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="box-title">Budgets En cours </h4>
+                        </div>
+                        
+                        <div class="accordion" id="accordionExample">
+				
+                            {% for budget in budgets_encours %}	
+                                <div class="card" style="margin-bottom: 2px;">
+                                    <div class="card-header" id="hua{{budget.id}}" role="tab" data-toggle="collapse" data-target="#cua{{budget.id}}" aria-expanded="true" aria-controls="cua{{budget.id}}">
+                                        <strong class="card-title">
+                                            
+                                            {% if budget.type_bdg == "PROPOS"  %}
+                                                Budget de proposition
+                                            {% elif budget.type_bdg == "REUN" %}
+                                                Budget de réunion
+                                            {% elif budget.type_bdg == "NOTIF" %}
+                                                Budget notifié
+                                            {% elif budget.type_bdg == "CTRL" %}
+                                                Contrôle budgétaire
+                                            {% elif budget.type_bdg == "RELS" %}
+                                                Réalisation comptable
+                                            {% endif %}
+                                                
+                                            <b> {{budget.annee}}</b>
+                                            <span class="float-right"><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span>
+                                        </strong>
+                                    </div>
+                                    <div class="card-body collapse" id="cua{{budget.id}}" aria-labelledby="hua{{budget.id}}" data-parent="#accordionExample">
+                                        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                                        <table id="bootstrap-data-table" class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Unité</th>
+                                                    <th>Saisie</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="myTable">
+                                                
+                                                
+                                                {% if user.user_type == 4 or user.user_type == 3  %}
+
+                                                    {% for u in unites %}
+                                                        <tr>
+                                                            <td>{{u.lib}} ({{u.code_alpha}})</td>
+                                                            <td>80 %</td>
+                                                            <td>
+                                                                <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                
+                                                {% elif user.user_type == 5 %}
+
+                                                    {% for u in unites_chef %}
+                                                        <tr>
+                                                            <td>{{u.lib}} ({{u.code_alpha}})</td>
+                                                            <td>80 %</td>
+                                                            <td>
+                                                                <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                               
+                                                {% elif user.user_type == 6 %}
+                                                    
+                                                    {% for u in unites_cadre %}
+                                                        <tr>
+                                                            <td>{{u.lib}} ({{u.code_alpha}})</td>
+                                                            <td>80 %</td>
+                                                            <td>
+                                                                <span style="color: orange;"><i class="menu-icon fa fa-pencil-square-o"></i> En cours</span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+
+                                                {% endif %}
+                                            
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endfor %}
+            
+                        </div>
+                       
+
+                       
+
+                       
+                    </div>
+                </div>
+            </div>
+
+            <!--  Anneés budgetaire  -->
+            {% if user.user_type == 4  %} 
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="box-title">Années Budgétaires </h4>
+                            </div>
+                            
+                            <div class="card-body">
+                                <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                                <table id="bootstrap-data-table" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Année</th>
+                                            <th>Type budget</th>
+                                            <th>Lancement</th>
+                                            <th>Clôture</th>
+                                            
+                                            {% if user.user_type == 4 %}
+                                                <th>Action</th>
+                                            {% endif %}
+                                                
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myTable">
+                                        {% for b in budgets_encours %}
+                                        <tr>
+                                            <td>{{b.id}}</td>
+                                            <td>{{b.annee}}</td> 
+                                            <td>{{b.type_bdg}}</td>
+                                            <td>
+                                                
+                                                {% if b.lancement == True %}
+                                                    <span style="color: green;"><i class="menu-icon fa fa-check"></i></span>
+                                                {% else %}
+                                                    <span style="color: red;"><i class="menu-icon fa fa-times"></i></span>
+                                                {% endif %}
+                                                
+                                            </td>
+                                            <td>
+                                                {% if b.cloture == True %}
+                                                    <span style="color: green;"><i class="menu-icon fa fa-check"></i></span>
+                                                {% else %}
+                                                    <span style="color: red;"><i class="menu-icon fa fa-times"></i></span>
+                                                {% endif %}
+                                            </td>
+                                            
+                                            {% if user.user_type == 4 %}
+                                                <td> 
+                                                    <a href="update_annee_bdg/{{b.id}}" class="btn btn-sm btn-outline-secondary"> <span><i class="menu-icon fa fa-pencil"></i></span> Mis à jour</a>
+                                                </td>
+                                            {% endif %}
+
+                                        </tr>
+
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        
+
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            
+
+        </div>
+        <!-- .animated -->
+    </div>
+{% endif %}
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+	$(document).ready(function(){
+	  $("#myInput").on("keyup", function() {
+		var value = $(this).val().toLowerCase();
+		$("#myTable tr").filter(function() {
+		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		});
+	  });
+	});
+</script>
+
+{% endblock %}

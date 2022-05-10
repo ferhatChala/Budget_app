@@ -335,7 +335,7 @@ class Compte_has_Montant(models.Model):
     edition_budget = models.PositiveIntegerField(default=0)
 
     type_maj = models.CharField( max_length=50, null=True, blank=True, choices=TYPMAJ_CHOICES, default="N") 
-    created_date = models.DateTimeField(default=timezone.now) 
+    created_date = models.DateTimeField(default=timezone.now, null=True, blank=True) 
 
     # les montant pour chaque acteur
     montant_cadre  = models.FloatField(default=0) # 

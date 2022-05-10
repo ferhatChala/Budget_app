@@ -23,7 +23,184 @@ User = get_user_model()
 
 @login_required(login_url='login')
 def home(request):
-	return render(request, "base.html")
+	# count objects
+	users_nbr = User.objects.all().count()
+	unites_nbr = Unite.objects.all().count()
+	comptes_nbr = SCF_Pos_7.objects.all().count()
+	budgets_nbr = Annee_Budgetaire.objects.all().count()
+	# get objects
+	unites = Unite.objects.all().order_by('id')
+	unites_chef = Unite.objects.filter(departement=request.user.departement)
+	all_unites_cadre = Cadre_has_Unite.objects.filter(cadre=request.user)
+	unites_cadre = []
+	for u in all_unites_cadre:
+		unites_cadre.append(u.unite)
+
+	budgets = Annee_Budgetaire.objects.all().order_by('-annee')
+	budgets_encours = Annee_Budgetaire.objects.filter(cloture=False).order_by('-annee')
+
+	unite_rubs = {}
+	for u in unites:
+		uc = Unite_has_Compte.objects.filter(unite=u).count()
+		unite_rubs[u.id] = uc
+
+	#print("------------------") 
+	#print(unite_rubs)
+
+	# get last budget notif data ----------------------------------------------------------
+	# Converter touts les sommes en DZD
+	def sum_montants(montants):
+		result = 0
+		if len(montants) != 0:
+			for m in montants:
+				# DZD id = 12
+				if m.unite_compte.monnaie.id == 12 or m.unite_compte.monnaie.id == 0:  
+					result = result + m.montant	
+				else:	
+					tch_val = 1											
+					tch = Taux_de_change.objects.filter(monnaie=m.unite_compte.monnaie, annee=m.annee_budgetaire.annee)
+					if len(tch) != 0:
+						tch_val = tch[0].value
+					conv_montant = m.montant * tch_val
+					result = result + conv_montant
+		return result
+
+	budget_notif = Annee_Budgetaire.objects.filter(type_bdg="NOTIF").order_by('-annee')
+	if len(budget_notif) != 0:
+		last_budget = budget_notif[0]
+		# offre:   PAX: 8000100 -- BCB: 8000110 --  FRET: 8000120 -- POSTE: 8000130 
+		# trafic:  PAX: 8000200 -- BCB: 8000210 --  FRET: 8000220 -- POSTE: 8000230 
+
+		montants_off_pax = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000100, type_maj="N") 
+		montants_off_bcb = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000110, type_maj="N")
+		montants_off_fret = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000120, type_maj="N")
+		montants_off_poste = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000130, type_maj="N") 
+
+		montants_trf_pax = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000200, type_maj="N") 
+		montants_trf_bcb = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000210, type_maj="N")
+		montants_trf_fret = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000220, type_maj="N")
+		montants_trf_poste = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__numero=8000230, type_maj="N") 
+
+		montants_ca_emmession = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__chapitre__code_num=3, type_maj="N")
+		montants_recettes_transport = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__chapitre__code_num=4, type_maj="N")
+		montants_autre_recettes = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__chapitre__code_num=5, type_maj="N")		
+		montants_dep_fonc = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__chapitre__code_num=6, type_maj="N")
+		montants_dep_exp = Compte_has_Montant.objects.filter(annee_budgetaire=last_budget, unite_compte__compte__chapitre__code_num=7, type_maj="N")
+		
+		# les tautaux pour chaue chapitre
+		total_off_pax = int(sum_montants(montants_off_pax))
+		total_off_bcb = int(sum_montants(montants_off_bcb))
+		total_off_fret = int(sum_montants(montants_off_fret))
+		total_off_poste = int(sum_montants(montants_off_poste))
+
+		total_trf_pax = int(sum_montants(montants_trf_pax))
+		total_trf_bcb = int(sum_montants(montants_trf_bcb))
+		total_trf_fret = int(sum_montants(montants_trf_fret))
+		total_trf_poste = int(sum_montants(montants_trf_poste))
+
+
+		total_emmission = int(sum_montants(montants_ca_emmession))
+		total_recettes_transport = int(sum_montants(montants_recettes_transport))
+		total_autre_recettes = int(sum_montants(montants_autre_recettes))
+		total_dep_fonc = int(sum_montants(montants_dep_fonc))
+		total_dep_exp = int(sum_montants(montants_dep_exp))
+
+		#print("Query : ------------------------------------------")
+		#print("Emission: ",total_emmission) 
+		#print("Reccetes trans: ",total_recettes_transport)
+		#print("Autre Recettes: ",total_autre_recettes)
+		#print("Depens fonc: ",total_dep_fonc)
+		#print("Depens Exp: ",total_dep_exp)
+		#print(montants_ca_emmession.query)
+	else: 
+		last_budget = "NULL"
+
+	# etat d'avancemenet 
+	def get_unite_status(unite, budget):
+		unite_state = {}
+		result = {}
+		result["pr"] = 0
+		result["state"] = "-"
+
+		comptes = Unite_has_Compte.objects.filter(unite=unite)
+		montants = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite)
+		montants_vld_sdir = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, vld_sous_dir=True, type_maj="N")
+		montants_vld_chef = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, vld_chef_dep=True, type_maj="N")
+		montants_valid = []
+		for m in montants:
+			if m.vld_sous_dir == True or vld_chef_dep == True:
+				montants_valid.append(m)
+
+
+		pr = 0
+		if len(comptes) == 0:
+			pr = 0
+		else:
+			if len(montants) == 0:
+				pr = 0
+			else:
+				pr = int(math.modf((comptes.count() / montants.count())*100)[1])
+
+		# state cadre
+		if len(montants) == 0:
+			state_cadre = "Non saisie"
+		elif len(comptes) == len(montants) and len(comptes) != len(montants_valid) :
+			state_cadre = "Terminé"
+		elif len(comptes) == len(montants) and len(comptes) == len(montants_valid):
+			state_cadre = "Validé"
+		else:
+			state_cadre = "En cours"
+		
+		# state chef
+		if len(montants) == 0:
+			state_chef = "Non saisie"
+		elif len(comptes) == len(montants) and len(comptes) != len(montants_valid) :
+			state_chef = "Instance"
+		elif len(comptes) == len(montants) and len(comptes) == len(montants_valid) and len(comptes) != len(montants_vld_sdir) :
+			state_chef = "Terminé" 
+		elif len(comptes) == len(montants) and len(comptes) == len(montants_vld_sdir):
+			state_chef = "Validé"
+		else:
+			state_chef = "En cours"
+		
+		# state sdir 
+		if len(montants) == 0:
+			state_sdir = "Non saisie"
+		elif len(comptes) == len(montants) and len(comptes) != len(montants_vld_sdir) :
+			state_sdir = "Instance"
+		elif len(comptes) == len(montants) and len(comptes) == len(montants_vld_sdir):
+			state_sdir = "Terminé"
+		else:
+			state_sdir = "En cours"
+
+		unite_state["cadre"] = state_cadre
+		unite_state["chef"] = state_chef
+		unite_state["sdir"] = state_sdir
+
+		result["pr"] = pr
+		result["state"] = unite_state
+
+
+		return result
+
+	b_status = {}
+	for budget in budgets_encours:
+		u_status = {}
+		for u in unites:
+			u_status[u.id] = get_unite_status(u, budget)
+		
+		b_status[budget.id] = u_status
+		
+	#print("status --------------------")
+	#print(b_status)
+
+	return render(request, "home.html", {'users_nbr':users_nbr, 'unites_nbr':unites_nbr, 'comptes_nbr':comptes_nbr, 'budgets_nbr':budgets_nbr,
+										  'unites':unites, 'budgets':budgets, 'unite_rubs':unite_rubs, 'budgets_encours':budgets_encours,
+										  'unites_chef':unites_chef, 'unites_cadre':unites_cadre,
+										  'total_emmission':total_emmission, 'total_recettes_transport':total_recettes_transport, 'total_autre_recettes':total_autre_recettes,
+										   'total_dep_fonc':total_dep_fonc, 'total_dep_exp': total_dep_exp, 'last_budget':last_budget,
+										   'total_off_pax':total_off_pax, 'total_off_bcb':total_off_bcb,'total_off_fret':total_off_fret,'total_off_poste':total_off_poste,
+										   'total_trf_pax':total_trf_pax, 'total_trf_bcb':total_trf_bcb,'total_trf_fret':total_trf_fret,'total_trf_poste':total_trf_poste, })
 
 # ------------ users management -----------------------------------------------
 
@@ -545,7 +722,7 @@ def delete_unite_of_cadre(request, id):
 
 # Affectation des comptes aux unités ---------------------------------------------------
 def all_unites(request):
-	unites = Unite.objects.all()
+	unites = Unite.objects.all().order_by('id')
 	return render(request, "unite_comptes/all_unites.html" , {'unites' : unites})
 
 def add_compte_to_unite(request, id):
@@ -8677,9 +8854,117 @@ def unites_consultation(request, id_volet):
 def unite_detail_consultation(request, id_volet, id_ann, id_unite):
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
 	unite = Unite.objects.get(id=id_unite)
-	chapitres = Chapitre.objects.all()
+	# Taux de change
+	unite_monn = unite.monnaie
+	tch_unite = Taux_de_change.objects.filter(monnaie=unite_monn, annee=budget.annee)
+	ch_unite_val = 1
+	if len(tch_unite) != 0:
+		ch_unite_val = tch_unite[0].value
 
-	return render(request, "consultation/unite_detail.html", {'unite':unite, 'budget':budget, 'chapitres':chapitres, 'id_volet':id_volet })
+	chapitres = Chapitre.objects.all()
+	# offre:   PAX: 8000100 -- BCB: 8000110 --  FRET: 8000120 -- POSTE: 8000130 
+	# trafic:  PAX: 8000200 -- BCB: 8000210 --  FRET: 8000220 -- POSTE: 8000230 
+
+	off_pax_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000100)
+	off_bcb_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000110)
+	off_fret_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000120)
+	off_poste_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000130)
+
+	trf_pax_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000200)
+	trf_bcb_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000210)
+	trf_fret_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000220)
+	trf_poste_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__numero=8000230)
+
+
+	# Totale pour chaque chapitre 
+	emission_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=3)
+	rct_trans_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=4)
+	autre_rct_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=5)
+	dpns_fonc_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=6)
+	dpns_exp_comptes = Unite_has_Compte.objects.filter(unite=unite, compte__chapitre__code_num=7)
+	
+	off_pax_total = 0
+	off_bcb_total = 0
+	off_fret_total = 0
+	off_poste_total = 0
+
+	trf_pax_total = 0
+	trf_bcb_total = 0
+	trf_fret_total = 0
+	trf_poste_total = 0
+
+	emission_total = 0
+	rct_trans_total = 0
+	autre_rct_total = 0
+	dpns_fonc_total = 0
+	dpns_exp_total = 0
+
+	def get_total(comptes):
+		chap_id = 0
+		if len(comptes) != 0:
+			chap_id = comptes[0].compte.chapitre.code_num
+		result=0
+		#print('-------------chapitre--------------------')
+		for c in comptes:
+			c_monn = c.monnaie
+			#print(c_monn)
+
+			tch = Taux_de_change.objects.filter(monnaie=c_monn, annee=budget.annee)
+			ch_val = 1
+			if len(tch) != 0:
+				ch_val = tch[0].value
+
+			if id_volet != 4:
+				# Offre et traffic aucun monnaie
+				if chap_id == 1 or chap_id == 2:
+					m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+					if len(m) != 0:
+						montant = m[0]
+						result = result + montant.montant
+				# Reccetes en Dinnar
+				elif chap_id == 4 or chap_id == 5:
+					m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+					if len(m) != 0:
+						montant = m[0]
+						result = result + (montant.montant * ch_val)
+				# Depenses et CA Emmission (monnaie = unite monnaie)
+				elif chap_id == 6 or chap_id == 7 or chap_id == 3:
+					m = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte=c).order_by('-edition')
+					if len(m) != 0:
+						montant = m[0]
+						if c_monn == unite_monn:
+							result = result + montant.montant
+						else:
+							#montant en dinar
+							dzd_m = (montant.montant * ch_val)
+							# montant en unite monnaie
+							result = result + (dzd_m / ch_unite_val)
+						
+							
+		return result
+
+	off_pax_total = int(get_total(off_pax_comptes))
+	off_bcb_total = float("{:.2f}".format(get_total(off_bcb_comptes)))
+	off_fret_total = float("{:.2f}".format(get_total(off_fret_comptes)))
+	off_poste_total = float("{:.2f}".format(get_total(off_poste_comptes)))
+
+	trf_pax_total = int(get_total(trf_pax_comptes))
+	trf_bcb_total = float("{:.2f}".format(get_total(trf_bcb_comptes)))
+	trf_fret_total = float("{:.2f}".format(get_total(trf_fret_comptes)))
+	trf_poste_total = float("{:.2f}".format(get_total(trf_poste_comptes)))
+
+	
+	emission_total = int(get_total(emission_comptes))
+	rct_trans_total = int(get_total(rct_trans_comptes))
+	autre_rct_total = int(get_total(autre_rct_comptes))
+	dpns_fonc_total = int(get_total(dpns_fonc_comptes))
+	dpns_exp_total = int(get_total(dpns_exp_comptes))
+
+	return render(request, "consultation/unite_detail.html", {'unite':unite, 'budget':budget, 'chapitres':chapitres, 'id_volet':id_volet,
+															'rct_trans_total':rct_trans_total, 'autre_rct_total':autre_rct_total, 'dpns_fonc_total':dpns_fonc_total,
+															'dpns_exp_total':dpns_exp_total, 'emission_total':emission_total,
+															'off_pax_total':off_pax_total, 'off_bcb_total':off_bcb_total, 'off_fret_total':off_fret_total, 'off_poste_total':off_poste_total,
+															'trf_pax_total':trf_pax_total, 'trf_bcb_total':trf_bcb_total, 'trf_fret_total':trf_fret_total, 'trf_poste_total':trf_poste_total, })
 
 def chapitre_consultation(request, id_volet, id_ann, id_unite, id_chap):
 	budget = get_object_or_404(Annee_Budgetaire, id = id_ann)
@@ -8779,6 +9064,7 @@ def chapitre_consultation(request, id_volet, id_ann, id_unite, id_chap):
 				s1_dict[c.id] = s1
 				s2_dict[c.id] = s2
 				total_dict[c.id] = s1 + s2
+
 
 	return render(request, "consultation/comptes.html", {'unite':unite, 'budget':budget, 'chapitre':chapitre, 'comptes':comptes, 'cm_dict':cm_dict,
 														 'id_volet':id_volet, 's1_dict':s1_dict, 's2_dict':s2_dict, 'comptes_regle_par_unite':comptes_regle_par_unite,

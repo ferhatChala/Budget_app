@@ -44,7 +44,7 @@
 							<table id="bootstrap-data-table" class="table table-striped">
 								<thead>
 									<tr>
-										<th>Code Num</th>
+										<th>#</th>
 										<th>Code Alpha</th>
 										<th>Département</th>
 										<th>Monnaie</th>
@@ -56,7 +56,7 @@
 								<tbody id="myTable">
 									{% for u in unites %}
 									<tr>
-										<td>{{u.code_num}}</td>
+										<td>{{u.id}}</td>
 										<td>{{u.code_alpha}}</td>
 										<td>{{u.departement.code}}</td>
 										<td>{{u.monnaie.code_alpha}}</td>
