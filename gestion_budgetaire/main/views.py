@@ -115,7 +115,7 @@ def home(request):
 	else: 
 		last_budget = "NULL"
 
-	# etat d'avancemenet 
+	# etat d'avancemenet -------------------------------
 	def get_unite_status(unite, budget):
 		unite_state = {}
 		result = {}
@@ -128,7 +128,7 @@ def home(request):
 		montants_vld_chef = Compte_has_Montant.objects.filter(annee_budgetaire=budget, unite_compte__unite=unite, vld_chef_dep=True, type_maj="N")
 		montants_valid = []
 		for m in montants:
-			if m.vld_sous_dir == True or vld_chef_dep == True:
+			if m.vld_sous_dir == True or m.vld_chef_dep == True:
 				montants_valid.append(m)
 
 
@@ -200,7 +200,8 @@ def home(request):
 										  'total_emmission':total_emmission, 'total_recettes_transport':total_recettes_transport, 'total_autre_recettes':total_autre_recettes,
 										   'total_dep_fonc':total_dep_fonc, 'total_dep_exp': total_dep_exp, 'last_budget':last_budget,
 										   'total_off_pax':total_off_pax, 'total_off_bcb':total_off_bcb,'total_off_fret':total_off_fret,'total_off_poste':total_off_poste,
-										   'total_trf_pax':total_trf_pax, 'total_trf_bcb':total_trf_bcb,'total_trf_fret':total_trf_fret,'total_trf_poste':total_trf_poste, })
+										   'total_trf_pax':total_trf_pax, 'total_trf_bcb':total_trf_bcb,'total_trf_fret':total_trf_fret,'total_trf_poste':total_trf_poste,
+										   'b_status':b_status })
 
 # ------------ users management -----------------------------------------------
 

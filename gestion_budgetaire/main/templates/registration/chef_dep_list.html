@@ -35,7 +35,7 @@
 				<div class="col-md-12">
 					<div class="card">
 						<div class="card-header">
-							<strong class="card-title">La list des chef départements</strong>
+							<strong class="card-title"> <span><i class="menu-icon fa fa-users"></i></span> Chefs départements</strong>
                             <a href="{% url 'ajouter_chef_dep' %}" class="btn btn-sm btn-primary float-right"> <span><i class="menu-icon fa fa-plus"></i></span> Ajouter</a>
 						</div>
 						<div class="card-body">
@@ -66,13 +66,13 @@
 										<div class="modal-dialog">
 								  			<div class="modal-content">
 												<div class="modal-header">
-									  				<h3 class="modal-title" id="exampleModalLabel">Confirme Delete</h3>
+									  				<h3 class="modal-title" id="exampleModalLabel">Confirmer la suppression</h3>
 									  				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 														<span aria-hidden="true">&times;</span>
 									  				</button>
 												</div>
 												<div class="modal-body">
-									  				Are you sure you want to Delete this <strong>" {{c.nom}} {{c.prenom}} "</strong>  ?
+													Etes-vous sûr que vous voulez supprimer l'utilisateur: <strong>" {{c.nom}} {{c.prenom}} "</strong>  ?
 												</div>
 												<div class="modal-footer">
 									  				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
