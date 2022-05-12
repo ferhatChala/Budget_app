@@ -1,8 +1,17 @@
-- Unite compte: fixé monnaie
-- Fix admin stuff 
-- Fix Tables in model (id ,pk, code , ...)
-- recap and fixe all problems 
-- préparation des canevas
-- consulation 
+- PDF Reporst 
+* Set Active link in Consultation
+- Budgets (null) fix conditions 
+- Notification
+- Profile page 
+- historique 
+- Login reauired for views 
+- Menu acces for users prev
+- Password rest (By email also)
+- Aide page 
+- Data Backup (Save the data to export later )
+
+- Dockerize the app 
+- Server deploiement
+- Connect db to Qlik sense
 
 

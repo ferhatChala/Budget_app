@@ -8,6 +8,124 @@
 
 {% load crispy_forms_tags %}  
 
+{% if budget_1 == "NULL" and budget_2 == "NULL" %}
+	<div class="alert alert-info alert-dismissible fade show" role="alert">
+		<strong>Note: </strong> Please contact the admin for any additional informations, <strong>admin@air-algerie.dz </strong>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="breadcrumbs">
+		<div class="breadcrumbs-inner">
+			<div class="row m-0">
+				<div class="col-sm-4">
+					<div class="page-header float-left">
+						<div class="page-title">
+							
+							<h1> Contrôle budgétaire Indisponible !</h1>
+							
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<div class="page-header float-right">
+						<div class="page-title">
+							<ol class="breadcrumb text-right">
+								<li><a class="btn btn-sm btn-outline-info" href="/consultation/4"><span><i class="menu-icon fa fa-folder-open"></i></span> Consulté les Contrôle budgétaire </a></li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> 
+
+{% elif budget_1 != "NULL" and budget_2 == "NULL" %}
+	<div class="breadcrumbs">
+		<div class="breadcrumbs-inner">
+			<div class="row m-0">
+				<div class="col-sm-8">
+					<div class="page-header float-left">
+						<div class="page-title">
+							<h1><strong> Contrôle et suivi budgétaire </strong></h1>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="page-header float-right">
+						<div class="page-title">
+							<ol class="breadcrumb text-right">
+								<li><a href="{% url 'unites_controle' %}">Unités</a></li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> 
+
+	<div class="row content">
+
+		<div class="col-md-12">
+			<div class="accordion" id="accordionExample">	
+				<!-- Budget controle N+1 (Budget_1) -->
+					<div class="card">
+						<div class="card-header" id="hua1" role="tab" data-toggle="collapse" data-target="#cua1" aria-expanded="true" aria-controls="cua1">
+							<strong class="card-title"> <span><i class="menu-icon fa fa-angle-right" style="margin-right: 10px;"></i></span>Contrôle budgétaire <b> {{budget_1.annee}}</b> </strong>
+						</div>
+						<div class="card-body collapse show" id="cua1" aria-labelledby="hua1" data-parent="#accordionExample">		
+							<input class="form-control" id="myInput" type="text" placeholder="Search..">
+							<table id="bootstrap-data-table" class="table table-striped">
+								<thead>
+									<tr>
+										<th>Unité</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody id="myTable">
+									{% if user.user_type == 6 %}
+										{% for u in unites %}
+										<tr>
+											<td>{{u.unite.lib}} ({{u.unite.code_alpha}})</td>
+										
+											<td>
+												<a href="{{budget_1.id}}/unite/{{u.unite.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+											</td>
+										</tr>
+									
+										{% endfor %}
+									{% elif user.user_type == 5 %}
+										{% for u in dep_unites %}
+										<tr>
+											<td>{{u.lib}} ({{u.code_alpha}})</td>
+											
+											<td>
+												<a href="{{budget_1.id}}/unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+											</td>
+										</tr>
+										{% endfor %}
+									{% elif user.user_type == 4 %}
+										{% for u in all_unites %}
+										<tr>
+											<td>{{u.lib}} ({{u.code_alpha}})</td>
+										
+											<td>
+												<a href="{{budget_1.id}}/unite/{{u.id}}" class="btn btn-outline-info btn-sm btn-block"><span><i class="menu-icon fa fa-folder-open"></i></span> Ovrire</a>
+											</td>
+										</tr>
+										{% endfor %}
+									{% endif %}
+								</tbody>
+							</table>
+						</div>	
+					</div>
+				<!------------------------ -->
+			</div>
+		</div>
+
+	</div>
+{% else %}
+
 	<div class="breadcrumbs">
 		<div class="breadcrumbs-inner">
 			<div class="row m-0">
@@ -146,9 +264,7 @@
 
 	</div>
 
-
-    
-
+{% endif %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

@@ -7,6 +7,7 @@ urlpatterns = [
 # Administration     
     #users ---------------------------------------------------
     #ajouter 
+    path('notif_seen/<int:id>', views.read_notif, name="notif_seen"),
     path('ajouter_cadre', views.ajouter_cadre, name="ajouter_cadre"),
     path('ajouter_chef_dep', views.ajouter_chef_dep, name="ajouter_chef_dep"),
     path('ajouter_sous_dir', views.ajouter_sous_dir, name="ajouter_sous_dir"),
@@ -762,6 +763,7 @@ urlpatterns = [
     path('consultation/<int:id_volet>', views.unites_consultation, name="unites_consultation"),
     path('consultation/<int:id_volet>/<int:id_ann>/<int:id_unite>', views.unite_detail_consultation, name="unite_detail_consultation"),
     path('consultation/<int:id_volet>/<int:id_ann>/<int:id_unite>/<int:id_chap>', views.chapitre_consultation, name="chapitre_consultation"),
-
+# PDF Reports ----------------------------------------------------------------------------------------------------------
+    path('pdf/<int:id_volet>/<int:id_ann>/<int:id_unite>', views.notif_report_pdf, name="pdf"),
 
 ]

@@ -4,6 +4,9 @@
 
 {% load crispy_forms_tags %}      
 
+
+
+
 <div class="breadcrumbs">
 	<div class="breadcrumbs-inner">
 		<div class="row m-0">
@@ -68,13 +71,13 @@
 											
 											{% if c.code_num == 4 %}
 												<span style="color: green;">
-													<strong>{{rct_trans_total}}  <b>DZD</b></strong>
+													<strong id="numbersID4">{{rct_trans_total}}  </strong> <strong><b>DZD</b></strong>
 												</span>
 											{% elif c.code_num == 1 %}
 												<span>
 													
 													{% if off_pax_total > 0 %}
-														<i class="menu-icon fa fa-users"></i> PAX :<strong> {{off_pax_total}}</strong> <br>
+														<i class="menu-icon fa fa-users"></i> PAX :<strong> <span id="numbersID1">{{off_pax_total}} </span></strong> <br>
 													{% endif %}
 													{% if off_bcb_total > 0 %}
 														<i class="menu-icon fa fa-suitcase"></i> BCB : <strong>{{off_bcb_total}} <b>Tonnes</b> </strong> <br>
@@ -91,7 +94,7 @@
 												<span>
 														
 													{% if trf_pax_total > 0 %}
-														<i class="menu-icon fa fa-users"></i> PAX :<strong> {{trf_pax_total}}</strong> <br>
+														<i class="menu-icon fa fa-users"></i> PAX :<strong><span id="numbersID2"> {{trf_pax_total}}</span></strong> <br>
 													{% endif %}
 													{% if trf_bcb_total > 0 %}
 														<i class="menu-icon fa fa-suitcase"></i> BCB : <strong>{{trf_bcb_total}} <b>Tonnes</b> </strong> <br>
@@ -106,7 +109,6 @@
 												</span>
 											{% endif %}
 												
-
 										</td>
 										<td>
 											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
@@ -118,7 +120,7 @@
 									<tr>
 										<td>{{c.lib}}</td>	
 										<td>
-											<strong>{{emission_total}}  <b>{{unite.monnaie}}</b></strong>
+											<strong id="numbersID3">{{emission_total}}  </strong> <strong> <b>{{unite.monnaie}}</b></strong> 
 										</td>
 										<td>
 											<a href="{{unite.id}}/{{c.code_num}}" class="btn btn-sm btn-info"> <span><i class="menu-icon fa fa-folder-open"></i></span> Consulté</a>
@@ -131,7 +133,7 @@
 										<td>{{c.lib}}</td>	
 										<td>
 											<span style="color: green;">
-												<strong>{{autre_rct_total}}  <b>DZD</b></strong>
+												<strong id="numbersID5">{{autre_rct_total}}  </strong> <strong><b>DZD</b> </strong>
 											</span>
 										</td>
 										<td>
@@ -144,7 +146,7 @@
 									<td>{{c.lib}}</td>	
 									<td>
 										<span style="color: red;">
-											<strong>{{dpns_fonc_total}}  <b>{{unite.monnaie}} </b></strong>
+											<strong id="numbersID6">{{dpns_fonc_total}} </strong>  <strong><b>{{unite.monnaie}} </b></strong> 
 										</span>
 									</td>
 									<td>
@@ -157,7 +159,7 @@
 										<td>{{c.lib}}</td>	
 										<td>
 											<span style="color: red;">
-												<strong>{{dpns_exp_total}}  <b>{{unite.monnaie}} </b></strong>
+												<strong id="numbersID7">{{dpns_exp_total}} </strong>  <strong> <b>{{unite.monnaie}} </b></strong> 
 											</span>
 										</td>
 										<td>
@@ -175,4 +177,78 @@
         </div>
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+{% if budget.type_bdg == "PROPOS"  %}
+	<script>
+		const element = $( "#propos" );
+		element.addClass("active");
+	</script>
+{% elif budget.type_bdg == "REUN"%}
+	<script>
+		const element = $( "#reun" );
+		element.addClass("active");
+	</script> 
+{% elif budget.type_bdg == "NOTIF"%}
+	<script>
+		const element = $( "#notif" );
+		element.addClass("active");
+	</script> 
+{% elif budget.type_bdg == "CTRL"%}
+	<script>
+		const element = $( "#control" );
+		element.addClass("active");
+	</script>
+{% elif budget.type_bdg == "RELS"%}
+	<script>
+		const element = $( "#realis" );
+		element.addClass("active");
+	</script>
+{% endif %}	
+
+
+<script>
+    function formatMoney(n) {
+        return "" + (Math.round(n * 100) / 100).toLocaleString();
+    }
+    const element1 = $( "#numbersID1" ); 
+    const element2 = $( "#numbersID2" ); 
+    const element3 = $( "#numbersID3" ); 
+    const element4 = $( "#numbersID4" ); 
+    const element5 = $( "#numbersID5" ); 
+    const element6 = $( "#numbersID6" ); 
+	const element7 = $( "#numbersID7" );
+
+
+    const numberValue1 = parseInt(element1.text());
+    const numberValue2 = parseInt(element2.text());
+    const numberValue3 = parseInt(element3.text());
+    const numberValue4 = parseInt(element4.text());
+    const numberValue5 = parseInt(element5.text());
+    const numberValue6 = parseInt(element6.text());
+	const numberValue7 = parseInt(element7.text());
+
+
+    element1.text(formatMoney(numberValue1));
+    element2.text(formatMoney(numberValue2));
+    element3.text(formatMoney(numberValue3));
+    element4.text(formatMoney(numberValue4));
+    element5.text(formatMoney(numberValue5));
+    element6.text(formatMoney(numberValue6));
+	element7.text(formatMoney(numberValue7));
+
+
+
+    //const objects = $(".numberFormat");
+    //for (var obj of objects) {
+     //   console.log(obj);
+     //   const numberValue = parseInt(obj.text());
+     //   obj.text(formatMoney(numberValue));
+    //}
+</script>
+
+
+
 {% endblock %}

@@ -8,6 +8,55 @@
 <li class="active">
 {% endblock %}
 
+{% block notification_panel %}
+<div class="dropdown for-notification">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-bell"></i>
+        {% if notifs_nbr != 0  %}
+            <span class="count bg-danger">{{notifs_nbr}}</span>
+        {% endif %}
+        
+    </button>
+    <div class="dropdown-menu" aria-labelledby="notification">
+        {% if notifs_nbr == 0  %}
+            <p class="red">Aucun nouvelle notifications</p>
+        {% else %}
+            <p class="red">Vous avez <b>{{notifs_nbr}}</b> nouvelle notifications</p>
+        {% endif %}
+        
+        
+        {% if notifs %}       
+            {% for notif in notifs %}
+                
+                {% if notif.seen == False %}
+                    <a class="dropdown-item media" href="/notif_seen/{{notif.id}}">
+                        <i style="color:black;" class="fa fa-info"></i>
+                        <p style="color:black;"> <b>{{notif.message}} </b></p> 
+                    </a>
+                {% else %}
+                    <a class="dropdown-item media" href="#">
+                        <i class="fa fa-info"></i>
+                        <p>{{notif.message}} </p>
+                    </a>
+                {% endif %}
+                    
+                
+            {% endfor %}
+        
+        {% else %}
+            <a class="dropdown-item media" href="#">
+                <i class="fa fa-info"></i>
+                <p>Aucun notification </p>
+            </a>
+        {% endif %}
+            
+        
+        
+       
+    </div>
+</div>
+{% endblock %}
+
 {% block content %} 
 
 

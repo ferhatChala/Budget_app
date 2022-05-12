@@ -1,0 +1,856 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Budget Notifié {{budget.annee}}</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+       
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 50pt; height: 632pt;
+        }
+       
+        }
+        header img {
+            position: absolute;
+            margin-left: 500px;
+            width: 150px;
+            height: 70px;
+        }   
+        table {
+            width: 100%;
+            border: 1px;
+            }
+            #upp #upp2 {
+            width: 100%;
+            /*background:red;*/
+            }
+        p{
+            font-size: 8pt;
+        }
+
+
+        
+
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <table id="upp">
+                <tr>
+                  <td style="width: 75%;">
+                    <h2><u> AIR ALGERIE</u> </h2>
+                    <h2><u> DIRECTION PROSPECTIVE ET DEVELOPPEMENT</u> </h2>	
+                    <h2><u> S/DIRECTION DU BUDGET</u> </h2>                 
+                 </td>
+
+                  <td class="alignright">
+                    <img id="right" class="logo" src="https://www.franvol.com/wp-content/uploads/logo-air-algerie.jpg" alt="">
+                  </td>
+                </tr>
+            </table>
+            <br>
+            <table id="upp2">
+               
+                <td style="width: 75%;">
+                    <p style="font-size: 10pt;"><b>Unité:</b>  {{unite.lib}} ({{unite.code_alpha}})</p>
+                    <p style="font-size: 8pt;"><b>Monnaie:</b> {{unite.monnaie}} / {{unite.monnaie.id}}</p>
+                </td>
+                <td>
+                    <h2>Budget Notifié {{budget.annee}}</h2>
+                </td>
+
+            </table>
+            <hr>
+        </header>
+        <br>
+        <section>
+            
+            {% if unite.traffic %}
+                <table id="upp3">
+                    <td>
+                        <h1>Offre:</h1>
+                        <p>PAX: {{off_pax_total}} </p>
+                        <p>BCB: {{off_bcb_total}} (Tonnes)</p>
+                        <p>FRET: {{off_fret_total}} (Tonnes)</p>
+                        <p>POSTE: {{off_poste_total}} (Tonnes)</p>
+
+                    </td>
+                    <td>
+                        <h1>Trafic:</h1>
+                        <p>PAX: {{trf_pax_total}}  </p>
+                        <p>BCB: {{trf_bcb_total}} (Tonnes)</p>
+                        <p>FRET: {{trf_fret_total}} (Tonnes)</p>
+                        <p>POSTE: {{trf_poste_total}} (Tonnes)</p>
+                    </td>
+                    
+                </table>
+            {% endif %}
+
+            <br>
+            
+            {% if unite.emmission  %}
+                <p style="font-size: 8pt;"><b>Chiffre d'affaire à l'émission: </b>  {{emission_total}} {{unite.monnaie}}</p>
+            {% endif %}
+             
+            
+            {% if unite.traffic  %}
+                <p style="font-size: 8pt;"><b>Recettes au Transport:</b> {{rct_trans_total}}  DZD</p>
+            {% endif %}
+                
+            {% if unite.recette  %}
+                <p style="font-size: 8pt;"><b>Autre Recettes:</b> {{autre_rct_total}} DZD</p>
+            {% endif %}
+
+            <p style="font-size: 8pt;"><b>Dépenses de fonctionnement:</b> {{dpns_fonc_total}} {{unite.monnaie}}</p>
+            
+            {% if unite.exploitation  %}
+                <p style="font-size: 8pt;"><b>Dépenses d'exploitation:</b>  {{dpns_exp_total}} {{unite.monnaie}}</p>
+            {% endif %}
+
+            <hr>
+        </section>
+
+        
+        {% if  unite.traffic  %} 
+            <section>
+                <h1>Offre:</h1>
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Janvier</b></td>
+                            <td><b>Février</b></td>
+                            <td><b>Mars</b></td>
+                            <td><b>Avril</b></td>
+                            <td><b>Mai</b></td>
+                            <td><b>Juin</b></td>
+                        </tr>
+                    
+                    {% for c in off_comptes  %} 
+                        <tr>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in off_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.janvier}}</td>
+                                        <td>{{m.fevrier}}</td>
+                                        <td>{{m.mars}}</td>
+                                        <td>{{m.avril}}</td>
+                                        <td>{{m.mai}}</td>
+                                        <td>{{m.juin}}</td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+        
+                <pdf:nextpage/>
+
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Juillet</b></td>
+                            <td><b>Aout</b></td>
+                            <td><b>Septembre</b></td>
+                            <td><b>Octobre</b></td>
+                            <td><b>Novembre</b></td>
+                            <td><b>Decembre</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    
+                    {% for c in off_comptes  %} 
+                        <tr>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in off_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.juillet}}</td>
+                                        <td>{{m.aout}}</td>
+                                        <td>{{m.septemre}}</td>
+                                        <td>{{m.octobre}}</td>
+                                        <td>{{m.novembre}}</td>
+                                        <td>{{m.decembre}}</td>
+                                        <td><b> {{m.montant}}</b> </td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+                 
+                <br>
+                <h1>Trafic:</h1>
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Janvier</b></td>
+                            <td><b>Février</b></td>
+                            <td><b>Mars</b></td>
+                            <td><b>Avril</b></td>
+                            <td><b>Mai</b></td>
+                            <td><b>Juin</b></td>
+                        </tr>
+                    
+                    {% for c in trf_comptes  %} 
+                        <tr>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in trf_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.janvier}}</td>
+                                        <td>{{m.fevrier}}</td>
+                                        <td>{{m.mars}}</td>
+                                        <td>{{m.avril}}</td>
+                                        <td>{{m.mai}}</td>
+                                        <td>{{m.juin}}</td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Juillet</b></td>
+                            <td><b>Aout</b></td>
+                            <td><b>Septembre</b></td>
+                            <td><b>Octobre</b></td>
+                            <td><b>Novembre</b></td>
+                            <td><b>Decembre</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    
+                    {% for c in trf_comptes  %} 
+                        <tr>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in trf_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.juillet}}</td>
+                                        <td>{{m.aout}}</td>
+                                        <td>{{m.septemre}}</td>
+                                        <td>{{m.octobre}}</td>
+                                        <td>{{m.novembre}}</td>
+                                        <td>{{m.decembre}}</td>
+                                        <td><b> {{m.montant}}</b> </td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <pdf:nextpage/>
+
+                <h1>Recettes au Transport:</h1>
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Janvier</b></td>
+                            <td><b>Février</b></td>
+                            <td><b>Mars</b></td>
+                            <td><b>Avril</b></td>
+                            <td><b>Mai</b></td>
+                            <td><b>Juin</b></td>
+                        </tr>
+                    
+                    {% for c in rct_trans_comptes  %} 
+                        <tr>
+                            <td>{{c.compte.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in rct_trans_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.janvier}}</td>
+                                        <td>{{m.fevrier}}</td>
+                                        <td>{{m.mars}}</td>
+                                        <td>{{m.avril}}</td>
+                                        <td>{{m.mai}}</td>
+                                        <td>{{m.juin}}</td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Juillet</b></td>
+                            <td><b>Aout</b></td>
+                            <td><b>Septembre</b></td>
+                            <td><b>Octobre</b></td>
+                            <td><b>Novembre</b></td>
+                            <td><b>Decembre</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    
+                    {% for c in rct_trans_comptes  %} 
+                        <tr>
+                            <td>{{c.compte.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in rct_trans_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.juillet}}</td>
+                                        <td>{{m.aout}}</td>
+                                        <td>{{m.septemre}}</td>
+                                        <td>{{m.octobre}}</td>
+                                        <td>{{m.novembre}}</td>
+                                        <td>{{m.decembre}}</td>
+                                        <td><b> {{m.montant}}</b> </td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+            </section>
+        {% endif %}
+
+        
+        {% if unite.recette  %}
+            <h1> Autre Recettes:</h1>
+            <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+            <table  border="1" style="padding: 3px;" >
+                    
+                    <tr>
+                        <td><b>N° SCF</b></td>
+                        <td><b>Rubrique budgétaire</b></td>
+                        <td><b>Réseau</b></td>
+
+                        <td><b>Janvier</b></td>
+                        <td><b>Février</b></td>
+                        <td><b>Mars</b></td>
+                        <td><b>Avril</b></td>
+                        <td><b>Mai</b></td>
+                        <td><b>Juin</b></td>
+                    </tr>
+                
+                {% for c in autr_rct_comptes  %} 
+                    <tr>
+                        <td>{{c.compte.numero}}</td>
+                        <td>{{c.compte.rubrique}}</td>
+                        <td>{{c.reseau_compte}}</td>
+
+                        {% for key, m in autr_rct_cms.items  %}
+                            {% if key == c.id %}
+                                {% if m != "null" %}
+                                    <td>{{m.janvier}}</td>
+                                    <td>{{m.fevrier}}</td>
+                                    <td>{{m.mars}}</td>
+                                    <td>{{m.avril}}</td>
+                                    <td>{{m.mai}}</td>
+                                    <td>{{m.juin}}</td>
+                                {% else %}
+                                    -											
+                                {% endif %}	
+                            {% endif %}		
+                        {% endfor %}
+                    
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+            <table  border="1" style="padding: 3px;" >
+                    
+                    <tr>
+                        <td><b>N° SCF</b></td>
+                        <td><b>Rubrique budgétaire</b></td>
+                        <td><b>Réseau</b></td>
+
+                        <td><b>Juillet</b></td>
+                        <td><b>Aout</b></td>
+                        <td><b>Septembre</b></td>
+                        <td><b>Octobre</b></td>
+                        <td><b>Novembre</b></td>
+                        <td><b>Decembre</b></td>
+                        <td><b>Total</b></td>
+                    </tr>
+                
+                {% for c in autr_rct_comptes  %} 
+                    <tr>
+                        <td>{{c.compte.numero}}</td>
+                        <td>{{c.compte.rubrique}}</td>
+                        <td>{{c.reseau_compte}}</td>
+
+                        {% for key, m in autr_rct_cms.items  %}
+                            {% if key == c.id %}
+                                {% if m != "null" %}
+                                    <td>{{m.juillet}}</td>
+                                    <td>{{m.aout}}</td>
+                                    <td>{{m.septemre}}</td>
+                                    <td>{{m.octobre}}</td>
+                                    <td>{{m.novembre}}</td>
+                                    <td>{{m.decembre}}</td>
+                                    <td><b> {{m.montant}}</b> </td>
+                                {% else %}
+                                    -											
+                                {% endif %}	
+                            {% endif %}		
+                        {% endfor %}
+                    
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        
+        
+        {% if unite.exploitation %}
+
+            {% if exp_comptes_par_unite %} 
+            <section>
+                <pdf:nextpage/>  
+                <h1> Dépenses d'exploitation: (Reglé par Unité)</h1>
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Janvier</b></td>
+                            <td><b>Février</b></td>
+                            <td><b>Mars</b></td>
+                            <td><b>Avril</b></td>
+                            <td><b>Mai</b></td>
+                            <td><b>Juin</b></td>
+                        </tr>
+                    
+                    {% for c in exp_comptes_par_unite  %} 
+                        <tr>
+                            <td>{{c.compte.ref.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in dpns_exp_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.janvier}}</td>
+                                        <td>{{m.fevrier}}</td>
+                                        <td>{{m.mars}}</td>
+                                        <td>{{m.avril}}</td>
+                                        <td>{{m.mai}}</td>
+                                        <td>{{m.juin}}</td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <pdf:nextpage/>  
+
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Juillet</b></td>
+                            <td><b>Aout</b></td>
+                            <td><b>Septembre</b></td>
+                            <td><b>Octobre</b></td>
+                            <td><b>Novembre</b></td>
+                            <td><b>Decembre</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    
+                    {% for c in exp_comptes_par_unite  %} 
+                        <tr>
+                            <td>{{c.compte.ref.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in dpns_exp_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.juillet}}</td>
+                                        <td>{{m.aout}}</td>
+                                        <td>{{m.septemre}}</td>
+                                        <td>{{m.octobre}}</td>
+                                        <td>{{m.novembre}}</td>
+                                        <td>{{m.decembre}}</td>
+                                        <td><b> {{m.montant}}</b> </td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+                
+            </section>
+            {% endif %}
+
+            {% if exp_comptes_par_autre %}
+                <section>
+                    <pdf:nextpage/> 
+                    <h1> Dépenses d'exploitation: (Reglé par Autre)</h1>
+                    <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+                    <table  border="1" style="padding: 3px;" >
+                            
+                            <tr>
+                                <td><b>N° SCF</b></td>
+                                <td><b>Rubrique budgétaire</b></td>
+                                <td><b>Réseau</b></td>
+
+                                <td><b>Janvier</b></td>
+                                <td><b>Février</b></td>
+                                <td><b>Mars</b></td>
+                                <td><b>Avril</b></td>
+                                <td><b>Mai</b></td>
+                                <td><b>Juin</b></td>
+                            </tr>
+                        
+                        {% for c in exp_comptes_par_autre  %} 
+                            <tr>
+                                <td>{{c.compte.ref.numero}}</td>
+                                <td>{{c.compte.rubrique}}</td>
+                                <td>{{c.reseau_compte}}</td>
+
+                                {% for key, m in dpns_exp_cms.items  %}
+                                    {% if key == c.id %}
+                                        {% if m != "null" %}
+                                            <td>{{m.janvier}}</td>
+                                            <td>{{m.fevrier}}</td>
+                                            <td>{{m.mars}}</td>
+                                            <td>{{m.avril}}</td>
+                                            <td>{{m.mai}}</td>
+                                            <td>{{m.juin}}</td>
+                                        {% else %}
+                                            -											
+                                        {% endif %}	
+                                    {% endif %}		
+                                {% endfor %}
+                            
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                    <pdf:nextpage/>  
+                    
+                    <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+                    <table  border="1" style="padding: 3px;" >
+                            
+                            <tr>
+                                <td><b>N° SCF</b></td>
+                                <td><b>Rubrique budgétaire</b></td>
+                                <td><b>Réseau</b></td>
+
+                                <td><b>Juillet</b></td>
+                                <td><b>Aout</b></td>
+                                <td><b>Septembre</b></td>
+                                <td><b>Octobre</b></td>
+                                <td><b>Novembre</b></td>
+                                <td><b>Decembre</b></td>
+                                <td><b>Total</b></td>
+                            </tr>
+                        
+                        {% for c in exp_comptes_par_autre  %} 
+                            <tr>
+                                <td>{{c.compte.ref.numero}}</td>
+                                <td>{{c.compte.rubrique}}</td>
+                                <td>{{c.reseau_compte}}</td>
+
+                                {% for key, m in dpns_exp_cms.items  %}
+                                    {% if key == c.id %}
+                                        {% if m != "null" %}
+                                            <td>{{m.juillet}}</td>
+                                            <td>{{m.aout}}</td>
+                                            <td>{{m.septemre}}</td>
+                                            <td>{{m.octobre}}</td>
+                                            <td>{{m.novembre}}</td>
+                                            <td>{{m.decembre}}</td>
+                                            <td><b> {{m.montant}}</b> </td>
+                                        {% else %}
+                                            -											
+                                        {% endif %}	
+                                    {% endif %}		
+                                {% endfor %}
+                            
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </section>
+            {% endif %}
+            
+        {% endif %}
+            
+
+
+
+
+        {% if fonc_comptes_par_unite %} 
+            <section>
+                <pdf:nextpage/>  
+                <h1> Dépenses de fonctionnement: (Reglé par Unité)</h1>
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Janvier</b></td>
+                            <td><b>Février</b></td>
+                            <td><b>Mars</b></td>
+                            <td><b>Avril</b></td>
+                            <td><b>Mai</b></td>
+                            <td><b>Juin</b></td>
+                        </tr>
+                    
+                    {% for c in fonc_comptes_par_unite  %} 
+                        <tr>
+                            <td>{{c.compte.ref.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in dpns_fonc_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.janvier}}</td>
+                                        <td>{{m.fevrier}}</td>
+                                        <td>{{m.mars}}</td>
+                                        <td>{{m.avril}}</td>
+                                        <td>{{m.mai}}</td>
+                                        <td>{{m.juin}}</td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <pdf:nextpage/>  
+
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Juillet</b></td>
+                            <td><b>Aout</b></td>
+                            <td><b>Septembre</b></td>
+                            <td><b>Octobre</b></td>
+                            <td><b>Novembre</b></td>
+                            <td><b>Decembre</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    
+                    {% for c in fonc_comptes_par_unite  %} 
+                        <tr>
+                            <td>{{c.compte.ref.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in dpns_fonc_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.juillet}}</td>
+                                        <td>{{m.aout}}</td>
+                                        <td>{{m.septemre}}</td>
+                                        <td>{{m.octobre}}</td>
+                                        <td>{{m.novembre}}</td>
+                                        <td>{{m.decembre}}</td>
+                                        <td><b> {{m.montant}}</b> </td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+                
+            </section>
+        {% endif %}
+
+        
+        {% if fonc_comptes_par_autre %}
+            <section>
+                <pdf:nextpage/> 
+                <h1> Dépenses de fonctionnement: (Reglé par Autre)</h1>
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 1</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Janvier</b></td>
+                            <td><b>Février</b></td>
+                            <td><b>Mars</b></td>
+                            <td><b>Avril</b></td>
+                            <td><b>Mai</b></td>
+                            <td><b>Juin</b></td>
+                        </tr>
+                    
+                    {% for c in fonc_comptes_par_autre  %} 
+                        <tr>
+                            <td>{{c.compte.ref.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in dpns_fonc_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.janvier}}</td>
+                                        <td>{{m.fevrier}}</td>
+                                        <td>{{m.mars}}</td>
+                                        <td>{{m.avril}}</td>
+                                        <td>{{m.mai}}</td>
+                                        <td>{{m.juin}}</td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <pdf:nextpage/>  
+
+                <h3 style="color: rgb(16, 57, 129);"><u>Semestre 2</u> </h3>
+                <table  border="1" style="padding: 3px;" >
+                        
+                        <tr>
+                            <td><b>N° SCF</b></td>
+                            <td><b>Rubrique budgétaire</b></td>
+                            <td><b>Réseau</b></td>
+
+                            <td><b>Juillet</b></td>
+                            <td><b>Aout</b></td>
+                            <td><b>Septembre</b></td>
+                            <td><b>Octobre</b></td>
+                            <td><b>Novembre</b></td>
+                            <td><b>Decembre</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+                    
+                    {% for c in fonc_comptes_par_autre  %} 
+                        <tr>
+                            <td>{{c.compte.ref.numero}}</td>
+                            <td>{{c.compte.rubrique}}</td>
+                            <td>{{c.reseau_compte}}</td>
+
+                            {% for key, m in dpns_fonc_cms.items  %}
+                                {% if key == c.id %}
+                                    {% if m != "null" %}
+                                        <td>{{m.juillet}}</td>
+                                        <td>{{m.aout}}</td>
+                                        <td>{{m.septemre}}</td>
+                                        <td>{{m.octobre}}</td>
+                                        <td>{{m.novembre}}</td>
+                                        <td>{{m.decembre}}</td>
+                                        <td><b> {{m.montant}}</b> </td>
+                                    {% else %}
+                                        -											
+                                    {% endif %}	
+                                {% endif %}		
+                            {% endfor %}
+                        
+                        </tr>
+                    {% endfor %}
+                </table>
+            </section>
+        {% endif %}
+
+
+    </div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

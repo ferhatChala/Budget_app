@@ -2342,6 +2342,34 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+{% if budget.type_bdg == "PROPOS"  %}
+	<script>
+		const element = $( "#propos" );
+		element.addClass("active");
+	</script>
+{% elif budget.type_bdg == "REUN"%}
+	<script>
+		const element = $( "#reun" );
+		element.addClass("active");
+	</script> 
+{% elif budget.type_bdg == "NOTIF"%}
+	<script>
+		const element = $( "#notif" );
+		element.addClass("active");
+	</script> 
+{% elif budget.type_bdg == "CTRL"%}
+	<script>
+		const element = $( "#control" );
+		element.addClass("active");
+	</script>
+{% elif budget.type_bdg == "RELS"%}
+	<script>
+		const element = $( "#realis" );
+		element.addClass("active");
+	</script>
+{% endif %}	
+
 <script>
 	$(document).ready(function(){
 	  $("#myInput").on("keyup", function() {

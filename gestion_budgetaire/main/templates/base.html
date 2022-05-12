@@ -85,57 +85,62 @@
                 <ul class="nav navbar-nav">
                     
                     <!-- Admin functions  (CRUD) -->
-                    {% if user.is_authenticated and user.user_type == 1 %}      
+                    {% if user.user_type == 1 or user.user_type == 2 %}      
                     <li class="menu-title">Administration</li><!-- /.menu-title -->
                     {% block home_admin_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-home"></i>Accueil</a>
+                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-home"></i> Accueil</a>
                     </li>
-                    {% block users_active %}
-                    <li class="menu-item-has-children dropdown">
-                    {% endblock %}
-                        <a href="{% url 'cadres_list' %}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-group"></i>Users</a>
-                        <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-user"></i><a href="{% url 'content_admin_list' %}">Content Admin</a></li>
-                            <li><i class="fa fa-user"></i><a href="{% url 'dir_list' %}">Directeur</a></li>
-                            <li><i class="fa fa-user"></i><a href="{% url 'sous_dir_list' %}">Sous Directeur</a></li>
-                            <li><i class="fa fa-user"></i><a href="{% url 'chef_dep_list' %}">Chef Departement</a></li>
-                            <li><i class="fa fa-user"></i><a href="{% url 'cadres_list' %}">Cadre</a></li>
-                        </ul>
-                    </li>
+
+                    
+                    {% if user.user_type == 1 %}
+                        
+                        {% block users_active %}
+                        <li class="menu-item-has-children dropdown">
+                        {% endblock %}
+                            <a href="{% url 'cadres_list' %}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-group"></i> Users</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <li><i class="fa fa-user"></i><a href="{% url 'content_admin_list' %}"> Content Admin</a></li>
+                                <li><i class="fa fa-user"></i><a href="{% url 'dir_list' %}"> Directeur</a></li>
+                                <li><i class="fa fa-user"></i><a href="{% url 'sous_dir_list' %}"> Sous Directeur</a></li>
+                                <li><i class="fa fa-user"></i><a href="{% url 'chef_dep_list' %}"> Chef Departement</a></li>
+                                <li><i class="fa fa-user"></i><a href="{% url 'cadres_list' %}"> Cadre</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
 
                    
 
                     {% block unite_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'unite_list' %}"><i class="menu-icon fa fa-globe"></i>Unités </a>
+                        <a href="{% url 'unite_list' %}"><i class="menu-icon fa fa-globe"></i> Unités </a>
                     </li>
 
                     {% block scf_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i>Comptes SCF</a>
+                        <a href="{% url 'comptes_list' %}"><i class="menu-icon fa fa-sort-numeric-asc"></i> Comptes SCF</a>
                     </li>
                     
                     {% block aff_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'show_cadres' %}"><i class="menu-icon fa fa-sitemap"></i>Affectation des cadres</a>
+                        <a href="{% url 'show_cadres' %}"><i class="menu-icon fa fa-sitemap"></i> Affectation des cadres</a>
                     </li>
 
                     {% block cpt_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'all_unites' %}"><i class="menu-icon fa fa-suitcase"></i>Rubriques budgétaires</a>
+                        <a href="{% url 'all_unites' %}"><i class="menu-icon fa fa-suitcase"></i> Rubriques budgétaires</a>
                     </li>
 
 
                     {% block int_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'interims' %}"><i class="menu-icon fa fa-clock-o"></i>Gestion des intérim</a>
+                        <a href="{% url 'interims' %}"><i class="menu-icon fa fa-clock-o"></i> Gestion des intérim</a>
                     </li>
 
                     {% block autre_active %}
@@ -143,10 +148,10 @@
                     {% endblock %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Autre</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'dep_list' %}">Département</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'chapitre_list' %}">Chapitre</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'monnaie_list' %}">Monnaie</a></li>
-                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'pays_list' %}">Pays</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'dep_list' %}"> Département</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'chapitre_list' %}"> Chapitre</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'monnaie_list' %}"> Monnaie</a></li>
+                            <li><i class="menu-icon fa fa-th"></i><a href="{% url 'pays_list' %}"> Pays</a></li>
                         </ul>
                     </li>
                     <li class="menu-title">Budget</li><!-- /.menu-title -->
@@ -154,14 +159,14 @@
                     {% block annee_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'annee_bdg' %}"><i class="menu-icon fa fa-calendar"></i>Année Budgétaire</a>
+                        <a href="{% url 'annee_bdg' %}"><i class="menu-icon fa fa-calendar"></i> Année Budgétaire</a>
                     </li>
                    
 
                     {% block tchg_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'taux_chng_list' %}"><i class="menu-icon fa fa-exchange"></i>Taux de change</a>
+                        <a href="{% url 'taux_chng_list' %}"><i class="menu-icon fa fa-exchange"></i> Taux de change</a>
                     </li>
                     {% endif %}
                     <!-- /.Admin functions  -->
@@ -173,71 +178,71 @@
                     {% block home_active %}
                     <li>
                     {% endblock %}
-                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-home"></i>Accueil</a>
+                        <a href="{% url 'home' %}"><i class="menu-icon fa fa-home"></i> Accueil</a>
                     </li>
                     {% block prop_active %}
-                    <li class="menu-item-has-children dropdown">
+                    <li id="propos" class="menu-item-has-children dropdown">
                     {% endblock %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-money"></i>Porposition Budget</a>
                         <ul class="sub-menu children dropdown-menu">
                             {% if user.user_type == 5 or user.user_type == 6   %}
-                                <li><i class="fa fa-gears"></i><a href="{% url 'unites' %}">Conception</a></li>
+                                <li><i class="fa fa-gears"></i> <a href="{% url 'unites' %}"> Conception</a></li>
                             {% endif %}
-                            <li><i class="fa fa-folder-open"></i><a href="/consultation/1">Consultation</a></li>
+                            <li><i class="fa fa-folder-open"></i> <a href="/consultation/1"> Consultation</a></li>
                             
                         </ul>
                     </li>
 
                     {% block reu_active %}
-                    <li class="menu-item-has-children dropdown">
+                    <li id="reun" class="menu-item-has-children dropdown">
                     {% endblock %}
                         <a href="{% url 'unites_reunion' %}" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Réunion Budget</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-gears"></i><a href="{% url 'unites_reunion' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="/consultation/2">Consultation</a></li>
+                            <li><i class="fa fa-gears"></i> <a href="{% url 'unites_reunion' %}"> Conception</a></li>
+                            <li><i class="fa fa-folder-open"></i> <a href="/consultation/2"> Consultation</a></li>
                         </ul>
                     </li>
 
                     {% block notif_active %}
-                    <li class="menu-item-has-children dropdown">
+                    <li id="notif" class="menu-item-has-children dropdown">
                     {% endblock %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-bell"></i>Notification Budget</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-gears"></i><a href="{% url 'unites_notif' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="/consultation/3">Consultation</a></li>
+                            <li><i class="fa fa-gears"></i> <a href="{% url 'unites_notif' %}"> Conception</a></li>
+                            <li><i class="fa fa-folder-open"></i> <a href="/consultation/3"> Consultation</a></li>
                         </ul>
                     </li>
                     
                     {% block actu_active %}
-                    <li>
+                    <li id="actualis">
                     {% endblock %}
-                        <a href="{% url 'unites_actualis' %}"><i class="menu-icon fa fa-magic"></i>Actu & Réajustements </a>
+                        <a href="{% url 'unites_actualis' %}"><i class="menu-icon fa fa-magic"></i> Actu & Réajustements </a>
                     </li>
 
                     {% block ctrl_active %}
-                    <li class="menu-item-has-children dropdown">
+                    <li id="control" class="menu-item-has-children dropdown">
                     {% endblock %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-tasks"></i>Contrôle Budgétaire</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-gears"></i><a href="{% url 'unites_controle' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="/consultation/4">Consultation</a></li>
+                            <li><i class="fa fa-gears"></i> <a href="{% url 'unites_controle' %}"> Conception</a></li>
+                            <li><i class="fa fa-folder-open"></i> <a href="/consultation/4"> Consultation</a></li>
                         </ul>
                     </li>
 
                     {% block rls_active %}
-                    <li class="menu-item-has-children dropdown">
+                    <li id="realis" class="menu-item-has-children dropdown">
                     {% endblock %}
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-euro"></i>Réalisation Comptable</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="fa fa-gears"></i><a href="{% url 'unites_realisation' %}">Conception</a></li>
-                            <li><i class="fa fa-folder-open"></i><a href="/consultation/5">Consultation</a></li>
+                            <li><i class="fa fa-gears"></i> <a href="{% url 'unites_realisation' %}"> Conception</a></li>
+                            <li><i class="fa fa-folder-open"></i> <a href="/consultation/5"> Consultation</a></li>
                         </ul>
                     </li>
 
-                    <li>
+                    <li id="histo">
                         <a href="#"><i class="menu-icon fa fa-history"></i> Historique </a>
                     </li>
-                    <li>
+                    <li id="helpe">
                         <a href="#"><i class="menu-icon fa fa-info-circle"></i> Aide </a>
                     </li>
                     {% endif %}
@@ -270,28 +275,24 @@
                                 <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
                             </form>
                         </div>
-
+                        
+                        
+                        <!-- Notification --------------------------------->
+                        {% block notification_panel %}
                         <div class="dropdown for-notification">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-bell"></i>
-                                <span class="count bg-danger">3</span>
+                                
                             </button>
                             <div class="dropdown-menu" aria-labelledby="notification">
-                                <p class="red">You have 3 Notification</p>
-                                <a class="dropdown-item media" href="#">
-                                    <i class="fa fa-check"></i>
-                                    <p>Server #1 overloaded.</p>
-                                </a>
-                                <a class="dropdown-item media" href="#">
-                                    <i class="fa fa-info"></i>
-                                    <p>Server #2 overloaded.</p>
-                                </a>
-                                <a class="dropdown-item media" href="#">
-                                    <i class="fa fa-warning"></i>
-                                    <p>Server #3 overloaded.</p>
-                                </a>
+                                <p class="red">Aucun notifications</p>
+                              
+                               
                             </div>
                         </div>
+                        {% endblock %}
+                        <!-- Notification end ----------------------- -->
+
                     </div>
 
                     <div class="user-area dropdown float-right">
@@ -302,7 +303,7 @@
                         <div class="user-menu dropdown-menu">
                             <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
 
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
+                            <a class="nav-link" href="#"><i class="fa fa- history"></i>Historique </a>
 
                             <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
 
